@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.24.xsd"
+>
+    <changeSet id="create-feedback-table" author="Mimoun Ghordou">
+        <createTable tableName="feedbacks">
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="feedback-pk"/>
+            </column>
+            <column name="rating" type="SMALLINT" >
+                <constraints checkConstraint="CHECK (rating &gt;=1 AND rating &lt;=5)" nullable="false" notNullConstraintName="feedback-rating-nn-and-check"/>
+            </column>
+            <column name="comment" type="VARCHAR(4095)" />
+            <column name="raterUserId" type="UUID">
+                <constraints nullable="false" references="users(id)" foreignKeyName="rater-fk"/>
+            </column>
+            <column name="ratedUserId" type="UUID">
+                <constraints nullable="false" references="users(id)" foreignKeyName="rated-fk"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

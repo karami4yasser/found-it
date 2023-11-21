@@ -1,0 +1,47 @@
+database:
+  host: localhost
+  name: founditdb
+  port: 5432
+  schema: founditschema
+  user:
+    username: founditdbadmin
+    password: p8zDrj6LbuOGlhH+
+
+server:
+  port: 8400
+
+spring:
+  application:
+    name: lost-items
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    database: postgresql
+    hibernate:
+      ddl-auto: validate
+      naming.physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+#    generate-ddl: true
+    properties:
+      hibernate:
+        default_schema: ${database.schema}
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://${database.host}:${database.port}/${database.name}?searchpath=${database.schema}
+    username: ${database.user.username}
+    password: ${database.user.password}
+
+  liquibase:
+    change-log: classpath:db/db-changelog.xml
+    liquibase-schema: ${database.schema}
+    default-schema: ${database.schema}
+    user: ${database.user.username}
+    password: ${database.user.password}
+
+# application configurations
+foundit:
+  server: "http://localhost:8400"
+
+logging:
+  level:
+    org.springframework.security: DEBUG
