@@ -1,5 +1,6 @@
 package com.lostitems.lostitemsapi.model;
 
+import com.lostitems.lostitemsapi.validation.constraints.PhoneNumber;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -32,7 +33,7 @@ public class User {
     private String lastName;
 
     @Column(name = "phone", nullable = false)
-    // validation
+    @PhoneNumber
     private String phone;
 
     @Column(name = "email")
