@@ -8,9 +8,13 @@ database:
     password: p8zDrj6LbuOGlhH+
 
 server:
+  servlet:
+    context-path: /api
   port: 8400
 
 spring:
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
   application:
     name: lost-items
 

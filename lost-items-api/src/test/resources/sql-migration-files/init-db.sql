@@ -1,0 +1,1 @@
+GRANT ALL PRIVILEGES ON database founditdb TO founditdbadmin;
