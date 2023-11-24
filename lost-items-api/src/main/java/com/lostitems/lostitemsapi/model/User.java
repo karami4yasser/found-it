@@ -40,6 +40,9 @@ public class User {
     @Email(message = "Email format is not right!")
     private String email;
 
+    @Column(name = "password", nullable = false)
+    private String password;
+
     @OneToMany(
             targetEntity = Item.class,
             fetch = FetchType.LAZY,
