@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class LostItemsApiApplication {
+public class FoundItApiApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(LostItemsApiApplication.class, args);
+        SpringApplication.run(FoundItApiApplication.class, args);
     }
 
 }
