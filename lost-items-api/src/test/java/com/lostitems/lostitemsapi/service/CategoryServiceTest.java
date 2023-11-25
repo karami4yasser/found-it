@@ -1,7 +1,7 @@
 package com.lostitems.lostitemsapi.service;
 
-import com.lostitems.lostitemsapi.dto.CategoryDetailsDto;
-import com.lostitems.lostitemsapi.dto.CreateCategoryDto;
+import com.lostitems.lostitemsapi.dto.category.CategoryDetailsDto;
+import com.lostitems.lostitemsapi.dto.category.CreateCategoryDto;
 import com.lostitems.lostitemsapi.mapper.CategoryMapper;
 import com.lostitems.lostitemsapi.model.Category;
 import com.lostitems.lostitemsapi.repository.CategoryRepository;
@@ -15,8 +15,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.Optional;
 import java.util.UUID;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
+
 @ExtendWith(SpringExtension.class)
 public class CategoryServiceTest {
 
@@ -31,16 +31,12 @@ public class CategoryServiceTest {
 
     @Test
     void testCreateCategory() {
-        Category category = new Category();
-        category.setId(new UUID(123L,123L));
-
-        CreateCategoryDto createCategoryDto = new CreateCategoryDto();
-        createCategoryDto.setName("category");
+        Category category = mock(Category.class);
 
         when(categoryMapper.createCategoryDtoToCategory(any(CreateCategoryDto.class))).thenReturn(category);
         when(categoryRepository.save(any(Category.class))).thenReturn(category);
 
-        categoryService.CreateCategory(createCategoryDto);
+        categoryService.createCategory(mock(CreateCategoryDto.class));
 
         // category saved
         verify(categoryRepository).save(any(Category.class));
@@ -59,8 +55,7 @@ public class CategoryServiceTest {
         Category category = new Category();
         UUID uuid = new UUID(123L,123L);
         category.setId(uuid);
-        CategoryDetailsDto categoryDetailsDto = new CategoryDetailsDto();
-        when(categoryMapper.categoryToCategoryDetailsDto(any(Category.class))).thenReturn(categoryDetailsDto);
+        when(categoryMapper.categoryToCategoryDetailsDto(any(Category.class))).thenReturn(mock(CategoryDetailsDto.class));
         when(categoryRepository.findById(any(UUID.class))).thenReturn(Optional.of(category));
         categoryService.getCategoryById(uuid);
         verify(categoryRepository).findById(uuid);

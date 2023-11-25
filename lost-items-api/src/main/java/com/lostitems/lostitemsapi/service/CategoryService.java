@@ -1,8 +1,8 @@
 package com.lostitems.lostitemsapi.service;
 
-import com.lostitems.lostitemsapi.dto.CategoryDetailsDto;
-import com.lostitems.lostitemsapi.dto.CreateCategoryDto;
-import com.lostitems.lostitemsapi.exception.CategoryNotFoundException;
+import com.lostitems.lostitemsapi.dto.category.CategoryDetailsDto;
+import com.lostitems.lostitemsapi.dto.category.CreateCategoryDto;
+import com.lostitems.lostitemsapi.exception.FoundItCategoryNotFoundException;
 import com.lostitems.lostitemsapi.mapper.CategoryMapper;
 import com.lostitems.lostitemsapi.model.Category;
 import com.lostitems.lostitemsapi.repository.CategoryRepository;
@@ -30,9 +30,9 @@ public class CategoryService {
         this.categoryMapper=categoryMapper;
     }
 
-    public Category CreateCategory(CreateCategoryDto addCategoryDetails) {
+    public void createCategory(CreateCategoryDto addCategoryDetails) {
         Category category =  categoryMapper.createCategoryDtoToCategory(addCategoryDetails);
-        return categoryRepository.save(category);
+        categoryRepository.save(category);
     }
 
     public List<Category> getCategories(){
@@ -42,7 +42,7 @@ public class CategoryService {
     public CategoryDetailsDto getCategoryById(UUID id){
         return categoryMapper.categoryToCategoryDetailsDto(
                 categoryRepository.findById(id).orElseThrow(
-                        () -> new CategoryNotFoundException(id)
+                        () -> new FoundItCategoryNotFoundException(id)
                 )
         );
     }
