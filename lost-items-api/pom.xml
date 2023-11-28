@@ -23,7 +23,6 @@
         <springdoc.version>2.2.0</springdoc.version>
         <jackson.annotation.version>2.16.0-rc1</jackson.annotation.version>
         <maven.compiler.plugin.version>3.8.1</maven.compiler.plugin.version>
-        <org.mockito.version>5.3.1</org.mockito.version>
     </properties>
 
     <dependencies>
@@ -98,13 +97,6 @@
             <version>5.3.2</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-            <version>${org.mockito.version}</version>
-            <scope>test</scope>
-        </dependency>
-
 
     </dependencies>
 
