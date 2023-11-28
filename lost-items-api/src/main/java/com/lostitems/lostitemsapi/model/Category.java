@@ -14,6 +14,7 @@ import jakarta.persistence.Table;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -43,13 +44,28 @@ public class Category {
             cascade = CascadeType.ALL,
             mappedBy = "parentCategory"
     )
-    private List<Category> childrenCategories;
+    private Set<Category> childrenCategories;
 
     @ManyToOne(
             targetEntity = Category.class,
             fetch = FetchType.LAZY,
             optional = false
     )
-    @JoinColumn(name = "\"parentCategoryId\"", nullable=false)
+    @JoinColumn(name = "\"parentCategoryId\"")
     private Category parentCategory;
+
+    @Override
+    public boolean  equals (Object object) {
+        boolean result = false;
+        if (object == null || object.getClass() != getClass()) {
+            result = false;
+        } else {
+            Category category = (Category) object;
+            if (this.name == category.getName() && this.parentCategory.id == category.getParentCategory().getId()) {
+                result = true;
+            }
+        }
+        return result;
+    }
 }
+

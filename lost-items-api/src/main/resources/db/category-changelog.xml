@@ -14,7 +14,7 @@
                 <constraints nullable="false" notNullConstraintName="category-nn"/>
             </column>
             <column name="parentCategoryId" type="UUID">
-                <constraints nullable="false" references="categories(id)" foreignKeyName="parent-category-fk"/>
+                <constraints nullable="true" references="categories(id)" foreignKeyName="parent-category-fk"/>
             </column>
         </createTable>
     </changeSet>
