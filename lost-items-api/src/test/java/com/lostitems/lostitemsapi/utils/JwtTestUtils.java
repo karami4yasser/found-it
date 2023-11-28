@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class JwtTestUtils {
 
     public static final String INVALID_TOKEN = "Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.HNDYOqz1M_KHLKZhlCFwTK6kSC2A39Gk3hxOa3oHq9DIJxYak37tma8Bq9vBy_MpFZIMwX9z3OOIqHQEQAXulg";
-    public static final String DUMMY_TOKEN = "Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIrMjEyNjAyMzk0Mzg3IiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJ1c2VySWQiOiIwZWJhY2FiYy04M2ZhLTExZWUtYjk2Mi0wMjQyYWMxMjAwMDIifQ.2Uv1UYTG_AIXOu0pSf8WlbWRnw62iDGRIpEqfBgK_zMEK96NBJHkExpeL4jZxBWcMRDZVo6-34R0Otn1TzD8ZQ";
+    public static final String DUMMY_TOKEN = "Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIrMjEyNjAyMzk0Mzg3IiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJ1c2VySWQiOiIwZWJhY2FiYy04M2ZhLTExZWUtYjk2Mi0wMjQyYWMxMjAwMDIiLCJzY29wZSI6IkJFTkVGSUNJQVJZIn0.WDcbepag8jrhtg6ab7foruTPNjY1ulDJUcQrUoJyKSpcdjUkXUAlFSu0JVn9OqOBsEQc_k5cVqtspRSS1Zjlcw";
     public static final String DUMMY_USER_ID = "0ebacabc-83fa-11ee-b962-0242ac120002";
 
     public static void validateTokens(Map<String, String> tokens,
