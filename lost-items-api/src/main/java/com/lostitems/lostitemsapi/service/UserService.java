@@ -10,6 +10,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 @AllArgsConstructor
 public class UserService {
@@ -33,6 +35,12 @@ public class UserService {
 
     public User findUserByPhoneOrEmail(String emailOrPhone){
         return userRepository.findUserByEmailOrPhone(emailOrPhone).orElseThrow(
+                FoundItUserNotFoundException::new
+        );
+    }
+
+    public User findUserById(UUID id){
+        return userRepository.findById(id).orElseThrow(
                 FoundItUserNotFoundException::new
         );
     }
