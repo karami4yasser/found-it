@@ -15,7 +15,7 @@ import java.time.Instant;
 @RestController
 public class SecurityControllerAdvice {
     @ExceptionHandler(AuthenticationException.class)
-    public final ResponseEntity<FoundItExceptionResponse> handleMovieNotFoundException(
+    public final ResponseEntity<FoundItExceptionResponse> handleAuthenticationException(
             AuthenticationException ex,
             WebRequest _request) {
         return new ResponseEntity<>(
