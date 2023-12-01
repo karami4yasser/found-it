@@ -29,17 +29,14 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import javax.crypto.spec.SecretKeySpec;
 
 @Configuration
-//@EnableWebSecurity
-//@EnableMethodSecurity
+@EnableWebSecurity
+@EnableMethodSecurity
 public class UserSecurityConfiguration {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
-    /*
-    Not needed for now
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
@@ -79,5 +76,4 @@ public class UserSecurityConfiguration {
         source.registerCorsConfiguration("/**", corsConfiguration);
         return source;
     }
-     */
 }
