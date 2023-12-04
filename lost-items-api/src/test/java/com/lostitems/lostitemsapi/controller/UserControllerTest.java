@@ -23,6 +23,8 @@ import static org.junit.jupiter.api.Assertions.*;
 class UserControllerTest extends BaseControllerTest{
 
     private final UserService userService;
+    
+    private final String USER_CONTEXT_PATH = CONTEXT_PATH + "/users";
 
     @Autowired
     public UserControllerTest(UserService userService) {
@@ -45,7 +47,7 @@ class UserControllerTest extends BaseControllerTest{
                 .contentType("application/json")
                 .body(request)
                 .when()
-                .post(CONTEXT_PATH)
+                .post(USER_CONTEXT_PATH)
                 .then()
                 .statusCode(201);
 
@@ -75,7 +77,7 @@ class UserControllerTest extends BaseControllerTest{
                 .contentType("application/json")
                 .body(request)
                 .when()
-                .post(CONTEXT_PATH)
+                .post(USER_CONTEXT_PATH)
                 .then()
                 .statusCode(400)
                 .and()
@@ -113,7 +115,7 @@ class UserControllerTest extends BaseControllerTest{
                 .contentType("application/json")
                 .body(request)
                 .when()
-                .post(CONTEXT_PATH)
+                .post(USER_CONTEXT_PATH)
                 .then()
                 .statusCode(409)
                 .and()

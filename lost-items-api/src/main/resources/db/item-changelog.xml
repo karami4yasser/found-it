@@ -6,7 +6,6 @@
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.24.xsd"
 >
     <changeSet id="create-items-table" author="Mimoun Ghordou">
-        <sql>CREATE TYPE ITEM_TYPE AS ENUM ('LOST','FOUND')</sql>
         <createTable tableName="items">
             <column name="id" type="UUID">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="items-pk"/>
@@ -16,7 +15,7 @@
             <column name="postDate" type="DATE">
                 <constraints nullable="false" notNullConstraintName="items-postdate-nn"/>
             </column>
-            <column name="type" type="ITEM_TYPE">
+            <column name="type" type="VARCHAR(255)">
                 <constraints nullable="false" notNullConstraintName="items-type-nn"/>
             </column>
             <column name="title" type="VARCHAR(255)">
@@ -24,10 +23,10 @@
             </column>
             <column name="description" type="VARCHAR(4095)"/>
             <column name="photo" type="bytea"/>
-            <column name="longitude" type="VARCHAR(255)">
+            <column name="longitude" type="double">
                 <constraints nullable="false" notNullConstraintName="items-longitude-nn"/>
             </column>
-            <column name="latitude" type="VARCHAR(255)">
+            <column name="latitude" type="double">
                 <constraints nullable="false" notNullConstraintName="items-latitude-nn"/>
             </column>
             <column name="returned" type="BOOLEAN"/>
