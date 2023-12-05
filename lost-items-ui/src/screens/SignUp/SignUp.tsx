@@ -37,8 +37,6 @@ export default function SignUp() {
     const [PasswordHasError, setPasswordHasError] = useState(false);
 
     const [showPassword, setShowPassword] = useState(false);
-    const [isWasher, setIsWasher] = useState(false);
-    const toggleSwitch = () => setIsWasher(previousState => !previousState);
     const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
     const currentUser = useAuth();
     const togglePasswordVisibility = () => {
@@ -161,16 +159,6 @@ export default function SignUp() {
                             type={"default"}
                             hasError={PasswordHasError}
                         />
-                        <View style={{ flexDirection: "row", alignItems: "center" }}>
-                            <Text>Sign Up as Washer Partner</Text>
-                            <Switch
-                                trackColor={{ false: COLORS.grayDark, true: COLORS.secondary }}
-                                thumbColor={isWasher ? COLORS.primary : COLORS.white}
-                                ios_backgroundColor={COLORS.grayDark}
-                                onValueChange={toggleSwitch}
-                                value={isWasher}
-                            />
-                        </View>
                         <View style={SignUpStyle.SignInButtonContainer}>
                             <RoundedButton name="Sign Up" handleFunction={handleSignUp} />
                         </View>
