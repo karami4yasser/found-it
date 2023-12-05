@@ -9,5 +9,6 @@
     <include file="category-changelog.xml" relativeToChangelogFile="true"/>
     <include file="feedback-changelog.xml" relativeToChangelogFile="true"/>
     <include file="item-changelog.xml" relativeToChangelogFile="true"/>
+    <include file="utils-changelog.xml" relativeToChangelogFile="true"/>
     <include file="init-data-changelog.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

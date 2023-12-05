@@ -6,7 +6,7 @@ import io.restassured.RestAssured;
 
 
 public class BaseControllerTest extends BaseTest {
-    protected final String CONTEXT_PATH = "api/users";
+    protected final String CONTEXT_PATH = "api";
     protected final ObjectMapper mapper = new ObjectMapper();
 
     static {

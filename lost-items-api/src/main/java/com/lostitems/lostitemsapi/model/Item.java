@@ -1,21 +1,8 @@
 package com.lostitems.lostitemsapi.model;
 
 import com.lostitems.lostitemsapi.enumeration.ItemType;
-import com.lostitems.lostitemsapi.utils.Localisation;
-import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
-import org.hibernate.annotations.ColumnTransformer;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -39,7 +26,6 @@ public class Item {
     @Column(name = "\"returnDate\"")
     private LocalDate returnDate;
 
-    @ColumnTransformer(write="?::founditschema.ITEM_TYPE")
     @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false)
     private ItemType type;
@@ -53,8 +39,11 @@ public class Item {
     @Column(name = "photo", columnDefinition = "bytea")
     private byte[] photo;
 
-    @Embedded
-    private Localisation localisation;
+    @Column(name = "longitude", nullable = false)
+    private double longitude;
+
+    @Column(name = "latitude", nullable = false)
+    private double latitude;
 
     @Column(name = "returned")
     private Boolean returned;
