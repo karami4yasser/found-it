@@ -20,7 +20,7 @@ const SignUpStyle = StyleSheet.create({
     },
     formFullName:{
         flexDirection: "row", 
-        paddingHorizontal: 100
+        paddingHorizontal: "28%"
     },
     SignInButtonContainer: {
         flexDirection: "row",
