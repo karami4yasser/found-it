@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Map;
 
 @RestController
-@RequestMapping("auth")
+@RequestMapping("/api/auth")
 @AllArgsConstructor
 @CrossOrigin(originPatterns = "*")
 public class SecurityController {
@@ -39,7 +39,7 @@ public class SecurityController {
 
 
     @PostMapping("/refreshToken")
-    @PreAuthorize("permitAll()")
+    @PreAuthorize("isAuthenticated()")
     public Map<String, String> refreshToken(
             @RequestHeader("Authorization") String jwt
     ) {
