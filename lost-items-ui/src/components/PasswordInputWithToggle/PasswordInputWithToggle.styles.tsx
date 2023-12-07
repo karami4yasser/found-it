@@ -4,9 +4,9 @@ import { COLORS } from "../../styles/theme";
 
 const PasswordInputWithToggleStyle = StyleSheet.create({
   inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '80%',
+    flexDirection: "row",
+    alignItems: "center",
+    width: "80%",
     height: 40,
     borderColor: COLORS.primary,
     borderWidth: 1,
@@ -14,13 +14,12 @@ const PasswordInputWithToggleStyle = StyleSheet.create({
     marginBottom: 10,
     paddingLeft: 8,
     paddingRight: 8,
-    marginTop: 10
-  }
-  ,
+    marginTop: 10,
+  },
   inputError: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '80%',
+    flexDirection: "row",
+    alignItems: "center",
+    width: "80%",
     height: 40,
     borderColor: COLORS.red,
     borderStyle: "dotted",
@@ -30,8 +29,8 @@ const PasswordInputWithToggleStyle = StyleSheet.create({
     marginHorizontal: "10%",
     paddingLeft: 8,
     paddingRight: 8,
-    marginTop: 10
-  }
+    marginTop: 10,
+  },
 });
 
 export default PasswordInputWithToggleStyle;
