@@ -39,4 +39,14 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="add-item-range" author="Mimoun Ghordou">
+        <addColumn tableName="items">
+            <column name="range" type="double" defaultValue="0"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="change-photo-to-accept-link" author="Mimoun Ghordou">
+        <modifyDataType tableName="items" columnName="photo" newDataType="TEXT"/>
+    </changeSet>
+
 </databaseChangeLog>

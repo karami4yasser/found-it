@@ -1,18 +1,24 @@
 package com.lostitems.lostitemsapi.service;
 
 
+import com.lostitems.lostitemsapi.dto.item.CreateItemRequestDto;
 import com.lostitems.lostitemsapi.dto.item.ItemOverviewDto;
 import com.lostitems.lostitemsapi.enumeration.ItemType;
 import com.lostitems.lostitemsapi.exception.FoundItCategoryNotFoundException;
+import com.lostitems.lostitemsapi.exception.FoundItInvalidItemInputDataException;
+import com.lostitems.lostitemsapi.exception.FoundItNotPremiumException;
 import com.lostitems.lostitemsapi.utils.BaseTest;
+import com.lostitems.lostitemsapi.utils.JwtTestUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -36,7 +42,7 @@ public class ItemServiceTest extends BaseTest {
                 Optional.empty(),
                 Optional.empty()
         );
-        assertEquals(3,items.size());
+        assertEquals(4, items.size());
     }
 
     @Test
@@ -73,12 +79,11 @@ public class ItemServiceTest extends BaseTest {
 
     @Test
     void itemServiceTest_getItems_CategoryDoesNotExist() {
-        UUID random =UUID.randomUUID();
         FoundItCategoryNotFoundException exception =
                 assertThrows(
                         FoundItCategoryNotFoundException.class, () -> {
                             itemService.getItems(
-                                    Optional.of(random),
+                                    Optional.of("non existent category"),
                                     Optional.empty(),
                                     Optional.empty(),
                                     Optional.empty(),
@@ -89,7 +94,164 @@ public class ItemServiceTest extends BaseTest {
                                     Optional.empty()
                             );
                         });
-        assertEquals("Category with id "+random+" not found",exception.getMessage());
+        assertEquals("Category with name 'non existent category' not found",exception.getMessage());
     }
 
+    @Test
+    void itemServiceTest_getItems_rangeNotReached() {
+        List<ItemOverviewDto> items = itemService.getItems(
+                Optional.empty(),
+                Optional.empty(),
+                Optional.empty(),
+                Optional.empty(),
+                Optional.empty(),
+                Optional.of(33.533845),
+                Optional.of(-7.648460),
+                Optional.of(200.0),
+                Optional.empty()
+        );
+        assertEquals(0, items.size());
+    }
+
+    @Test
+    void itemServiceTest_getItems_rangeReached() {
+        List<ItemOverviewDto> items = itemService.getItems(
+                Optional.empty(),
+                Optional.empty(),
+                Optional.empty(),
+                Optional.empty(),
+                Optional.empty(),
+                Optional.of(33.533845),
+                Optional.of(-7.648460),
+                Optional.of(210.0),
+                Optional.empty()
+        );
+        assertEquals(1, items.size());
+        assertEquals(UUID.fromString("a09959e6-9451-11ee-b9d1-0242ac120002"), items.get(0).id());
+    }
+
+    @Test
+    public void testCreateItem_rangeMoreThanAllowed() {
+        assertThrows(FoundItNotPremiumException.class, () -> {
+            itemService.createItem(
+                    new CreateItemRequestDto(
+                            null,
+                            null,
+                            null,
+                            ItemType.FOUND,
+                            "test",
+                            "test",
+                            33.533845,
+                            -7.648460,
+                            210.0
+                    ),
+                    JwtTestUtils.DUMMY_TOKEN
+            );
+        });
+    }
+
+    @Test
+    public void testCreateItem_categoryDoesNotExist() {
+        FoundItCategoryNotFoundException exception = assertThrows(FoundItCategoryNotFoundException.class, () -> {
+            itemService.createItem(
+                    new CreateItemRequestDto(
+                            null,
+                            "non existent category",
+                            null,
+                            ItemType.FOUND,
+                            "test",
+                            "test",
+                            33.533845,
+                            -7.648460,
+                            150.0
+                    ),
+                    JwtTestUtils.DUMMY_TOKEN
+            );
+        });
+
+        assertEquals("Category with name 'non existent category' not found", exception.getMessage());
+    }
+
+    @Test
+    public void testCreateItem_invalidLatitude() {
+        FoundItInvalidItemInputDataException exception = assertThrows(FoundItInvalidItemInputDataException.class, () -> {
+            itemService.createItem(
+                    new CreateItemRequestDto(
+                            null,
+                            null,
+                            null,
+                            ItemType.FOUND,
+                            "test",
+                            "test",
+                            100,
+                            -100,
+                            150.0
+                    ),
+                    JwtTestUtils.DUMMY_TOKEN
+            );
+        });
+
+        assertEquals("Input data is not valid : Latitude is not valid", exception.getMessage());
+    }
+
+    @Test
+    public void testCreateItem_invalidLongitude() {
+        FoundItInvalidItemInputDataException exception = assertThrows(FoundItInvalidItemInputDataException.class, () -> {
+            itemService.createItem(
+                    new CreateItemRequestDto(
+                            null,
+                            null,
+                            null,
+                            ItemType.FOUND,
+                            "test",
+                            "test",
+                            190,
+                            -5,
+                            150.0
+                    ),
+                    JwtTestUtils.DUMMY_TOKEN
+            );
+        });
+
+        assertEquals("Input data is not valid : Longitude is not valid", exception.getMessage());
+    }
+
+    @Test
+    public void testCreateItem_validValues() {
+        assertDoesNotThrow(() -> {
+            itemService.createItem(
+                    new CreateItemRequestDto(
+                            LocalDate.of(2021, 1, 1),
+                            "categoryItem",
+                            null,
+                            ItemType.LOST,
+                            "test",
+                            "test",
+                            100,
+                            -5,
+                            150.0
+                    ),
+                    JwtTestUtils.DUMMY_TOKEN
+            );
+
+            List<ItemOverviewDto> items = itemService.getItems(
+                    Optional.empty(),
+                    Optional.of(ItemType.LOST),
+                    Optional.of("test"),
+                    Optional.empty(),
+                    Optional.empty(),
+                    Optional.empty(),
+                    Optional.empty(),
+                    Optional.empty(),
+                    Optional.empty()
+            );
+
+            assertEquals(1, items.size());
+            assertEquals("test", items.get(0).title());
+            assertEquals(LocalDate.of(2021, 1, 1), items.get(0).date());
+
+            // cleanup in order to not affect other tests
+            itemService.deleteItem(items.get(0).id());
+        });
+    }
 }

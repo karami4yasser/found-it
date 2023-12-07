@@ -13,7 +13,7 @@ public class DbFunctionsRegistration implements FunctionContributor {
 
         functionContributions.getFunctionRegistry().registerAlternateKey("founditschema.calculate_haversine_distance", "founditschema.calculate_haversine_distance");
 
-        functionContributions.getFunctionRegistry().registerPattern("founditschema.calculate_haversine_distance", "founditschema.calculate_haversine_distance(?1,?2,?3,?4)", functionContributions.getTypeConfiguration().getBasicTypeRegistry().resolve(StandardBasicTypes.DOUBLE));
+        functionContributions.getFunctionRegistry().registerPattern("founditschema.calculate_haversine_distance", "founditschema.calculate_haversine_distance(?1, ?2, ?3, ?4, ?5)", functionContributions.getTypeConfiguration().getBasicTypeRegistry().resolve(StandardBasicTypes.DOUBLE));
 
     }
 }

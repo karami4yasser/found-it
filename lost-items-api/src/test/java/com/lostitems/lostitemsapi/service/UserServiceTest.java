@@ -32,7 +32,7 @@ class UserServiceTest extends BaseTest {
                             "pass"
                     ));
                 });
-        assertEquals("User with email or phone number '+212602394387' already exists", exception.getMessage());
+        assertEquals("User with phone number '+212602394387' already exists", exception.getMessage());
     }
 
     @Test
@@ -57,7 +57,7 @@ class UserServiceTest extends BaseTest {
                 assertThrows(FoundItUserAlreadyExistException.class, () -> {
                     userService.checkPhoneOrEmailDoesNotExists("+212602394387");
                 });
-        assertEquals("User with email or phone number '+212602394387' already exists", exception.getMessage());
+        assertEquals("User with phone number '+212602394387' already exists", exception.getMessage());
         assertEquals(HttpStatusCode.valueOf(409), exception.getStatus());
     }
 

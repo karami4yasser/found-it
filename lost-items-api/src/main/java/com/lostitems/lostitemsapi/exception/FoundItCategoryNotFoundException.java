@@ -7,11 +7,11 @@ import java.util.UUID;
 
 public class FoundItCategoryNotFoundException extends FoundItException{
     public FoundItCategoryNotFoundException(UUID id) {
-        super("Category with id "+id.toString()+" not found", HttpStatusCode.valueOf(404));
+        super("Category with id '"+id.toString()+"' not found", HttpStatusCode.valueOf(404));
     }
 
     public FoundItCategoryNotFoundException(String name) {
-        super("Category with name "+name+" not found", HttpStatusCode.valueOf(404));
+        super("Category with name '"+name+"' not found", HttpStatusCode.valueOf(404));
     }
 
     public FoundItCategoryNotFoundException() {

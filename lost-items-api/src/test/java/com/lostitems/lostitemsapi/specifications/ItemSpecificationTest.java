@@ -97,8 +97,8 @@ public class ItemSpecificationTest extends BaseTest {
 
     @Test
     void itemSpecificationTest_FindItemsByDateRange_EXIST() {
-        List<Item> itemsByDateRange = itemRepository.findAll(itemSpecifications.timeFilter(Optional.of(LocalDate.of(2022, 7, 20)),Optional.of(LocalDate.of(2022, 7, 27))));
-        assertEquals(1, itemsByDateRange.size());
+        List<Item> itemsByDateRange = itemRepository.findAll(itemSpecifications.timeFilter(Optional.of(LocalDate.of(2022, 7, 20)),Optional.of(LocalDate.of(2023, 7, 27))));
+        assertEquals(2, itemsByDateRange.size());
     }
 
     @Test

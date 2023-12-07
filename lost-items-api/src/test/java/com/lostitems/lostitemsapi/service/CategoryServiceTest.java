@@ -72,6 +72,6 @@ public class CategoryServiceTest extends BaseTest {
                             parentId
                     ));
                 });
-        assertEquals("Category with id "+parentId+" not found", exception.getMessage());
+        assertEquals("Category with id '"+parentId+"' not found", exception.getMessage());
     }
 }

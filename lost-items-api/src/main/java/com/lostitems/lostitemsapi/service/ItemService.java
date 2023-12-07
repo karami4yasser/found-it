@@ -1,19 +1,25 @@
 package com.lostitems.lostitemsapi.service;
 
 
+import com.lostitems.lostitemsapi.dto.item.CreateItemRequestDto;
 import com.lostitems.lostitemsapi.dto.item.ItemOverviewDto;
 import com.lostitems.lostitemsapi.enumeration.ItemType;
+import com.lostitems.lostitemsapi.exception.FoundItInvalidItemInputDataException;
+import com.lostitems.lostitemsapi.exception.FoundItItemNotFoundException;
+import com.lostitems.lostitemsapi.exception.FoundItNotPremiumException;
 import com.lostitems.lostitemsapi.mapper.ItemMapper;
 import com.lostitems.lostitemsapi.model.Category;
 import com.lostitems.lostitemsapi.model.Item;
 import com.lostitems.lostitemsapi.repository.ItemRepository;
 import com.lostitems.lostitemsapi.repository.specification.ItemSpecifications;
+import com.lostitems.lostitemsapi.security.JwtAuthUtils;
+import com.lostitems.lostitemsapi.utils.HaversineUtils;
 import lombok.AllArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -24,37 +30,47 @@ import static com.lostitems.lostitemsapi.repository.criteria.SpecificationUtils.
 
 
 @Service
+@Validated
 @AllArgsConstructor
 public class ItemService {
-    private static final Logger LOG = LoggerFactory.getLogger(ItemService.class);
 
     private final ItemRepository itemRepository;
-
     private final ItemSpecifications itemSpecifications;
-
     private final CategoryService categoryService;
-
     private final ItemMapper itemMapper;
+    private final JwtDecoder jwtDecoder;
+    private final UserService userService;
 
     public List<ItemOverviewDto> getItems(
-            Optional<UUID> categoryId,
+            Optional<String> categoryName,
             Optional<ItemType> itemType,
             Optional<String> text,
             Optional<LocalDate> dateLeft,
             Optional<LocalDate> dateRight,
             Optional<Double> latitude,
             Optional<Double> longitude,
-            Optional<Double> distance,
+            Optional<Double> range,
             Optional<Boolean> returned
     ) {
+        // TODO: add tests for these three exceptions
+        if (range.isPresent() && range.get() > HaversineUtils.MAX_ITEM_SEARCH_RANGE) {
+            throw new FoundItNotPremiumException();
+        }
+
+        if (longitude.isPresent() && (longitude.get() > HaversineUtils.LONGITUDE_BOUNDARY || longitude.get() < -HaversineUtils.LONGITUDE_BOUNDARY)) {
+            throw new FoundItInvalidItemInputDataException("Longitude is not valid");
+        }
+
+        if (latitude.isPresent() && (latitude.get() > HaversineUtils.LATITUDE_BOUNDARY || latitude.get() < -HaversineUtils.LATITUDE_BOUNDARY)) {
+            throw new FoundItInvalidItemInputDataException("Latitude is not valid");
+        }
 
         Optional<Category> category = Optional.empty();
-        if (categoryId.isPresent())
+        if (categoryName.isPresent())
         {
-            category = Optional.of(categoryService.findCategoryById(categoryId.get()));
+            category = Optional.of(categoryService.findCategoryByName(categoryName.get()));
         }
-        LOG.info("Found Items filtered");
-        Specification<Item> querySpec = getSpec(category, itemType, text, dateLeft, dateRight,latitude,longitude,distance,returned);
+        Specification<Item> querySpec = getSpec(category, itemType, text, dateLeft, dateRight, latitude, longitude, range, returned);
 
         return itemRepository.findAll(querySpec, Sort.by(Sort.Direction.DESC, "postDate")).stream().map(
                 (itemMapper::itemToItemOverviewDto)
@@ -69,20 +85,54 @@ public class ItemService {
             Optional<LocalDate> dateRight,
             Optional<Double> latitude,
             Optional<Double> longitude,
-            Optional<Double> distance,
+            Optional<Double> range,
             Optional<Boolean> returned
     ) {
-        Specification<Item> spec = and(
+        return and(
                 itemSpecifications.categoryFilter(category),
                 itemSpecifications.typeFilter(itemType),
                 itemSpecifications.itemsTextContains(text,false),
                 itemSpecifications.timeFilter(dateLeft, dateRight),
-                itemSpecifications.nearLocation(latitude, longitude, distance),
+                itemSpecifications.nearLocation(latitude, longitude, range),
                 itemSpecifications.isReturned(returned)
         );
-
-        LOG.debug("Filtered items specification: {}.", spec);
-        return spec;
     }
 
+    public UUID createItem(CreateItemRequestDto createItemRequestDto, String token) {
+
+        JwtAuthUtils.checkTokenValidity(token);
+        UUID userId = JwtAuthUtils.getUserInfoFromToken(jwtDecoder, token).userId();
+
+        if (createItemRequestDto.range() > HaversineUtils.MAX_ITEM_POST_RANGE) {
+            throw new FoundItNotPremiumException();
+        }
+
+        if (createItemRequestDto.longitude() > HaversineUtils.LONGITUDE_BOUNDARY || createItemRequestDto.longitude() < -HaversineUtils.LONGITUDE_BOUNDARY) {
+            throw new FoundItInvalidItemInputDataException("Longitude is not valid");
+        }
+
+        if (createItemRequestDto.latitude() > HaversineUtils.LATITUDE_BOUNDARY || createItemRequestDto.latitude() < -HaversineUtils.LATITUDE_BOUNDARY) {
+            throw new FoundItInvalidItemInputDataException("Latitude is not valid");
+        }
+
+        Category category = null;
+        if (createItemRequestDto.categoryName() != null) {
+            category = categoryService.findCategoryByName(createItemRequestDto.categoryName());
+        }
+
+        Item itemToSave = itemMapper.createItemRequestDtoToItem(createItemRequestDto);
+        itemToSave.setPoster(userService.findUserById(userId));
+        itemToSave.setCategory(category);
+        itemToSave.setPostDate(LocalDate.now());
+        itemToSave.setDate(createItemRequestDto.date() != null ? createItemRequestDto.date() : itemToSave.getPostDate());
+
+        return itemRepository.save(itemToSave).getId();
+    }
+
+    public void deleteItem(UUID id) {
+        if (!itemRepository.existsById(id)) {
+            throw new FoundItItemNotFoundException();
+        }
+        itemRepository.deleteById(id);
+    }
 }

@@ -11,7 +11,7 @@ public record ItemOverviewDto(
         LocalDate postDate,
         ItemType type,
         String title,
-        Byte[] photo,
+        String photo,
         Boolean returned
 )
 { }
