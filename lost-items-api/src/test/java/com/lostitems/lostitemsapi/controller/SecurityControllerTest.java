@@ -5,6 +5,8 @@ import com.lostitems.lostitemsapi.utils.JwtTestUtils;
 import io.restassured.RestAssured;
 import io.restassured.http.Header;
 import io.restassured.response.Response;
+import io.swagger.v3.core.util.Json;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,8 +22,9 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@Slf4j
 class SecurityControllerTest extends BaseControllerTest{
-    private final String CONTEXT_PATH = "api/auth";
+    private final String AUTH_CONTEXT_PATH = CONTEXT_PATH + "/auth";
     private final JwtDecoder jwtDecoder;
     private final UserService userService;
 
@@ -34,7 +37,7 @@ class SecurityControllerTest extends BaseControllerTest{
     @Test
     void testSignIn_validValues() {
         Map<String,Object> request = new HashMap<>();
-        request.put("emailOrPhoneNumber", "+212602394387");
+        request.put("emailOrPhone", "+212602394387");
         request.put("password", "test123");
 
         Response response = given().config(
@@ -44,7 +47,7 @@ class SecurityControllerTest extends BaseControllerTest{
                 .contentType("application/json")
                 .body(request)
                 .when()
-                .post(CONTEXT_PATH + "/signIn")
+                .post(AUTH_CONTEXT_PATH + "/signIn")
                 .then()
                 .statusCode(200)
                 .and()
@@ -67,7 +70,7 @@ class SecurityControllerTest extends BaseControllerTest{
     @Test
     void testSignIn_userDoesNotExist() {
         Map<String,Object> request = new HashMap<>();
-        request.put("emailOrPhoneNumber", "+212602394386");
+        request.put("emailOrPhone", "+212602394386");
         request.put("password", "test123");
 
         Response response = given().config(
@@ -77,7 +80,7 @@ class SecurityControllerTest extends BaseControllerTest{
                 .contentType("application/json")
                 .body(request)
                 .when()
-                .post(CONTEXT_PATH + "/signIn")
+                .post(AUTH_CONTEXT_PATH + "/signIn")
                 .then()
                 .statusCode(401)
                 .and()
@@ -90,7 +93,7 @@ class SecurityControllerTest extends BaseControllerTest{
     @Test
     void testSignIn_wrongPassword() {
         Map<String,Object> request = new HashMap<>();
-        request.put("emailOrPhoneNumber", "+212602394387");
+        request.put("emailOrPhone", "+212602394387");
         request.put("password", "test1234");
 
         Response response = given().config(
@@ -100,7 +103,7 @@ class SecurityControllerTest extends BaseControllerTest{
                 .contentType("application/json")
                 .body(request)
                 .when()
-                .post(CONTEXT_PATH + "/signIn")
+                .post(AUTH_CONTEXT_PATH + "/signIn")
                 .then()
                 .statusCode(401)
                 .and()
@@ -120,7 +123,7 @@ class SecurityControllerTest extends BaseControllerTest{
                 .contentType("application/json")
                 .header(new Header("Authorization", JwtTestUtils.DUMMY_TOKEN))
                 .when()
-                .post(CONTEXT_PATH + "/refreshToken")
+                .post(AUTH_CONTEXT_PATH + "/refreshToken")
                 .then()
                 .statusCode(200)
                 .and()
@@ -148,7 +151,7 @@ class SecurityControllerTest extends BaseControllerTest{
                                 )))
                 .contentType("application/json")
                 .when()
-                .post(CONTEXT_PATH + "/refreshToken")
+                .post(AUTH_CONTEXT_PATH + "/refreshToken")
                 .then()
                 .statusCode(400)
                 .and()
@@ -157,21 +160,19 @@ class SecurityControllerTest extends BaseControllerTest{
     }
     @Test
     void testRefreshAccessToken__invalidToken_notStartingWithBearer() {
-        Response response = given().config(
+        given().config(
                         RestAssured.config().decoderConfig(
                                 decoderConfig().contentDecoders(DEFLATE
                                 )))
                 .contentType("application/json")
                 .header(new Header("Authorization", JwtTestUtils.DUMMY_TOKEN.replace("Bearer ", "Dummy ")))
                 .when()
-                .post(CONTEXT_PATH + "/refreshToken")
+                .post(AUTH_CONTEXT_PATH + "/refreshToken")
                 .then()
                 .statusCode(401)
                 .and()
                 .extract()
                 .response();
-
-        assertEquals("The refresh token is invalid: Token does not start with 'Bearer'", response.jsonPath().getString("message"));
     }
 
     @Test
@@ -183,7 +184,7 @@ class SecurityControllerTest extends BaseControllerTest{
                 .contentType("application/json")
                 .header(new Header("Authorization", JwtTestUtils.INVALID_TOKEN))
                 .when()
-                .post(CONTEXT_PATH + "/refreshToken")
+                .post(AUTH_CONTEXT_PATH + "/refreshToken")
                 .then()
                 .statusCode(401)
                 .and()

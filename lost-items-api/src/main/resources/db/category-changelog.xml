@@ -18,4 +18,8 @@
             </column>
         </createTable>
     </changeSet>
+
+    <changeSet id="make-category-name-unique" author="Mimoun Ghordou">
+        <addUniqueConstraint tableName="categories" columnNames="name" constraintName="categories-name-unique"/>
+    </changeSet>
 </databaseChangeLog>

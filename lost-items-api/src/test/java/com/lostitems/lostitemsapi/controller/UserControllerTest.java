@@ -123,7 +123,7 @@ class UserControllerTest extends BaseControllerTest{
                 .response();
 
         String error = response.jsonPath().getString("message");
-        assertEquals("User with email or phone number '+212602394387' already exists", error);
+        assertEquals("User with phone number '+212602394387' already exists", error);
 
         assertDoesNotThrow(() -> {
             User user = userService.findUserByPhoneOrEmail("+212602394387");

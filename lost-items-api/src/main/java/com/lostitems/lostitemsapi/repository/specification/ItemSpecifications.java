@@ -65,17 +65,17 @@ public class ItemSpecifications {
                 .orElse(trueSpec());
     }
     
-    public Specification<Item> nearLocation( Optional<Double> inputLatitudeOps, Optional<Double>  inputLongitudeOps, Optional<Double> distanceInMOps) {
-        if (inputLatitudeOps.isEmpty() || inputLongitudeOps.isEmpty() || distanceInMOps.isEmpty()) {
+    public Specification<Item> nearLocation( Optional<Double> inputLatitudeOps, Optional<Double>  inputLongitudeOps, Optional<Double> rangeInMOps) {
+        if (inputLatitudeOps.isEmpty() || inputLongitudeOps.isEmpty() || rangeInMOps.isEmpty()) {
             return trueSpec();
         }
         double inputLatitude = inputLatitudeOps.get();
         double inputLongitude = inputLongitudeOps.get();
-        double distanceInM = distanceInMOps.get();
+        double distanceInM = rangeInMOps.get();
         return (Root<Item> root, CriteriaQuery<?> query, CriteriaBuilder builder) -> {
-            Expression<Double> distance = builder.function("founditschema.calculate_haversine_distance", Double.class,
-                    root.get(Item_.latitude),root.get(Item_.longitude), builder.literal(inputLatitude).as(Double.class), builder.literal(inputLongitude).as(Double.class));
-            return builder.lessThanOrEqualTo(distance,distanceInM);
+            Expression<Double> distanceBetweenTwoPoints = builder.function("founditschema.calculate_haversine_distance", Double.class,
+                    root.get(Item_.range), root.get(Item_.latitude), root.get(Item_.longitude), builder.literal(inputLatitude).as(Double.class), builder.literal(inputLongitude).as(Double.class));
+            return builder.lessThanOrEqualTo(distanceBetweenTwoPoints, distanceInM);
         };
     }
 }

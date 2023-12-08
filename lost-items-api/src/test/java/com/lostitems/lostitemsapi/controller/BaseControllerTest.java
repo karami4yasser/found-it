@@ -6,8 +6,7 @@ import io.restassured.RestAssured;
 
 
 public class BaseControllerTest extends BaseTest {
-    protected final String CONTEXT_PATH = "api";
-    protected final ObjectMapper mapper = new ObjectMapper();
+    protected final String CONTEXT_PATH = "/api";
 
     static {
         RestAssured.baseURI = "http://127.0.0.1";

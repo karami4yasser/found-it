@@ -36,8 +36,8 @@ public class Item {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "photo", columnDefinition = "bytea")
-    private byte[] photo;
+    @Column(name = "photo")
+    private String photo;
 
     @Column(name = "longitude", nullable = false)
     private double longitude;
@@ -63,4 +63,7 @@ public class Item {
     )
     @JoinColumn(name = "\"posterId\"", nullable = false)
     private User poster;
+
+    @Column(name = "range")
+    private double range = 0;
 }
