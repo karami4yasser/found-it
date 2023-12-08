@@ -53,8 +53,14 @@ public class ItemService {
             Optional<Boolean> returned
     ) {
         // TODO: add tests for these three exceptions
-        if (range.isPresent() && range.get() > HaversineUtils.MAX_ITEM_SEARCH_RANGE) {
+        if (itemType.isPresent() && itemType.get().equals(ItemType.LOST)
+                && range.isPresent() && range.get() > HaversineUtils.MAX_NON_PREMIUM_ITEM_SEARCH_RANGE) {
             throw new FoundItNotPremiumException();
+        }
+
+        if (itemType.isPresent() && itemType.get().equals(ItemType.FOUND)
+                && range.isPresent() && range.get() > HaversineUtils.MAX_ITEM_SEARCH_RANGE) {
+            throw new FoundItInvalidItemInputDataException("Range is too big");
         }
 
         if (longitude.isPresent() && (longitude.get() > HaversineUtils.LONGITUDE_BOUNDARY || longitude.get() < -HaversineUtils.LONGITUDE_BOUNDARY)) {
@@ -103,8 +109,14 @@ public class ItemService {
         JwtAuthUtils.checkTokenValidity(token);
         UUID userId = JwtAuthUtils.getUserInfoFromToken(jwtDecoder, token).userId();
 
-        if (createItemRequestDto.range() > HaversineUtils.MAX_ITEM_POST_RANGE) {
+        if (createItemRequestDto.type().equals(ItemType.FOUND) &&
+                createItemRequestDto.range() > HaversineUtils.MAX_NON_PREMIUM_ITEM_POST_RANGE) {
             throw new FoundItNotPremiumException();
+        }
+
+        if (createItemRequestDto.type().equals(ItemType.LOST) &&
+                createItemRequestDto.range() > HaversineUtils.MAX_ITEM_POST_RANGE) {
+            throw new FoundItInvalidItemInputDataException("Range is too big");
         }
 
         if (createItemRequestDto.longitude() > HaversineUtils.LONGITUDE_BOUNDARY || createItemRequestDto.longitude() < -HaversineUtils.LONGITUDE_BOUNDARY) {
