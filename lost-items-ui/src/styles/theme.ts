@@ -1,7 +1,7 @@
 const COLORS = {
   primary: "#776B5D",
   secondary: "#B0A695",
-  lightSecondary:"#EBE3D5",
+  lightSecondary: "#EBE3D5",
   tertiary: "#6B240C",
 
   grayLight: "#E5E7EB",
@@ -11,13 +11,25 @@ const COLORS = {
   white: "#FFFFFF",
   lightWhite: "#F6F6F6",
 
-  green:"#34A853",
-  red:"#EB4335",
-  golden:"#FFA800"
+  green: "#34A853",
+  red: "#EB4335",
+  golden: "#FFA800",
 };
-type FONT_WEIGHT_VALUES = "100" | "200" | "300" | "400" | "500" | "600" | "700" | "800" | "900" | "normal" | "bold" | undefined;
+type FONT_WEIGHT_VALUES =
+  | "100"
+  | "200"
+  | "300"
+  | "400"
+  | "500"
+  | "600"
+  | "700"
+  | "800"
+  | "900"
+  | "normal"
+  | "bold"
+  | undefined;
 
-const FONT_WEIGHT: {[key: string]: FONT_WEIGHT_VALUES} = {
+const FONT_WEIGHT: { [key: string]: FONT_WEIGHT_VALUES } = {
   Thin: "100",
   Ultra_Light: "200",
   Light: "300",
@@ -27,7 +39,6 @@ const FONT_WEIGHT: {[key: string]: FONT_WEIGHT_VALUES} = {
   Bold: "700",
   Heavy: "800",
   Black: "900",
-
 };
 const SIZES = {
   xSmall: 10,
