@@ -2,6 +2,7 @@ package com.lostitems.lostitemsapi.service;
 
 
 import com.lostitems.lostitemsapi.dto.item.CreateItemRequestDto;
+import com.lostitems.lostitemsapi.dto.item.ItemOverviewCollection;
 import com.lostitems.lostitemsapi.dto.item.ItemOverviewDto;
 import com.lostitems.lostitemsapi.enumeration.ItemType;
 import com.lostitems.lostitemsapi.exception.FoundItInvalidItemInputDataException;
@@ -15,6 +16,9 @@ import com.lostitems.lostitemsapi.repository.specification.ItemSpecifications;
 import com.lostitems.lostitemsapi.security.JwtAuthUtils;
 import com.lostitems.lostitemsapi.utils.HaversineUtils;
 import lombok.AllArgsConstructor;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
@@ -41,7 +45,7 @@ public class ItemService {
     private final JwtDecoder jwtDecoder;
     private final UserService userService;
 
-    public List<ItemOverviewDto> getItems(
+    public ItemOverviewCollection getItems(
             Optional<String> categoryName,
             Optional<ItemType> itemType,
             Optional<String> text,
@@ -50,7 +54,8 @@ public class ItemService {
             Optional<Double> latitude,
             Optional<Double> longitude,
             Optional<Double> range,
-            Optional<Boolean> returned
+            Optional<Boolean> returned,
+            Pageable pageable
     ) {
         // TODO: add tests for these three exceptions
         if (itemType.isPresent() && itemType.get().equals(ItemType.LOST)
@@ -78,9 +83,12 @@ public class ItemService {
         }
         Specification<Item> querySpec = getSpec(category, itemType, text, dateLeft, dateRight, latitude, longitude, range, returned);
 
-        return itemRepository.findAll(querySpec, Sort.by(Sort.Direction.DESC, "postDate")).stream().map(
-                (itemMapper::itemToItemOverviewDto)
-        ).toList();
+        Page<Item> items = itemRepository.findAll(querySpec,pageable);
+
+        return new ItemOverviewCollection(
+                items,
+                itemMapper::itemToItemOverviewDto
+        );
     }
 
     private Specification<Item> getSpec(
