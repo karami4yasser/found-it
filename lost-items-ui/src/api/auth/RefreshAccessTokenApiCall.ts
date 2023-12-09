@@ -3,7 +3,7 @@ import axios from "axios";
 const RefreshAccessTokenApiCall = async (refreshToken: string) => {
   const response = await axios
     .post(
-      process.env.EXPO_PUBLIC_API_BASE_URL_USER + "/api/auth/refreshToken",
+      process.env.EXPO_PUBLIC_API_BASE_URL + "/api/auth/refreshToken",
       {},
       {
         headers: {

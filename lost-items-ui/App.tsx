@@ -9,7 +9,7 @@ import SignIn from "./src/screens/SignIn/SignIn";
 import SignUp from "./src/screens/SignUp/SignUp";
 import Loading from "./src/screens/Loading/Loading";
 import { SafeAreaView } from "react-native-safe-area-context";
-import ProfileDummy from "./src/screens/ProfileDummy/ProfileDummy";
+import Feed from "./src/screens/Feed/Feed";
 
 export default function App() {
   const Stack = createNativeStackNavigator();
@@ -32,8 +32,8 @@ export default function App() {
               />
               <Stack.Screen name="Loading" component={Loading} />
               <Stack.Screen
-                name="ProfileDummy"
-                component={ProfileDummy}
+                name="Feed"
+                component={Feed}
                 options={{ headerShown: false, headerLeft: () => null }}
               />
             </Stack.Navigator>

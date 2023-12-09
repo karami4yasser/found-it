@@ -10,7 +10,7 @@ export type CreateUserApiCallBody = {
 export const CreateUserApiCall = async (data: CreateUserApiCallBody) => {
   try {
     const response = await axios
-      .post(process.env.EXPO_PUBLIC_API_BASE_URL_USER + "/api/users", data, {
+      .post(process.env.EXPO_PUBLIC_API_BASE_URL + "/api/users", data, {
         headers: {
           "Content-Type": "application/json",
         },
