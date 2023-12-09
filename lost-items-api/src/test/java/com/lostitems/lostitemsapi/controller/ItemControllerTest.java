@@ -2,6 +2,7 @@ package com.lostitems.lostitemsapi.controller;
 
 import com.lostitems.lostitemsapi.dto.FoundItExceptionResponse;
 import com.lostitems.lostitemsapi.dto.item.CreateItemRequestDto;
+import com.lostitems.lostitemsapi.dto.item.ItemOverviewCollection;
 import com.lostitems.lostitemsapi.dto.item.ItemOverviewDto;
 import com.lostitems.lostitemsapi.enumeration.ItemType;
 import com.lostitems.lostitemsapi.exception.FoundItCategoryNotFoundException;
@@ -9,6 +10,7 @@ import com.lostitems.lostitemsapi.exception.FoundItInvalidItemInputDataException
 import com.lostitems.lostitemsapi.exception.FoundItNotPremiumException;
 import com.lostitems.lostitemsapi.service.ItemService;
 import com.lostitems.lostitemsapi.utils.JwtTestUtils;
+import com.lostitems.lostitemsapi.utils.OffsetBasedPageRequest;
 import io.restassured.http.ContentType;
 import io.restassured.http.Header;
 import io.restassured.response.Response;
@@ -16,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Sort;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -41,7 +44,7 @@ public class ItemControllerTest extends BaseControllerTest {
 
     @Test
     void testGetItems_AllItems() {
-        ItemOverviewDto[] response = given()
+        ItemOverviewCollection response = given()
                 .when()
                 .get(ITEM_CONTEXT_PATH)
                 .then()
@@ -49,17 +52,17 @@ public class ItemControllerTest extends BaseControllerTest {
                 .and()
                 .extract()
                 .response()
-                .body().as(ItemOverviewDto[].class);
-        assertEquals(4, response.length);
+                .body().as(ItemOverviewCollection.class);
+        assertEquals(4, response.totalResults);
 
         // assert to check if the items are sorted by postDate
-        assertEquals(response[0].type(), ItemType.LOST);
-        assertEquals(response[0].title(), "This item is lost casa");
+        assertEquals(response.items.get(0).type(), ItemType.LOST);
+        assertEquals(response.items.get(0).title(), "This item is lost casa");
     }
 
     @Test
     void testGetItems_AllItems_FilteredBy_Type() {
-        ItemOverviewDto[] response = given()
+        ItemOverviewCollection response = given()
                 .when()
                 .queryParam("type", ItemType.FOUND.name())
                 .get(ITEM_CONTEXT_PATH)
@@ -68,16 +71,16 @@ public class ItemControllerTest extends BaseControllerTest {
                 .and()
                 .extract()
                 .response()
-                .body().as(ItemOverviewDto[].class);
-        assertEquals(response.length,1);
-        assertEquals(response[0].type(), ItemType.FOUND);
-        assertEquals(response[0].title(), "this titles contains the name POWERFUL");
-        assertEquals(response[0].id(), UUID.fromString("0ebacabc-83fa-11ee-b962-0242ac120001"));
+                .body().as(ItemOverviewCollection.class);
+        assertEquals(response.totalResults,1);
+        assertEquals(response.items.get(0).type(), ItemType.FOUND);
+        assertEquals(response.items.get(0).title(), "this titles contains the name POWERFUL");
+        assertEquals(response.items.get(0).id(), UUID.fromString("0ebacabc-83fa-11ee-b962-0242ac120001"));
     }
 
     @Test
     void testGetItems_AllItems_FilteredBy_Type_Returned() {
-        ItemOverviewDto[] response = given()
+        ItemOverviewCollection response = given()
                 .when()
                 .queryParam("type", ItemType.LOST.name())
                 .queryParam("returned", Boolean.TRUE)
@@ -88,8 +91,8 @@ public class ItemControllerTest extends BaseControllerTest {
                 .extract()
                 .response()
                 .body()
-                .as(ItemOverviewDto[].class);
-        assertEquals(response.length,0);
+                .as(ItemOverviewCollection.class);
+        assertEquals(0,response.totalResults);
     }
 
     @Test
@@ -240,7 +243,7 @@ public class ItemControllerTest extends BaseControllerTest {
                         .response();
 
 
-        List<ItemOverviewDto> items = itemService.getItems(
+        ItemOverviewCollection items = itemService.getItems(
                 Optional.empty(),
                 Optional.of(ItemType.LOST),
                 Optional.of("test"),
@@ -249,17 +252,18 @@ public class ItemControllerTest extends BaseControllerTest {
                 Optional.empty(),
                 Optional.empty(),
                 Optional.empty(),
-                Optional.empty()
+                Optional.empty(),
+                new OffsetBasedPageRequest(0, 1, Sort.by(Sort.Direction.DESC, "postDate"))
         );
 
-        assertEquals(1, items.size());
-        assertEquals("test", items.get(0).title());
-        assertEquals(LocalDate.of(2021, 1, 1), items.get(0).date());
+        assertEquals(1, items.totalResults);
+        assertEquals("test", items.items.get(0).title());
+        assertEquals(LocalDate.of(2021, 1, 1), items.items.get(0).date());
 
-        assertEquals(CONTEXT_PATH + "/items/" + items.get(0).id(), response.getHeader("Location"));
+        assertEquals(CONTEXT_PATH + "/items/" + items.items.get(0).id(), response.getHeader("Location"));
 
         // cleanup in order to not affect other tests
-        itemService.deleteItem(items.get(0).id());
+        itemService.deleteItem(items.items.get(0).id());
     }
 
 }

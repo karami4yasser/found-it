@@ -13,17 +13,27 @@ export type ItemFilterOptions = {
   returned: Boolean | null;
 };
 
-export const GetItemsOverviewApiCall = async (requestParamsString: string) => {
+export const GetItemsOverviewApiCall = async (
+  requestParamsString: string,
+  offsetParams: number
+) => {
+  let offsetParamsString = "";
+  if (requestParamsString == "") {
+    offsetParamsString = "?offset=" + offsetParams;
+  } else {
+    offsetParamsString = "&offset=" + offsetParams;
+  }
   try {
     const response = await axios
       .get(
         process.env.EXPO_PUBLIC_API_BASE_URL +
           "/api/items" +
-          requestParamsString
+          requestParamsString +
+          offsetParamsString
       )
       .then((response) => response)
       .catch((err) => err.response);
-    return response;
+    return response.data;
   } catch (error) {
     console.error("API request error:", error);
     return error;

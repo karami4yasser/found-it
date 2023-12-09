@@ -12,3 +12,12 @@ export type ItemOverviewDto = {
   date: string;
   returned: Boolean;
 };
+
+export type ItemOverviewCollection = {
+  items: ItemOverviewDto[];
+  totalResults: number;
+  limit: number;
+  count: number;
+  offset: number;
+  hasMore: Boolean;
+};

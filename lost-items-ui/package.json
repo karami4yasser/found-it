@@ -21,6 +21,7 @@
     "@react-navigation/native-stack": "^6.9.15",
     "@shopify/flash-list": "^1.6.3",
     "@types/react": "^18.2.23",
+    "@types/react-query": "^1.2.9",
     "axios": "^1.5.1",
     "expo": "~49.0.12",
     "expo-status-bar": "~1.6.0",

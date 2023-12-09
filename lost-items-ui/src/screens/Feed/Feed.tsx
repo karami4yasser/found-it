@@ -1,22 +1,16 @@
-import React, { useCallback, useLayoutEffect, useState } from "react";
-import { SafeAreaView } from "react-native";
+import React, { useState } from "react";
+import { ActivityIndicator, SafeAreaView } from "react-native";
 import Item from "../../components/Item/Item";
-import { ItemOverviewDto } from "../../typing/item";
-import {
-  GetItemsOverviewApiCall,
-  ItemFilterOptions,
-} from "../../api/item/GetItemsOverviewApiCall";
-import Toaster from "../../utils/Toaster";
+import { ItemFilterOptions } from "../../api/item/GetItemsOverviewApiCall";
 import { COLORS } from "../../styles/theme";
 import Loading from "../Loading/Loading";
 import { FlashList } from "@shopify/flash-list";
 import { Dimensions } from "react-native";
-
+import { useInfiniteQueryCustom } from "../../utils/useInfiniteQueryCustom";
 export default function Feed() {
   const { width, height } = Dimensions.get("window");
   const factor = width * height > 600000 ? 2 : 1;
-  const [data, setData] = useState<ItemOverviewDto[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [totalResult, setTotalResult] = useState(0);
   const [itemFilterOptions, setItemFilterOptions] = useState<ItemFilterOptions>(
     {
       category: null,
@@ -30,60 +24,24 @@ export default function Feed() {
       returned: null,
     }
   );
-  const generateQueryString = (params: ItemFilterOptions): string => {
-    const queryParams: string[] = [];
 
-    Object.entries(params).forEach(([key, value]) => {
-      if (value !== null && value !== undefined) {
-        let paramValue = value;
-
-        // Convert boolean values to lowercase string
-        if (key === "returned" && typeof paramValue === "boolean") {
-          paramValue = paramValue.toString().toLowerCase();
-        }
-
-        queryParams.push(`${key}=${paramValue}`);
-      }
-    });
-
-    if (queryParams.length > 0) {
-      return "?" + queryParams.join("&");
-    } else {
-      return "";
+  const handleEndReached = () => {
+    if (!isLoading && hasNextPage) {
+      fetchNextPage();
     }
   };
-  const fetchItems = useCallback(
-    async (itemFilterOptions: ItemFilterOptions) => {
-      const queryString = generateQueryString(itemFilterOptions);
-      const itemResponse = await GetItemsOverviewApiCall(queryString);
-      if (itemResponse === undefined) {
-        setLoading(false);
-        console.error(itemResponse);
-        Toaster.show("Feed Error undefined!", 1500, true, COLORS.red);
-      } else if (itemResponse.status === 200) {
-        setData(itemResponse.data);
-        setLoading(false);
-        Toaster.show("Data Fetched successfully", 1500, true, COLORS.green);
-      } else {
-        setLoading(false);
-        Toaster.show("Error in fetching the data!", 1500, true, COLORS.red);
-      }
-    },
-    [itemFilterOptions]
-  );
 
-  useLayoutEffect(() => {
-    fetchItems(itemFilterOptions);
-  }, [fetchItems]);
+  const { isLoading, data, hasNextPage, fetchNextPage, isFetchingNextPage } =
+    useInfiniteQueryCustom(itemFilterOptions);
 
   const handleFunction = () => {
     console.log("clicked");
   };
-  if (loading) return <Loading />;
+  if (isLoading) return <Loading />;
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <FlashList
-        data={data}
+        data={data?.pages.flatMap((page) => page.items)}
         contentContainerStyle={{
           padding: 10 * factor,
           paddingBottom: 50,
@@ -95,8 +53,18 @@ export default function Feed() {
             handleFunction={handleFunction}
           />
         )}
-        estimatedItemSize={200}
         numColumns={factor}
+        estimatedFirstItemOffset={10}
+        estimatedItemSize={data ? data.pages[0].totalResults : 100}
+        onEndReached={handleEndReached}
+        onEndReachedThreshold={0.8}
+        ListFooterComponent={() =>
+          isFetchingNextPage ? (
+            <ActivityIndicator size="large" color={COLORS.tertiary} />
+          ) : (
+            <></>
+          )
+        }
       />
     </SafeAreaView>
   );

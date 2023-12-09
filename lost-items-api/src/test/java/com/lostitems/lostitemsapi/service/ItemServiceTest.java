@@ -2,6 +2,7 @@ package com.lostitems.lostitemsapi.service;
 
 
 import com.lostitems.lostitemsapi.dto.item.CreateItemRequestDto;
+import com.lostitems.lostitemsapi.dto.item.ItemOverviewCollection;
 import com.lostitems.lostitemsapi.dto.item.ItemOverviewDto;
 import com.lostitems.lostitemsapi.enumeration.ItemType;
 import com.lostitems.lostitemsapi.exception.FoundItCategoryNotFoundException;
@@ -9,9 +10,11 @@ import com.lostitems.lostitemsapi.exception.FoundItInvalidItemInputDataException
 import com.lostitems.lostitemsapi.exception.FoundItNotPremiumException;
 import com.lostitems.lostitemsapi.utils.BaseTest;
 import com.lostitems.lostitemsapi.utils.JwtTestUtils;
+import com.lostitems.lostitemsapi.utils.OffsetBasedPageRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Sort;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -31,7 +34,7 @@ public class ItemServiceTest extends BaseTest {
 
     @Test
     void itemServiceTest_getItems_AllItems() {
-        List<ItemOverviewDto> items = itemService.getItems(
+        ItemOverviewCollection items = itemService.getItems(
                 Optional.empty(),
                 Optional.empty(),
                 Optional.empty(),
@@ -40,14 +43,15 @@ public class ItemServiceTest extends BaseTest {
                 Optional.empty(),
                 Optional.empty(),
                 Optional.empty(),
-                Optional.empty()
+                Optional.empty(),
+                new OffsetBasedPageRequest(0, 10, Sort.by(Sort.Direction.DESC, "postDate"))
         );
-        assertEquals(4, items.size());
+        assertEquals(4, items.totalResults);
     }
 
     @Test
     void itemServiceTest_getItems_FilterByType() {
-        List<ItemOverviewDto> items = itemService.getItems(
+        ItemOverviewCollection items = itemService.getItems(
                 Optional.empty(),
                 Optional.of(ItemType.FOUND),
                 Optional.empty(),
@@ -56,14 +60,15 @@ public class ItemServiceTest extends BaseTest {
                 Optional.empty(),
                 Optional.empty(),
                 Optional.empty(),
-                Optional.empty()
+                Optional.empty(),
+                new OffsetBasedPageRequest(0, 10, Sort.by(Sort.Direction.DESC, "postDate"))
         );
-        assertEquals(1,items.size());
+        assertEquals(1,items.totalResults);
     }
 
     @Test
     void itemServiceTest_getItems_FilterByTypeAndTextContain() {
-        List<ItemOverviewDto> items = itemService.getItems(
+        ItemOverviewCollection items = itemService.getItems(
                 Optional.empty(),
                 Optional.of(ItemType.FOUND),
                 Optional.of("I_DO_NOT_EXIST"),
@@ -72,9 +77,10 @@ public class ItemServiceTest extends BaseTest {
                 Optional.empty(),
                 Optional.empty(),
                 Optional.empty(),
-                Optional.empty()
+                Optional.empty(),
+                new OffsetBasedPageRequest(0, 10, Sort.by(Sort.Direction.DESC, "postDate"))
         );
-        assertEquals(0,items.size());
+        assertEquals(0,items.totalResults);
     }
 
     @Test
@@ -91,7 +97,9 @@ public class ItemServiceTest extends BaseTest {
                                     Optional.empty(),
                                     Optional.empty(),
                                     Optional.empty(),
-                                    Optional.empty()
+                                    Optional.empty(),
+                                    new OffsetBasedPageRequest(0, 10, Sort.by(Sort.Direction.DESC, "postDate"))
+
                             );
                         });
         assertEquals("Category with name 'non existent category' not found",exception.getMessage());
@@ -99,7 +107,7 @@ public class ItemServiceTest extends BaseTest {
 
     @Test
     void itemServiceTest_getItems_rangeNotReached() {
-        List<ItemOverviewDto> items = itemService.getItems(
+        ItemOverviewCollection items = itemService.getItems(
                 Optional.empty(),
                 Optional.empty(),
                 Optional.empty(),
@@ -108,14 +116,15 @@ public class ItemServiceTest extends BaseTest {
                 Optional.of(33.533845),
                 Optional.of(-7.648460),
                 Optional.of(200.0),
-                Optional.empty()
+                Optional.empty(),
+                new OffsetBasedPageRequest(0, 10, Sort.by(Sort.Direction.DESC, "postDate"))
         );
-        assertEquals(0, items.size());
+        assertEquals(0, items.totalResults);
     }
 
     @Test
     void itemServiceTest_getItems_rangeReached() {
-        List<ItemOverviewDto> items = itemService.getItems(
+        ItemOverviewCollection items = itemService.getItems(
                 Optional.empty(),
                 Optional.empty(),
                 Optional.empty(),
@@ -124,10 +133,11 @@ public class ItemServiceTest extends BaseTest {
                 Optional.of(33.533845),
                 Optional.of(-7.648460),
                 Optional.of(210.0),
-                Optional.empty()
+                Optional.empty(),
+                new OffsetBasedPageRequest(0, 10, Sort.by(Sort.Direction.DESC, "postDate"))
         );
-        assertEquals(1, items.size());
-        assertEquals(UUID.fromString("a09959e6-9451-11ee-b9d1-0242ac120002"), items.get(0).id());
+        assertEquals(1, items.totalResults);
+        assertEquals(UUID.fromString("a09959e6-9451-11ee-b9d1-0242ac120002"), items.items.get(0).id());
     }
 
     @Test
@@ -234,7 +244,7 @@ public class ItemServiceTest extends BaseTest {
                     JwtTestUtils.DUMMY_TOKEN
             );
 
-            List<ItemOverviewDto> items = itemService.getItems(
+            ItemOverviewCollection items = itemService.getItems(
                     Optional.empty(),
                     Optional.of(ItemType.LOST),
                     Optional.of("test"),
@@ -243,15 +253,16 @@ public class ItemServiceTest extends BaseTest {
                     Optional.empty(),
                     Optional.empty(),
                     Optional.empty(),
-                    Optional.empty()
+                    Optional.empty(),
+                    new OffsetBasedPageRequest(0, 10, Sort.by(Sort.Direction.DESC, "postDate"))
             );
 
-            assertEquals(1, items.size());
-            assertEquals("test", items.get(0).title());
-            assertEquals(LocalDate.of(2021, 1, 1), items.get(0).date());
+            assertEquals(1, items.totalResults);
+            assertEquals("test", items.items.get(0).title());
+            assertEquals(LocalDate.of(2021, 1, 1), items.items.get(0).date());
 
             // cleanup in order to not affect other tests
-            itemService.deleteItem(items.get(0).id());
+            itemService.deleteItem(items.items.get(0).id());
         });
     }
 }

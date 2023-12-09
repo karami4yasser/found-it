@@ -2,10 +2,17 @@ package com.lostitems.lostitemsapi.controller;
 
 
 import com.lostitems.lostitemsapi.dto.item.CreateItemRequestDto;
+import com.lostitems.lostitemsapi.dto.item.ItemOverviewCollection;
 import com.lostitems.lostitemsapi.dto.item.ItemOverviewDto;
 import com.lostitems.lostitemsapi.enumeration.ItemType;
+import com.lostitems.lostitemsapi.model.Item;
 import com.lostitems.lostitemsapi.service.ItemService;
+import com.lostitems.lostitemsapi.utils.OffsetBasedPageRequest;
+import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -31,13 +38,14 @@ import java.util.UUID;
 @RestController
 @RequestMapping(  "/api/items")
 @AllArgsConstructor
+@Slf4j
 public class ItemController {
 
     private final ItemService itemService;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("permitAll()")
-    public ResponseEntity<List<ItemOverviewDto>>  getItems(
+    public ResponseEntity<ItemOverviewCollection>  getItems(
             @RequestParam(value = "category", required = false)
             Optional<String> categoryName,
             @RequestParam(value = "type", required = false)
@@ -55,10 +63,15 @@ public class ItemController {
             @RequestParam(value = "range", required = false)
             Optional<Double> range,
             @RequestParam(value = "returned", required = false)
-            Optional<Boolean> returned
+            Optional<Boolean> returned,
+            @RequestParam(value = "limit", defaultValue = "10", required = false)  @Min(1)
+            int limit,
+            @RequestParam(value = "offset", defaultValue = "0", required = false)@Min(0)
+            int offset
+
     )
     {
-        List<ItemOverviewDto> items = itemService.getItems(
+        ItemOverviewCollection items = itemService.getItems(
                 categoryName,
                 itemType,
                 text,
@@ -67,7 +80,8 @@ public class ItemController {
                 latitude,
                 longitude,
                 range,
-                returned
+                returned,
+                new OffsetBasedPageRequest(offset, limit, Sort.by(Sort.Direction.DESC, "postDate"))
         );
         return new ResponseEntity<>(items, HttpStatus.OK);
     }
