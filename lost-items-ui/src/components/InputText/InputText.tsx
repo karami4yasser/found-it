@@ -1,25 +1,28 @@
 import { TextInput } from "react-native";
 import React from "react";
-import InputTextWithPurpleBackgroundStyles from "./InputTextWithPurpleBackground.styles";
+import InputTextStyles from "./InputText.styles";
 
-type InputTextWithPurpleBackgroundPropsType = {
+type InputTextPropsType = {
   setValue: (value: string) => void;
   currentValue: string;
   placeholder: string;
   type: any;
   hasError: boolean;
+  numberOfLines?: number;
 };
 
-export default function InputTextWithPurpleBackground(
-  props: InputTextWithPurpleBackgroundPropsType
+export default function InputText(
+  props: InputTextPropsType
 ) {
-  const inputStyles = [InputTextWithPurpleBackgroundStyles.inputContainer];
+  const inputStyles = [InputTextStyles.inputContainer];
 
   if (props.hasError) {
-    inputStyles.push(InputTextWithPurpleBackgroundStyles.inputError); //style for the red border
+    inputStyles.push(InputTextStyles.inputError); //style for the red border
   }
   return (
     <TextInput
+      multiline={props.numberOfLines ? true : false}
+      numberOfLines={props.numberOfLines}
       style={inputStyles}
       placeholder={props.placeholder}
       onChangeText={props.setValue}

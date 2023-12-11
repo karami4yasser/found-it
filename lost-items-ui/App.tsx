@@ -4,6 +4,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { RootSiblingParent } from "react-native-root-siblings";
 import { AuthProvider } from "./src/utils/AuthProvider";
+
 import SignIn from "./src/screens/SignIn/SignIn";
 import SignUp from "./src/screens/SignUp/SignUp";
 import Loading from "./src/screens/Loading/Loading";
@@ -14,6 +15,8 @@ import { SearchFilterProvider } from "./src/utils/SearchFilterProvider";
 import MoreFilters from "./src/screens/MoreFilters/MoreFilters";
 import TabNavigation from "./src/TabNavigation/TabNavigation";
 const queryClient = new QueryClient();
+import PostItem from "./src/screens/PostItem/PostItem";
+
 export default function App() {
   const Stack = createNativeStackNavigator();
   return (
@@ -44,6 +47,11 @@ export default function App() {
                   <Stack.Screen
                     name="MoreFilters"
                     component={MoreFilters}
+                    options={{ headerShown: false, headerLeft: () => null }}
+                  />
+                  <Stack.Screen
+                    name="PostItem"
+                    component={PostItem}
                     options={{ headerShown: false, headerLeft: () => null }}
                   />
                 </Stack.Navigator>

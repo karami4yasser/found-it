@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity } from "react-native";
 import RoundedButton from "../../components/RoundedButton/RoundedButton";
 import PasswordInputWithToggle from "../../components/PasswordInputWithToggle/PasswordInputWithToggle";
 import SignInStyle from "./SignIn.styles";
-import InputTextWithPurpleBackground from "../../components/InputTextWithPurpleBackground/InputTextWithPurpleBackground";
+import InputTextWithPurpleBackground from "../../components/InputText/InputText";
 import globalStyles from "../../styles/globalStyles";
 import { ParamListBase, useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";

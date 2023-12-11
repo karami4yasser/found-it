@@ -2,7 +2,7 @@ import React, { useCallback, useState } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import SignUpStyle from "./SignUp.styles";
 import { COLORS } from "../../styles/theme";
-import InputTextWithPurpleBackground from "../../components/InputTextWithPurpleBackground/InputTextWithPurpleBackground";
+import InputTextWithPurpleBackground from "../../components/InputText/InputText";
 import PasswordInputWithToggle from "../../components/PasswordInputWithToggle/PasswordInputWithToggle";
 import globalStyles from "../../styles/globalStyles";
 import RoundedButton from "../../components/RoundedButton/RoundedButton";
