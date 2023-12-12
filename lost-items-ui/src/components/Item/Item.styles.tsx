@@ -1,9 +1,6 @@
 import { StyleSheet } from "react-native";
 
-import { COLORS } from "../../styles/theme";
-import { Dimensions } from "react-native";
-const { width, height } = Dimensions.get("window");
-const factor = width * height > 600000 ? 1.5 : 1;
+import { factor } from "../../utils/stylesUtils";
 const ItemStyle = StyleSheet.create({
   container: {
     flexDirection: "row",

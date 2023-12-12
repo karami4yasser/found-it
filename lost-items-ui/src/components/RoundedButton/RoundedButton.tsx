@@ -1,6 +1,5 @@
-import { Pressable, Text, View } from "react-native";
+import { Pressable, Text } from "react-native";
 import React from "react";
-import { COLORS, FONT_WEIGHT, SIZES } from "../../styles/theme";
 import RoundedButtonStyle from "./RoundedButton.styles";
 
 type RoundedButtonProps = {

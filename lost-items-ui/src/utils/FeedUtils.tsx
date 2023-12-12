@@ -1,6 +1,7 @@
 import { ItemFilterOptions } from "../api/item/GetItemsOverviewApiCall";
+import { State } from "./SearchFilterProvider";
 
-export const generateQueryString = (params: ItemFilterOptions): string => {
+export const generateQueryString = (params: State): string => {
   const queryParams: string[] = [];
 
   Object.entries(params).forEach(([key, value]) => {

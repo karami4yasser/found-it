@@ -1,5 +1,5 @@
-import React, { useCallback, useState, useContext } from "react";
-import { View, Text, TouchableOpacity, Switch } from "react-native";
+import React, { useCallback, useState } from "react";
+import { View, Text, TouchableOpacity } from "react-native";
 import SignUpStyle from "./SignUp.styles";
 import { COLORS } from "../../styles/theme";
 import InputTextWithPurpleBackground from "../../components/InputTextWithPurpleBackground/InputTextWithPurpleBackground";

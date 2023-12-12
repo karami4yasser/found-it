@@ -23,19 +23,11 @@ export const GetItemsOverviewApiCall = async (
   } else {
     offsetParamsString = "&offset=" + offsetParams;
   }
-  try {
-    const response = await axios
-      .get(
-        process.env.EXPO_PUBLIC_API_BASE_URL +
-          "/api/items" +
-          requestParamsString +
-          offsetParamsString
-      )
-      .then((response) => response)
-      .catch((err) => err.response);
-    return response.data;
-  } catch (error) {
-    console.error("API request error:", error);
-    return error;
-  }
+  const { data } = await axios.get(
+    process.env.EXPO_PUBLIC_API_BASE_URL +
+      "/api/items" +
+      requestParamsString +
+      offsetParamsString
+  );
+  return data;
 };

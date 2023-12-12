@@ -1,6 +1,5 @@
-import { Image, Pressable, Text, View } from "react-native";
+import { Image, Text, View } from "react-native";
 import React from "react";
-import { COLORS, FONT_WEIGHT, SIZES } from "../../styles/theme";
 import ItemStyle from "./Item.styles";
 import { ItemOverviewDto } from "../../typing/item";
 
@@ -8,11 +7,8 @@ type ItemProps = {
   itemOverviewDto: ItemOverviewDto;
   handleFunction: () => void;
 };
-import { Dimensions } from "react-native";
 
 export default function Item(props: ItemProps) {
-  const { width, height } = Dimensions.get("window");
-  const factor = width * height > 600000 ? 2 : 1;
   return (
     <View style={ItemStyle.container}>
       <View style={ItemStyle.imageContainer}>
