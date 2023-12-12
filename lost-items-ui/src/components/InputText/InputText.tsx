@@ -1,6 +1,8 @@
-import { TextInput } from "react-native";
+import { Text, TextInput } from "react-native";
 import React from "react";
-import InputTextStyles from "./InputText.styles";
+import postItemStyles from "./InputText.postItem.styles";
+import signInStyles from "./InputText.signIn.styles";
+import { View } from "react-native";
 
 type InputTextPropsType = {
   setValue: (value: string) => void;
@@ -9,15 +11,17 @@ type InputTextPropsType = {
   type: any;
   hasError: boolean;
   numberOfLines?: number;
+  page: "postItem" | "signIn";
 };
 
 export default function InputText(
   props: InputTextPropsType
 ) {
-  const inputStyles = [InputTextStyles.inputContainer];
+  const styles = (props.page === "postItem") ? postItemStyles : signInStyles;
+  const inputStyles = [styles.inputContainer];
 
   if (props.hasError) {
-    inputStyles.push(InputTextStyles.inputError); //style for the red border
+    inputStyles.push(styles.inputError); //style for the red border
   }
   return (
     <TextInput
@@ -28,6 +32,7 @@ export default function InputText(
       onChangeText={props.setValue}
       value={props.currentValue}
       keyboardType={props.type}
+
     />
   );
 }

@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity } from "react-native";
 import RoundedButton from "../../components/RoundedButton/RoundedButton";
 import PasswordInputWithToggle from "../../components/PasswordInputWithToggle/PasswordInputWithToggle";
 import SignInStyle from "./SignIn.styles";
-import InputTextWithPurpleBackground from "../../components/InputText/InputText";
+import InputText from "../../components/InputText/InputText";
 import globalStyles from "../../styles/globalStyles";
 import { ParamListBase, useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -144,13 +144,12 @@ export default function SignIn() {
             <Text style={globalStyles.LargeTitle}>Sign In</Text>
           </View>
           <View style={SignInStyle.formContainer}>
-            <InputTextWithPurpleBackground
-              hasError={PhoneNumberEmailHasError}
-              currentValue={signInForm.emailOrPhone}
-              setValue={(value) => setSignInFormItem("emailOrPhone", value)}
-              placeholder="Email or Phone number"
-              type={"default"}
-            />
+            <InputText
+                hasError={PhoneNumberEmailHasError}
+                currentValue={signInForm.emailOrPhone}
+                setValue={(value) => setSignInFormItem("emailOrPhone", value)}
+                placeholder="Email or Phone number"
+                type={"default"} page={"signIn"}            />
             <PasswordInputWithToggle
               hasError={PasswordHasError}
               showPassword={showPassword}

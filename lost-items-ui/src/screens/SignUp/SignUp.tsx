@@ -2,7 +2,7 @@ import React, { useCallback, useState } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import SignUpStyle from "./SignUp.styles";
 import { COLORS } from "../../styles/theme";
-import InputTextWithPurpleBackground from "../../components/InputText/InputText";
+import InputText from "../../components/InputText/InputText";
 import PasswordInputWithToggle from "../../components/PasswordInputWithToggle/PasswordInputWithToggle";
 import globalStyles from "../../styles/globalStyles";
 import RoundedButton from "../../components/RoundedButton/RoundedButton";
@@ -170,26 +170,29 @@ export default function SignUp() {
           </View>
           <View style={SignUpStyle.formContainer}>
             <View style={SignUpStyle.formFullName}>
-              <InputTextWithPurpleBackground
+              <InputText
                 currentValue={signUpForm.firstName}
                 setValue={(value) => setSignUpFormItem("firstName", value)}
                 placeholder="First Name"
                 type={"default"}
+                page="signIn"
                 hasError={FirstNameHasError}
               />
-              <InputTextWithPurpleBackground
+              <InputText
                 currentValue={signUpForm.lastName}
                 setValue={(value) => setSignUpFormItem("lastName", value)}
                 placeholder="Last Name"
                 type={"default"}
+                page="signIn"
                 hasError={LastNameHasError}
               />
             </View>
-            <InputTextWithPurpleBackground
+            <InputText
               currentValue={signUpForm.phone}
               setValue={(value) => setSignUpFormItem("phone", value)}
               placeholder="Phone Number"
               type={"default"}
+              page="signIn"
               hasError={PhoneNumberHasError}
             />
             <PasswordInputWithToggle
