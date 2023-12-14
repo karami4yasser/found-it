@@ -69,7 +69,7 @@ export default function SignUp() {
           true,
           COLORS.green
         );
-        navigateToRout("ProfileDummy");
+        navigateToRout("TabNavigation");
       } else if (createUserResponse.status === 409) {
         setLoading(false);
         Toaster.show(createUserResponse.data.message, 1500, true, COLORS.red);

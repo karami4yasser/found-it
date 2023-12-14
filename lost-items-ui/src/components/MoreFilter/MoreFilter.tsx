@@ -105,7 +105,7 @@ export function MoreFilter() {
         itemFilterOptions.setRangeFilter(itemTAR);
       }
 
-      navigateToRout("Feed");
+      navigateToRout("TabNavigation");
     });
   }, [selectedLocation, itemTAR]);
 
@@ -113,7 +113,7 @@ export function MoreFilter() {
     requestAnimationFrame(() => {
       itemFilterOptions.clearItemFilterOptions();
 
-      navigateToRout("Feed");
+      navigateToRout("TabNavigation");
     });
   }, []);
 

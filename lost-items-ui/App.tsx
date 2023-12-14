@@ -12,6 +12,7 @@ import Feed from "./src/screens/Feed/Feed";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { SearchFilterProvider } from "./src/utils/SearchFilterProvider";
 import MoreFilters from "./src/screens/MoreFilters/MoreFilters";
+import TabNavigation from "./src/TabNavigation/TabNavigation";
 const queryClient = new QueryClient();
 export default function App() {
   const Stack = createNativeStackNavigator();
@@ -23,7 +24,7 @@ export default function App() {
             <RootSiblingParent>
               <NavigationContainer>
                 <StatusBar style="auto" />
-                <Stack.Navigator initialRouteName="Feed">
+                <Stack.Navigator initialRouteName="TabNavigation">
                   <Stack.Screen
                     name="SignIn"
                     component={SignIn}
@@ -36,8 +37,8 @@ export default function App() {
                   />
                   <Stack.Screen name="Loading" component={Loading} />
                   <Stack.Screen
-                    name="Feed"
-                    component={Feed}
+                    name="TabNavigation"
+                    component={TabNavigation}
                     options={{ headerShown: false, headerLeft: () => null }}
                   />
                   <Stack.Screen
