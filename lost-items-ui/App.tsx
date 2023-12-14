@@ -49,11 +49,6 @@ export default function App() {
                     component={MoreFilters}
                     options={{ headerShown: false, headerLeft: () => null }}
                   />
-                  <Stack.Screen
-                    name="PostItem"
-                    component={PostItem}
-                    options={{ headerShown: false, headerLeft: () => null }}
-                  />
                 </Stack.Navigator>
               </NavigationContainer>
             </RootSiblingParent>

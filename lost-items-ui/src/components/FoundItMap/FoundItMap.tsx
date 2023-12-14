@@ -108,8 +108,8 @@ export default function FoundItMap(props: FoundItMap) {
             {props.itemType === null ? "All" : ""} Coordinates :
           </Text>
           <Text style={styles.mapSettingsKVValue}>
-            {tempPosition.latitude.toPrecision(5)},{" "}
-            {tempPosition.longitude.toPrecision(5)}
+            {tempPosition.latitude.toPrecision(9)},{" "}
+            {tempPosition.longitude.toPrecision(9)}
           </Text>
         </View>
         <View style={styles.mapSettingsPositionContainer}>

@@ -23,8 +23,6 @@ export default function MoreFilters() {
           width: width,
           height: height,
           backgroundColor: COLORS.lightWhite,
-          /*   zIndex: showMoreFilters ? 100 : -100,
-          opacity: showMoreFilters ? 1 : 0, */
         }}
       >
         <MoreFilter />

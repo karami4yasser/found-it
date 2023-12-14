@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Image, LogBox, ScrollView, Text, View } from "react-native";
-import styles, { factor } from "./PostItem.styles";
+import styles, { bigFactor, factor } from "./PostItem.styles";
 import SwitchSelector from "react-native-switch-selector";
 import { COLORS } from "../../styles/theme";
 import { ItemType } from "../../typing/item";
@@ -13,6 +13,10 @@ import { MAX_NON_PREMIUM_ITEM_POST_RANGE } from "../../utils/MapUtils";
 import SubmitButton from "../../components/SubmitButton/SubmitButton";
 import Toaster from "../../utils/Toaster";
 import { getCurrentPositionAsync, requestForegroundPermissionsAsync } from "expo-location";
+import { height, width } from "../../utils/stylesUtils";
+import DateTimePicker, { DateType } from "react-native-ui-datepicker";
+import dayjs from "dayjs";
+
 
 
 export type PostItemProps = {
@@ -29,26 +33,29 @@ const PostItem = (props: PostItemProps) => {
     const [itemDescription, setItemDescription] = useState<string>("");
     const [itemTitle, setItemTitle] = useState<string>("");
     const [itemImage, setItemImage] = useState<string>("");
-    const [itemPosition, setItemPosition] = useState<Coordinates>({ latitude: 0, longitude: 0});
+    const [itemPosition, setItemPosition] = useState<Coordinates>({ latitude: 0, longitude: 0 });
     const [itemTAR, setItemTAR] = useState<number>(100);
-    const [itemDate, setItemDate] = useState<Date | null>(null);
+    const [itemDate, setItemDate] = useState<string>(dayjs(new Date()).format("YYYY-MM-DD"));
     const [itemCategory, setItemCategory] = useState<string>("");
     const [mapOpened, setMapOpened] = useState<boolean>(false);
+    const [showCalender, setShowCalender] = useState<boolean>(false);
+
+
 
     useEffect(() => {
         (async () => {
-          let { status } = await requestForegroundPermissionsAsync();
-          if (status !== 'granted') {
-            Toaster.show('Permission to access location was denied', 1500, true, COLORS.red);
-            return;
-          }
-          let location = await getCurrentPositionAsync({});
-          setItemPosition({
-            latitude: location.coords.latitude,
-            longitude: location.coords.longitude
-          });
+            let { status } = await requestForegroundPermissionsAsync();
+            if (status !== 'granted') {
+                Toaster.show('Permission to access location was denied', 1500, true, COLORS.red);
+                return;
+            }
+            let location = await getCurrentPositionAsync({});
+            setItemPosition({
+                latitude: location.coords.latitude,
+                longitude: location.coords.longitude
+            });
         })();
-      }, [setItemPosition]);
+    }, [setItemPosition]);
 
     useEffect(() => {
         LogBox.ignoreLogs(["VirtualizedLists should never be nested"])
@@ -64,6 +71,16 @@ const PostItem = (props: PostItemProps) => {
             setItemTAR(MAX_NON_PREMIUM_ITEM_POST_RANGE);
         }
     }, [setItemType, setItemTAR, itemTAR]);
+
+    const handleDateChange = useCallback(
+        (value: DateType | null) => {
+            setItemDate(
+                value ? dayjs(value).format("YYYY-MM-DD") : itemDate
+            );
+            setShowCalender(false);
+        },
+        [setShowCalender, itemDate]
+    );
 
     const handleOpenMap = useCallback(() => {
         setMapOpened(true);
@@ -84,7 +101,38 @@ const PostItem = (props: PostItemProps) => {
                 setTar={setItemTAR}
                 closeMap={() => setMapOpened(false)}
             />
-        ) : (
+        ) : (<>
+            {showCalender && (
+                <View
+                    style={{
+                        opacity: 1,
+                        zIndex: 1000,
+                        position: "absolute",
+                        width: width,
+                        height: height,
+                        flex: 1,
+                        marginTop: factor == 1 ? "30%" : "50%",
+                        alignItems: "center",
+                    }}
+                >
+                    {
+                        <View style={styles.datePicker}>
+                            <DateTimePicker
+                                value={itemDate}
+                                maximumDate={dayjs().add(0, "day")}
+                                displayFullDays={false}
+                                onValueChange={handleDateChange}
+                                selectedItemColor={COLORS.tertiary}
+                                calendarTextStyle={styles.callenderTextStyle}
+                                selectedTextStyle={styles.callenderSelectedTextStyle}
+                                mode="date"
+                                headerTextStyle={styles.callenderTextStyle}
+                                weekDaysTextStyle={styles.callenderTextStyle}
+                            />
+                        </View>
+                    }
+                </View>
+            )}
             <View style={styles.postItemContainer}>
                 <ScrollView style={styles.scrollingContainer} contentContainerStyle={styles.scrollingContentContainer}>
                     <View style={styles.postItemHeadingTitleContainer}>
@@ -107,7 +155,7 @@ const PostItem = (props: PostItemProps) => {
                     <View style={styles.postItemPositionInfoContainer}>
                         <View style={styles.postItemCoordinates}>
                             <Text style={styles.postItemKVKey}>Item {itemType === ItemType.FOUND ? 'Found' : 'Lost'} Coordinates :</Text>
-                            <Text style={styles.postItemKVValue}>{itemPosition.latitude}, {itemPosition.longitude}</Text>
+                            <Text style={styles.postItemKVValue}>{itemPosition.latitude.toPrecision(9)}, {itemPosition.longitude.toPrecision(9)}</Text>
                         </View>
                         <View style={styles.postItemTAR}>
                             <Text style={styles.postItemKVKey}>Target Area Radius :</Text>
@@ -133,9 +181,9 @@ const PostItem = (props: PostItemProps) => {
                         <View style={styles.postItemDateContainer}>
                             <View style={styles.postItemDateTextContainer}>
                                 <Text style={styles.postItemKVKey}>{itemType === ItemType.FOUND ? 'Found' : 'Lost'} Date :</Text>
-                                <Text style={styles.postItemKVValue}>12/12/2020</Text>
+                                <Text style={styles.postItemKVValue}>{itemDate}</Text>
                             </View>
-                            <ButtonWithIcon name="Edit Date" icon="edit" handleFunction={() => console.log("Change")} />
+                            <ButtonWithIcon name="Edit Date" icon="edit" handleFunction={() => setShowCalender(true)} />
                         </View>
                         <View style={styles.postItemCategoryContainer}>
                             <SearchDropDown placeholder="Category..." options={["Keys", "CIN", "money", "phone"]} onOptionSelected={changeCategory} />
@@ -144,11 +192,12 @@ const PostItem = (props: PostItemProps) => {
                             <InputText page="postItem" setValue={setItemDescription} currentValue={itemDescription} placeholder="Description..." type={"default"} hasError={false} numberOfLines={5} />
                         </View>
                     </View>
-                    <View style={{marginBottom: 30 * factor, flex:3}}>
+                    <View style={{ marginBottom: 30 * factor, flex: 3 }}>
                         <SubmitButton name="Post Item" handleFunction={() => console.log("Post")} />
                     </View>
                 </ScrollView>
-            </View>)
+            </View>
+        </>)
     );
 }
 
