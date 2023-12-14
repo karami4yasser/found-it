@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { View, TextInput, TouchableOpacity, StyleSheet } from "react-native";
+import React from "react";
+import { View, TextInput, TouchableOpacity } from "react-native";
 import { FontAwesome } from "@expo/vector-icons"; // You might need to install the FontAwesome package
 import PasswordInputWithToggleStyle from "./PasswordInputWithToggle.styles";
 type PasswordInputPropsType = {

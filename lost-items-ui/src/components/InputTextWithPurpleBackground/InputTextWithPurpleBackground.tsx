@@ -1,7 +1,6 @@
-import { Text, TextInput } from "react-native";
+import { TextInput } from "react-native";
 import React from "react";
 import InputTextWithPurpleBackgroundStyles from "./InputTextWithPurpleBackground.styles";
-import { View } from "react-native";
 
 type InputTextWithPurpleBackgroundPropsType = {
   setValue: (value: string) => void;

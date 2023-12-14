@@ -10,6 +10,9 @@ import Loading from "./src/screens/Loading/Loading";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Feed from "./src/screens/Feed/Feed";
 import { QueryClient, QueryClientProvider } from "react-query";
+import { SearchFilterProvider } from "./src/utils/SearchFilterProvider";
+import MoreFilters from "./src/screens/MoreFilters/MoreFilters";
+import TabNavigation from "./src/TabNavigation/TabNavigation";
 const queryClient = new QueryClient();
 export default function App() {
   const Stack = createNativeStackNavigator();
@@ -17,29 +20,36 @@ export default function App() {
     <QueryClientProvider client={queryClient}>
       <SafeAreaView style={{ flex: 1 }}>
         <AuthProvider>
-          <RootSiblingParent>
-            <NavigationContainer>
-              <StatusBar style="auto" />
-              <Stack.Navigator initialRouteName="SignIn">
-                <Stack.Screen
-                  name="SignIn"
-                  component={SignIn}
-                  options={{ headerShown: false }}
-                />
-                <Stack.Screen
-                  name="SignUp"
-                  component={SignUp}
-                  options={{ headerShown: false }}
-                />
-                <Stack.Screen name="Loading" component={Loading} />
-                <Stack.Screen
-                  name="Feed"
-                  component={Feed}
-                  options={{ headerShown: false, headerLeft: () => null }}
-                />
-              </Stack.Navigator>
-            </NavigationContainer>
-          </RootSiblingParent>
+          <SearchFilterProvider>
+            <RootSiblingParent>
+              <NavigationContainer>
+                <StatusBar style="auto" />
+                <Stack.Navigator initialRouteName="TabNavigation">
+                  <Stack.Screen
+                    name="SignIn"
+                    component={SignIn}
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen
+                    name="SignUp"
+                    component={SignUp}
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen name="Loading" component={Loading} />
+                  <Stack.Screen
+                    name="TabNavigation"
+                    component={TabNavigation}
+                    options={{ headerShown: false, headerLeft: () => null }}
+                  />
+                  <Stack.Screen
+                    name="MoreFilters"
+                    component={MoreFilters}
+                    options={{ headerShown: false, headerLeft: () => null }}
+                  />
+                </Stack.Navigator>
+              </NavigationContainer>
+            </RootSiblingParent>
+          </SearchFilterProvider>
         </AuthProvider>
       </SafeAreaView>
     </QueryClientProvider>

@@ -1,11 +1,6 @@
 import { StyleSheet } from "react-native";
 
-import {
-  COLORS,
-  FONT_WEIGHT,
-  SIZES,
-  FONT_WEIGHT_VALUES,
-} from "../../styles/theme";
+import { COLORS, FONT_WEIGHT, SIZES } from "../../styles/theme";
 
 const RoundedButtonStyle = StyleSheet.create({
   RoundedButton: {

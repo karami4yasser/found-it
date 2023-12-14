@@ -61,7 +61,7 @@ export default function SignIn() {
           true,
           COLORS.green
         );
-        navigateToRout("Feed");
+        navigateToRout("TabNavigation");
       } else if (AuthResponse.status === 401) {
         setLoading(false);
         Toaster.show("Bad credentials.", 1500, true, COLORS.red);

@@ -1,5 +1,5 @@
-import React, { useCallback, useState, useContext } from "react";
-import { View, Text, TouchableOpacity, Switch } from "react-native";
+import React, { useCallback, useState } from "react";
+import { View, Text, TouchableOpacity } from "react-native";
 import SignUpStyle from "./SignUp.styles";
 import { COLORS } from "../../styles/theme";
 import InputTextWithPurpleBackground from "../../components/InputTextWithPurpleBackground/InputTextWithPurpleBackground";
@@ -69,7 +69,7 @@ export default function SignUp() {
           true,
           COLORS.green
         );
-        navigateToRout("ProfileDummy");
+        navigateToRout("TabNavigation");
       } else if (createUserResponse.status === 409) {
         setLoading(false);
         Toaster.show(createUserResponse.data.message, 1500, true, COLORS.red);
