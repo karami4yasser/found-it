@@ -1,30 +1,32 @@
 package com.lostitems.lostitemsapi.service;
 
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lostitems.lostitemsapi.dto.item.CreateItemRequestDto;
 import com.lostitems.lostitemsapi.dto.item.ItemOverviewCollection;
-import com.lostitems.lostitemsapi.dto.item.ItemOverviewDto;
 import com.lostitems.lostitemsapi.enumeration.ItemType;
+import com.lostitems.lostitemsapi.exception.FoundItException;
 import com.lostitems.lostitemsapi.exception.FoundItInvalidItemInputDataException;
 import com.lostitems.lostitemsapi.exception.FoundItItemNotFoundException;
 import com.lostitems.lostitemsapi.exception.FoundItNotPremiumException;
 import com.lostitems.lostitemsapi.mapper.ItemMapper;
-import com.lostitems.lostitemsapi.model.Category;
 import com.lostitems.lostitemsapi.model.Item;
 import com.lostitems.lostitemsapi.repository.ItemRepository;
 import com.lostitems.lostitemsapi.repository.specification.ItemSpecifications;
 import com.lostitems.lostitemsapi.security.JwtAuthUtils;
 import com.lostitems.lostitemsapi.utils.HaversineUtils;
 import lombok.AllArgsConstructor;
-import org.springframework.core.convert.converter.Converter;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -40,13 +42,12 @@ public class ItemService {
 
     private final ItemRepository itemRepository;
     private final ItemSpecifications itemSpecifications;
-    private final CategoryService categoryService;
     private final ItemMapper itemMapper;
     private final JwtDecoder jwtDecoder;
     private final UserService userService;
 
     public ItemOverviewCollection getItems(
-            Optional<String> categoryName,
+            Optional<String> category,
             Optional<ItemType> itemType,
             Optional<String> text,
             Optional<LocalDate> dateLeft,
@@ -76,11 +77,6 @@ public class ItemService {
             throw new FoundItInvalidItemInputDataException("Latitude is not valid");
         }
 
-        Optional<Category> category = Optional.empty();
-        if (categoryName.isPresent())
-        {
-            category = Optional.of(categoryService.findCategoryByName(categoryName.get()));
-        }
         Specification<Item> querySpec = getSpec(category, itemType, text, dateLeft, dateRight, latitude, longitude, range, returned);
 
         Page<Item> items = itemRepository.findAll(querySpec,pageable);
@@ -92,7 +88,7 @@ public class ItemService {
     }
 
     private Specification<Item> getSpec(
-            Optional<Category> category,
+            Optional<String> category,
             Optional<ItemType> itemType,
             Optional<String> text,
             Optional<LocalDate> dateLeft,
@@ -135,14 +131,8 @@ public class ItemService {
             throw new FoundItInvalidItemInputDataException("Latitude is not valid");
         }
 
-        Category category = null;
-        if (createItemRequestDto.categoryName() != null) {
-            category = categoryService.findCategoryByName(createItemRequestDto.categoryName());
-        }
-
         Item itemToSave = itemMapper.createItemRequestDtoToItem(createItemRequestDto);
         itemToSave.setPoster(userService.findUserById(userId));
-        itemToSave.setCategory(category);
         itemToSave.setPostDate(LocalDate.now());
         itemToSave.setDate(createItemRequestDto.date() != null ? createItemRequestDto.date() : itemToSave.getPostDate());
 
@@ -154,5 +144,15 @@ public class ItemService {
             throw new FoundItItemNotFoundException();
         }
         itemRepository.deleteById(id);
+    }
+
+    public List<String> getCategories() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            ClassPathResource resource = new ClassPathResource("assets/categories.json");
+            return objectMapper.readValue(resource.getInputStream(), new TypeReference<>() {});
+        } catch (IOException e) {
+            throw new FoundItException("Cannot read categories", HttpStatusCode.valueOf(500));
+        }
     }
 }

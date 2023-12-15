@@ -48,13 +48,8 @@ public class Item {
     @Column(name = "returned")
     private Boolean returned;
 
-    @ManyToOne(
-            targetEntity = Category.class,
-            fetch = FetchType.LAZY,
-            optional = false
-    )
-    @JoinColumn(name = "\"categoryId\"", nullable = false)
-    private Category category;
+    @Column(name = "category")
+    private String category;
 
     @ManyToOne(
             targetEntity = User.class,

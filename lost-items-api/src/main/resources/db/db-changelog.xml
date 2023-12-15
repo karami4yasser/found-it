@@ -6,7 +6,6 @@
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.24.xsd"
 >
     <include file="user-changelog.xml" relativeToChangelogFile="true"/>
-    <include file="category-changelog.xml" relativeToChangelogFile="true"/>
     <include file="feedback-changelog.xml" relativeToChangelogFile="true"/>
     <include file="item-changelog.xml" relativeToChangelogFile="true"/>
     <include file="utils-changelog.xml" relativeToChangelogFile="true"/>

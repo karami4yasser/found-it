@@ -1,9 +1,7 @@
 package com.lostitems.lostitemsapi.specifications;
 
 import com.lostitems.lostitemsapi.enumeration.ItemType;
-import com.lostitems.lostitemsapi.model.Category;
 import com.lostitems.lostitemsapi.model.Item;
-import com.lostitems.lostitemsapi.repository.CategoryRepository;
 import com.lostitems.lostitemsapi.repository.ItemRepository;
 import com.lostitems.lostitemsapi.repository.specification.ItemSpecifications;
 import com.lostitems.lostitemsapi.utils.BaseTest;
@@ -23,9 +21,6 @@ public class ItemSpecificationTest extends BaseTest {
     private ItemRepository itemRepository;
 
     @Autowired
-    private CategoryRepository categoryRepository;
-
-    @Autowired
     private ItemSpecifications itemSpecifications;
 
 
@@ -34,7 +29,6 @@ public class ItemSpecificationTest extends BaseTest {
        List<Item> itemsTitleContainsExist = itemRepository.findAll(itemSpecifications.titleContainsFilter("POWERFUL",false));
        assertEquals(1, itemsTitleContainsExist.size());
        assertEquals("this titles contains the name POWERFUL",itemsTitleContainsExist.get(0).getTitle());
-
     }
     @Test
     void itemSpecificationTest_FindItemsByTitle_Not_Exist() {
@@ -79,8 +73,7 @@ public class ItemSpecificationTest extends BaseTest {
 
     @Test
     void itemSpecificationTest_FindItemsByCategory_Exist() {
-        Optional<Category> category = categoryRepository.findById(UUID.fromString("0ebacabc-83fa-11ee-b962-0242ac120012"));
-        List<Item> itemsTypeLost = itemRepository.findAll(itemSpecifications.categoryFilter(category));
+        List<Item> itemsTypeLost = itemRepository.findAll(itemSpecifications.categoryFilter(Optional.of("category 1")));
         assertEquals(1, itemsTypeLost.size());
     }
 

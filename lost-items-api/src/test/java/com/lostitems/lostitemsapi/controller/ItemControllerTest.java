@@ -1,34 +1,31 @@
 package com.lostitems.lostitemsapi.controller;
 
-import com.lostitems.lostitemsapi.dto.FoundItExceptionResponse;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lostitems.lostitemsapi.dto.item.CreateItemRequestDto;
 import com.lostitems.lostitemsapi.dto.item.ItemOverviewCollection;
-import com.lostitems.lostitemsapi.dto.item.ItemOverviewDto;
 import com.lostitems.lostitemsapi.enumeration.ItemType;
-import com.lostitems.lostitemsapi.exception.FoundItCategoryNotFoundException;
-import com.lostitems.lostitemsapi.exception.FoundItInvalidItemInputDataException;
-import com.lostitems.lostitemsapi.exception.FoundItNotPremiumException;
 import com.lostitems.lostitemsapi.service.ItemService;
 import com.lostitems.lostitemsapi.utils.JwtTestUtils;
 import com.lostitems.lostitemsapi.utils.OffsetBasedPageRequest;
 import io.restassured.http.ContentType;
 import io.restassured.http.Header;
 import io.restassured.response.Response;
-import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Sort;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class ItemControllerTest extends BaseControllerTest {
@@ -126,36 +123,6 @@ public class ItemControllerTest extends BaseControllerTest {
     }
 
     @Test
-    public void testCreateItem_categoryDoesNotExist() {
-        CreateItemRequestDto requestBody = new CreateItemRequestDto(
-                null,
-                "non existent category",
-                null,
-                ItemType.FOUND,
-                "test",
-                "test",
-                33.533845,
-                -7.648460,
-                150.0
-        );
-
-        Response response =
-                given()
-                        .when()
-                        .header(new Header("Authorization", JwtTestUtils.DUMMY_TOKEN))
-                        .body(requestBody)
-                        .contentType(ContentType.JSON)
-                        .post(ITEM_CONTEXT_PATH)
-                        .then()
-                        .statusCode(404)
-                        .and()
-                        .extract()
-                        .response();
-
-        assertEquals("Category with name 'non existent category' not found", response.jsonPath().getString("message"));
-    }
-
-    @Test
     public void testCreateItem_invalidLatitude() {
         CreateItemRequestDto requestBody = new CreateItemRequestDto(
                 null,
@@ -164,8 +131,8 @@ public class ItemControllerTest extends BaseControllerTest {
                 ItemType.FOUND,
                 "test",
                 "test",
-                100,
-                -100,
+                100.0,
+                -100.0,
                 150.0
         );
 
@@ -194,8 +161,8 @@ public class ItemControllerTest extends BaseControllerTest {
                 ItemType.FOUND,
                 "test",
                 "test",
-                190,
-                -5,
+                190.0,
+                -5.0,
                 150.0
         );
 
@@ -219,13 +186,13 @@ public class ItemControllerTest extends BaseControllerTest {
     public void testCreateItem_validValues() {
         CreateItemRequestDto requestBody = new CreateItemRequestDto(
                 LocalDate.of(2021, 1, 1),
-                "categoryItem",
+                "Electronics",
                 null,
                 ItemType.LOST,
                 "test",
                 "test",
-                100,
-                -5,
+                100.0,
+                -5.0,
                 150.0
         );
 
@@ -264,6 +231,58 @@ public class ItemControllerTest extends BaseControllerTest {
 
         // cleanup in order to not affect other tests
         itemService.deleteItem(items.items.get(0).id());
+    }
+
+    @Test
+    public void testCreateItem_invalidCategory() {
+        CreateItemRequestDto requestBody = new CreateItemRequestDto(
+                null,
+                "not valid",
+                null,
+                ItemType.FOUND,
+                "test",
+                "test",
+                190.0,
+                -5.0,
+                150.0
+        );
+
+        Response response =
+                given()
+                        .when()
+                        .header(new Header("Authorization", JwtTestUtils.DUMMY_TOKEN))
+                        .body(requestBody)
+                        .contentType(ContentType.JSON)
+                        .post(ITEM_CONTEXT_PATH)
+                        .then()
+                        .statusCode(400)
+                        .and()
+                        .extract()
+                        .response();
+
+        List<String> errors = response.jsonPath().getList("errors", String.class);
+        assertEquals(1, errors.size());
+        assertEquals("Category not valid", errors.get(0));
+    }
+
+    @Test
+    public void testGetCategories() throws IOException {
+        Response response =
+                given()
+                        .when()
+                        .get(ITEM_CONTEXT_PATH + "/categories")
+                        .then()
+                        .statusCode(200)
+                        .and()
+                        .extract()
+                        .response();
+        ObjectMapper objectMapper = new ObjectMapper();
+        ClassPathResource resource = new ClassPathResource("assets/categories.json");
+        List<String> expectedCategories = objectMapper.readValue(resource.getInputStream(), new TypeReference<>() {});
+        List<String> actualCategories = response.jsonPath().getList("", String.class);
+        assertEquals(expectedCategories.size(), actualCategories.size());
+        assertTrue(expectedCategories.containsAll(actualCategories));
+        assertTrue(actualCategories.containsAll(expectedCategories));
     }
 
 }

@@ -13,9 +13,7 @@ public class ItemOverviewCollection {
     public List<ItemOverviewDto> items;
     public long totalResults;
     public int limit;
-
     public long count;
-
     public int offset;
     public boolean hasMore;
 

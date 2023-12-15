@@ -8,6 +8,7 @@ import com.lostitems.lostitemsapi.enumeration.ItemType;
 import com.lostitems.lostitemsapi.model.Item;
 import com.lostitems.lostitemsapi.service.ItemService;
 import com.lostitems.lostitemsapi.utils.OffsetBasedPageRequest;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -47,7 +48,7 @@ public class ItemController {
     @PreAuthorize("permitAll()")
     public ResponseEntity<ItemOverviewCollection>  getItems(
             @RequestParam(value = "category", required = false)
-            Optional<String> categoryName,
+            Optional<String> category,
             @RequestParam(value = "type", required = false)
             Optional<ItemType> itemType,
             @RequestParam(value = "text", required = false)
@@ -72,7 +73,7 @@ public class ItemController {
     )
     {
         ItemOverviewCollection items = itemService.getItems(
-                categoryName,
+                category,
                 itemType,
                 text,
                 dateLeft,
@@ -89,10 +90,17 @@ public class ItemController {
     @PreAuthorize("isAuthenticated()")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> createItem(
-            @RequestBody CreateItemRequestDto dto,
+            @Valid @RequestBody CreateItemRequestDto dto,
             @RequestHeader("Authorization") String token
             ) {
         UUID itemId = itemService.createItem(dto, token);
         return ResponseEntity.created(URI.create("/api/items/" + itemId.toString())).build();
+    }
+
+    @PreAuthorize("permitAll()")
+    @GetMapping(path = "/categories")
+    public ResponseEntity<List<String>> getCategories() {
+        List<String> categories = itemService.getCategories();
+        return ResponseEntity.ok(categories);
     }
 }
