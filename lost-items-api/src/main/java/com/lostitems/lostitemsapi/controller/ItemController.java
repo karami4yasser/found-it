@@ -65,6 +65,7 @@ public class ItemController {
             Optional<Double> range,
             @RequestParam(value = "returned", required = false)
             Optional<Boolean> returned,
+            @RequestHeader(value = "Authorization",required = false) Optional<String> jwt,
             @RequestParam(value = "limit", defaultValue = "10", required = false)  @Min(1)
             int limit,
             @RequestParam(value = "offset", defaultValue = "0", required = false)@Min(0)
@@ -82,6 +83,7 @@ public class ItemController {
                 longitude,
                 range,
                 returned,
+                jwt,
                 new OffsetBasedPageRequest(offset, limit, Sort.by(Sort.Direction.DESC, "postDate"))
         );
         return new ResponseEntity<>(items, HttpStatus.OK);

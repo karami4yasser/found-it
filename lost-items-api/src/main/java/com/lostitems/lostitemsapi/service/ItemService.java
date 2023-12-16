@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lostitems.lostitemsapi.dto.item.CreateItemRequestDto;
 import com.lostitems.lostitemsapi.dto.item.ItemOverviewCollection;
+import com.lostitems.lostitemsapi.dto.item.ItemOverviewDto;
 import com.lostitems.lostitemsapi.enumeration.ItemType;
 import com.lostitems.lostitemsapi.exception.FoundItException;
 import com.lostitems.lostitemsapi.exception.FoundItInvalidItemInputDataException;
@@ -12,6 +13,7 @@ import com.lostitems.lostitemsapi.exception.FoundItItemNotFoundException;
 import com.lostitems.lostitemsapi.exception.FoundItNotPremiumException;
 import com.lostitems.lostitemsapi.mapper.ItemMapper;
 import com.lostitems.lostitemsapi.model.Item;
+import com.lostitems.lostitemsapi.model.User;
 import com.lostitems.lostitemsapi.repository.ItemRepository;
 import com.lostitems.lostitemsapi.repository.specification.ItemSpecifications;
 import com.lostitems.lostitemsapi.security.JwtAuthUtils;
@@ -20,6 +22,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
@@ -56,6 +59,7 @@ public class ItemService {
             Optional<Double> longitude,
             Optional<Double> range,
             Optional<Boolean> returned,
+            Optional<String> jwt,
             Pageable pageable
     ) {
         // TODO: add tests for these three exceptions
@@ -76,8 +80,16 @@ public class ItemService {
         if (latitude.isPresent() && (latitude.get() > HaversineUtils.LATITUDE_BOUNDARY || latitude.get() < -HaversineUtils.LATITUDE_BOUNDARY)) {
             throw new FoundItInvalidItemInputDataException("Latitude is not valid");
         }
+        Optional<User> user = Optional.empty();
+        if(jwt.isPresent())
+        {
+            JwtAuthUtils.checkTokenValidity(jwt.get());
+            JwtAuthUtils.TokenUserInfo userInfo = JwtAuthUtils.getUserInfoFromToken(jwtDecoder, jwt.get());
+            user = Optional.of(userService.findUserById(userInfo.userId()));
 
-        Specification<Item> querySpec = getSpec(category, itemType, text, dateLeft, dateRight, latitude, longitude, range, returned);
+        }
+
+        Specification<Item> querySpec = getSpec(category, itemType, text, dateLeft, dateRight, latitude, longitude, range, returned,user);
 
         Page<Item> items = itemRepository.findAll(querySpec,pageable);
 
@@ -96,7 +108,8 @@ public class ItemService {
             Optional<Double> latitude,
             Optional<Double> longitude,
             Optional<Double> range,
-            Optional<Boolean> returned
+            Optional<Boolean> returned,
+            Optional<User> user
     ) {
         return and(
                 itemSpecifications.categoryFilter(category),
@@ -104,7 +117,8 @@ public class ItemService {
                 itemSpecifications.itemsTextContains(text,false),
                 itemSpecifications.timeFilter(dateLeft, dateRight),
                 itemSpecifications.nearLocation(latitude, longitude, range),
-                itemSpecifications.isReturned(returned)
+                itemSpecifications.isReturned(returned),
+                itemSpecifications.postedByUser(user)
         );
     }
 

@@ -1,18 +1,16 @@
 package com.lostitems.lostitemsapi.service;
 
-import com.lostitems.lostitemsapi.dto.SignInDto;
 import com.lostitems.lostitemsapi.dto.user.CreateUserRequestDto;
 import com.lostitems.lostitemsapi.dto.user.GetUserDetailsResponseDto;
+import com.lostitems.lostitemsapi.dto.user.UpdateUserRequestDto;
 import com.lostitems.lostitemsapi.exception.FoundItUserAlreadyExistException;
 import com.lostitems.lostitemsapi.exception.FoundItUserNotFoundException;
 import com.lostitems.lostitemsapi.mapper.UserMapper;
 import com.lostitems.lostitemsapi.model.User;
+import com.lostitems.lostitemsapi.repository.ItemRepository;
 import com.lostitems.lostitemsapi.repository.UserRepository;
-import com.lostitems.lostitemsapi.security.FoundItUserDetails;
 import com.lostitems.lostitemsapi.security.JwtAuthUtils;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
@@ -31,6 +29,8 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final JwtDecoder jwtDecoder;
     private final JwtEncoder jwtEncoder;
+    private final FeedbackService feedbackService;
+    private final ItemRepository itemRepository;
 
     protected Map<String, String> signInCreatedUser(User user) {
         Instant now = Instant.now();
@@ -87,6 +87,19 @@ public class UserService {
     public GetUserDetailsResponseDto getCurrentUserDetails(String jwt) {
         JwtAuthUtils.checkTokenValidity(jwt);
         JwtAuthUtils.TokenUserInfo userInfo = JwtAuthUtils.getUserInfoFromToken(jwtDecoder, jwt);
-        return userMapper.userToGetUserDetailsResponseDto(findUserById(userInfo.userId()));
+        GetUserDetailsResponseDto getUserDetailsResponseDto = userMapper.userToGetUserDetailsResponseDto(findUserById(userInfo.userId()));
+        getUserDetailsResponseDto.setFeedbackStatistics(feedbackService.getFeedbackStatisticsByUser((userInfo.userId())));
+        getUserDetailsResponseDto.setNumberOfPosts(itemRepository.countPostedItemsByUser(userInfo.userId()));
+        return getUserDetailsResponseDto;
+    }
+
+    public void updateUserDetails(String jwt, UpdateUserRequestDto dto) {
+        JwtAuthUtils.checkTokenValidity(jwt);
+        JwtAuthUtils.TokenUserInfo userInfo = JwtAuthUtils.getUserInfoFromToken(jwtDecoder, jwt);
+        User user = findUserById(userInfo.userId());
+        user.setPhone(dto.phone());
+        user.setFirstName(dto.firstName());
+        user.setLastName(dto.lastName());
+        userRepository.save(user);
     }
 }

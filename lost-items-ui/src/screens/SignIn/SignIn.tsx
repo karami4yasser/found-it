@@ -13,6 +13,7 @@ import { SigninApiCall } from "../../api/auth/SigninApiCall";
 import { useAuth } from "../../utils/AuthProvider";
 import Loading from "../Loading/Loading";
 import GoogleAuthButton from "../../components/GoogleAuthButton/GoogleAuthButton";
+import { validatingFieldsSignIn } from "../../utils/ValidationFields";
 
 export default function SignIn() {
   type SignInForm = {
@@ -41,7 +42,13 @@ export default function SignIn() {
     setShowPassword(!showPassword);
   };
   const handleSignIn = useCallback(async () => {
-    if (validatingFields()) {
+    if (
+      validatingFieldsSignIn({
+        signInForm: signInForm,
+        setPhoneNumberEmailHasError: setPhoneNumberEmailHasError,
+        setPasswordHasError: setPasswordHasError,
+      })
+    ) {
       setLoading(true);
       const AuthResponse = await SigninApiCall({
         emailOrPhone: signInForm.emailOrPhone,
@@ -76,52 +83,10 @@ export default function SignIn() {
       }
     }
   }, [signInForm]);
-  const validatingFields = () => {
-    let hasError = false;
-    //signInForm.email.length !== 10
-    if (signInForm.emailOrPhone === "") {
-      Toaster.show("This field is necessary!", 1500, true, COLORS.red);
-      setPhoneNumberEmailHasError(true);
-      hasError = true;
-    } else if (
-      !validPhoneNumber(signInForm.emailOrPhone) &&
-      !isValidEmail(signInForm.emailOrPhone)
-    ) {
-      Toaster.show(
-        "Invalid email address or phone number. Please enter a valid email or a 10-digit phone number!",
-        1500,
-        true,
-        COLORS.red
-      );
-      setPhoneNumberEmailHasError(true);
-      hasError = true;
-    } else {
-      setPhoneNumberEmailHasError(false);
-    }
-    if (signInForm.password === "" || signInForm.password.length < 6) {
-      Toaster.show("This field is necessary !", 1500, true, COLORS.red);
-      setPasswordHasError(true);
-      hasError = true;
-    } else {
-      setPasswordHasError(false);
-    }
 
-    return !hasError;
-  };
   const handleNavigateSignUp = () => {
     navigation.navigate("SignUp");
   };
-  function isValidEmail(input: string) {
-    // Regular expression for email validation
-    const emailRegex =
-      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@(([^<>()\[\]\\.,;:\s@"]+\.)+[^<>()\[\]\\.,;:\s@"]{2,})$/;
-    return emailRegex.test(input);
-  }
-  function validPhoneNumber(phoneNumber: string): boolean {
-    const emailRegex =
-      /^(00\d{1,3}( )?|\+\d{1,3}( )?)?((\(\d{1,3}\))|\d{1,3})[- .]?\d{3,4}[- .]?\d{4}$/g;
-    return emailRegex.test(phoneNumber);
-  }
   const setSignInFormItem = useCallback(
     (fieldName: string, value: any) => {
       setSignInForm((prevSignInForm) => ({

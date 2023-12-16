@@ -1,6 +1,8 @@
 import axios from "axios";
 
-export const GetCurrentUserDetailsApiCall = async (token: string) => {
+export const GetCurrentUserDetailsApiCall = async (
+  token: string
+): Promise<any> => {
   try {
     const response = await axios
       .get(process.env.EXPO_PUBLIC_API_BASE_URL + "/api/users/profile", {

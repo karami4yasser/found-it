@@ -1,12 +1,19 @@
 import axios from "axios";
-import { CreateUserApiCallBody } from "../../typing/user";
+import {
+  CreateUserApiCallBody,
+  UpdateUserApiCallBody,
+} from "../../typing/user";
 
-export const CreateUserApiCall = async (data: CreateUserApiCallBody) => {
+export const UpdateUserApiCall = async (
+  data: UpdateUserApiCallBody,
+  token: string
+) => {
   try {
     const response = await axios
-      .post(process.env.EXPO_PUBLIC_API_BASE_URL + "/api/users", data, {
+      .put(process.env.EXPO_PUBLIC_API_BASE_URL + "/api/users", data, {
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
       })
       .then((response) => response)

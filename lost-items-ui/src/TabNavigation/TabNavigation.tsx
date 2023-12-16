@@ -6,6 +6,8 @@ import Feed from "../screens/Feed/Feed";
 import { Notifications } from "../screens/Notifications/Notifications";
 import { Profile } from "../screens/Profile/Profile";
 import PostItem from "../screens/PostItem/PostItem";
+import { useAuth } from "../utils/AuthProvider";
+import SignIn from "../screens/SignIn/SignIn";
 
 //Screen names
 const feedName = "Feed";
@@ -13,9 +15,15 @@ const profileName = "Profile";
 const postName = "Post";
 const notificationsName = "Notifications";
 
+const signInName = "SignIn";
+
+const sighUpName = "SignUp";
+
 const Tab = createBottomTabNavigator();
 
 function TabNavigation() {
+  const currentUser = useAuth();
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -29,6 +37,8 @@ function TabNavigation() {
             iconName = focused ? "plus" : "plus";
           } else if (route.name === "Notifications") {
             iconName = focused ? "bell" : "bell-o";
+          } else if (route.name === "SignIn") {
+            iconName = focused ? "sign-in" : "sign-in";
           }
           // You can return any component that you like here!
           return (
@@ -44,21 +54,35 @@ function TabNavigation() {
         component={Feed}
         options={{ headerShown: false }}
       />
-      <Tab.Screen
-        name={postName}
-        component={PostItem}
-        options={{ headerShown: false }}
-      />
-      <Tab.Screen
-        name={notificationsName}
-        component={Notifications}
-        options={{ headerShown: false }}
-      />
-      <Tab.Screen
-        name={profileName}
-        component={Profile}
-        options={{ headerShown: false }}
-      />
+      {currentUser.accessToken && (
+        <>
+          <Tab.Screen
+            name={postName}
+            component={PostItem}
+            options={{ headerShown: false }}
+          />
+          <Tab.Screen
+            name={notificationsName}
+            component={Notifications}
+            options={{ headerShown: false }}
+          />
+          <Tab.Screen
+            name={profileName}
+            component={Profile}
+            options={{ headerShown: false }}
+          />
+        </>
+      )}
+
+      {!currentUser.accessToken && (
+        <>
+          <Tab.Screen
+            name={signInName}
+            component={SignIn}
+            options={{ headerShown: false }}
+          />
+        </>
+      )}
     </Tab.Navigator>
   );
 }

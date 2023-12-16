@@ -3,6 +3,7 @@ package com.lostitems.lostitemsapi.service;
 
 import com.lostitems.lostitemsapi.dto.item.CreateItemRequestDto;
 import com.lostitems.lostitemsapi.dto.item.ItemOverviewCollection;
+import com.lostitems.lostitemsapi.dto.item.ItemOverviewDto;
 import com.lostitems.lostitemsapi.enumeration.ItemType;
 import com.lostitems.lostitemsapi.exception.FoundItInvalidItemInputDataException;
 import com.lostitems.lostitemsapi.exception.FoundItNotPremiumException;
@@ -15,6 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Sort;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -41,6 +43,7 @@ public class ItemServiceTest extends BaseTest {
                 Optional.empty(),
                 Optional.empty(),
                 Optional.empty(),
+                Optional.empty(),
                 new OffsetBasedPageRequest(0, 10, Sort.by(Sort.Direction.DESC, "postDate"))
         );
         assertEquals(4, items.totalResults);
@@ -58,9 +61,10 @@ public class ItemServiceTest extends BaseTest {
                 Optional.empty(),
                 Optional.empty(),
                 Optional.empty(),
+                Optional.empty(),
                 new OffsetBasedPageRequest(0, 10, Sort.by(Sort.Direction.DESC, "postDate"))
         );
-        assertEquals(1, items.totalResults);
+        assertEquals(1,items.totalResults);
     }
 
     @Test
@@ -69,6 +73,7 @@ public class ItemServiceTest extends BaseTest {
                 Optional.empty(),
                 Optional.of(ItemType.FOUND),
                 Optional.of("I_DO_NOT_EXIST"),
+                Optional.empty(),
                 Optional.empty(),
                 Optional.empty(),
                 Optional.empty(),
@@ -92,6 +97,7 @@ public class ItemServiceTest extends BaseTest {
                 Optional.of(-7.648460),
                 Optional.of(200.0),
                 Optional.empty(),
+                Optional.empty(),
                 new OffsetBasedPageRequest(0, 10, Sort.by(Sort.Direction.DESC, "postDate"))
         );
         assertEquals(0, items.totalResults);
@@ -108,6 +114,7 @@ public class ItemServiceTest extends BaseTest {
                 Optional.of(33.533845),
                 Optional.of(-7.648460),
                 Optional.of(210.0),
+                Optional.empty(),
                 Optional.empty(),
                 new OffsetBasedPageRequest(0, 10, Sort.by(Sort.Direction.DESC, "postDate"))
         );
@@ -201,6 +208,7 @@ public class ItemServiceTest extends BaseTest {
                     Optional.empty(),
                     Optional.of(ItemType.LOST),
                     Optional.of("test"),
+                    Optional.empty(),
                     Optional.empty(),
                     Optional.empty(),
                     Optional.empty(),

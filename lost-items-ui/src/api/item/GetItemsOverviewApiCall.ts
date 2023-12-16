@@ -1,5 +1,6 @@
 import axios from "axios";
 import { ItemOverviewDto, ItemType } from "../../typing/item";
+import { useAuth } from "../../utils/AuthProvider";
 
 export type ItemFilterOptions = {
   category: string | null;
@@ -15,7 +16,8 @@ export type ItemFilterOptions = {
 
 export const GetItemsOverviewApiCall = async (
   requestParamsString: string,
-  offsetParams: number
+  offsetParams: number,
+  token: string | null
 ) => {
   let offsetParamsString = "";
   if (requestParamsString == "") {
@@ -23,11 +25,27 @@ export const GetItemsOverviewApiCall = async (
   } else {
     offsetParamsString = "&offset=" + offsetParams;
   }
-  const { data } = await axios.get(
-    process.env.EXPO_PUBLIC_API_BASE_URL +
-      "/api/items" +
-      requestParamsString +
-      offsetParamsString
-  );
-  return data;
+  if (token) {
+    const { data } = await axios.get(
+      process.env.EXPO_PUBLIC_API_BASE_URL +
+        "/api/items" +
+        requestParamsString +
+        offsetParamsString,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return data;
+  } else {
+    const { data } = await axios.get(
+      process.env.EXPO_PUBLIC_API_BASE_URL +
+        "/api/items" +
+        requestParamsString +
+        offsetParamsString
+    );
+    return data;
+  }
 };
