@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity } from "react-native";
 import RoundedButton from "../../components/RoundedButton/RoundedButton";
 import PasswordInputWithToggle from "../../components/PasswordInputWithToggle/PasswordInputWithToggle";
 import SignInStyle from "./SignIn.styles";
-import InputTextWithPurpleBackground from "../../components/InputTextWithPurpleBackground/InputTextWithPurpleBackground";
+import InputText from "../../components/InputText/InputText";
 import globalStyles from "../../styles/globalStyles";
 import { ParamListBase, useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -84,7 +84,7 @@ export default function SignIn() {
       setPhoneNumberEmailHasError(true);
       hasError = true;
     } else if (
-      !isValidPhoneNumber(signInForm.emailOrPhone) &&
+      !validPhoneNumber(signInForm.emailOrPhone) &&
       !isValidEmail(signInForm.emailOrPhone)
     ) {
       Toaster.show(
@@ -117,11 +117,10 @@ export default function SignIn() {
       /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@(([^<>()\[\]\\.,;:\s@"]+\.)+[^<>()\[\]\\.,;:\s@"]{2,})$/;
     return emailRegex.test(input);
   }
-  function isValidPhoneNumber(input: string) {
-    return (
-      input.length === 10 &&
-      Array.from(input).every((c) => c <= "9" && c >= "0")
-    );
+  function validPhoneNumber(phoneNumber: string): boolean {
+    const emailRegex =
+      /^(00\d{1,3}( )?|\+\d{1,3}( )?)?((\(\d{1,3}\))|\d{1,3})[- .]?\d{3,4}[- .]?\d{4}$/g;
+    return emailRegex.test(phoneNumber);
   }
   const setSignInFormItem = useCallback(
     (fieldName: string, value: any) => {
@@ -144,13 +143,12 @@ export default function SignIn() {
             <Text style={globalStyles.LargeTitle}>Sign In</Text>
           </View>
           <View style={SignInStyle.formContainer}>
-            <InputTextWithPurpleBackground
-              hasError={PhoneNumberEmailHasError}
-              currentValue={signInForm.emailOrPhone}
-              setValue={(value) => setSignInFormItem("emailOrPhone", value)}
-              placeholder="Email or Phone number"
-              type={"default"}
-            />
+            <InputText
+                hasError={PhoneNumberEmailHasError}
+                currentValue={signInForm.emailOrPhone}
+                setValue={(value) => setSignInFormItem("emailOrPhone", value)}
+                placeholder="Email or Phone number"
+                type={"default"} page={"signIn"}            />
             <PasswordInputWithToggle
               hasError={PasswordHasError}
               showPassword={showPassword}

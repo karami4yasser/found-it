@@ -16,14 +16,14 @@ import {
   MAX_NON_PREMIUM_ITEM_POST_RANGE,
 } from "../../utils/MapUtils";
 import SubmitButton from "../SubmitButton/SubmitButton";
-import styles from "./FoundItMap.styles";
+import styles from "./FounditMap.styles";
 
 export type FoundItMap = {
   itemType: ItemType | null;
   position: Coordinates;
   tar: number;
-  setTar: (tar: number | null) => void;
-  setPosition: (location: Coordinates | null) => void;
+  setTar: (tar: number) => void;
+  setPosition: (location: Coordinates) => void;
   closeMap: () => void;
 };
 
@@ -108,8 +108,8 @@ export default function FoundItMap(props: FoundItMap) {
             {props.itemType === null ? "All" : ""} Coordinates :
           </Text>
           <Text style={styles.mapSettingsKVValue}>
-            {tempPosition.latitude.toPrecision(5)},{" "}
-            {tempPosition.longitude.toPrecision(5)}
+            {tempPosition.latitude.toPrecision(9)},{" "}
+            {tempPosition.longitude.toPrecision(9)}
           </Text>
         </View>
         <View style={styles.mapSettingsPositionContainer}>

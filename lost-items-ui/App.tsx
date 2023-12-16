@@ -9,11 +9,14 @@ import SignUp from "./src/screens/SignUp/SignUp";
 import Loading from "./src/screens/Loading/Loading";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Feed from "./src/screens/Feed/Feed";
+import PostItem from "./src/screens/PostItem/PostItem";
+
 import { QueryClient, QueryClientProvider } from "react-query";
 import { SearchFilterProvider } from "./src/utils/SearchFilterProvider";
 import MoreFilters from "./src/screens/MoreFilters/MoreFilters";
 import TabNavigation from "./src/TabNavigation/TabNavigation";
 const queryClient = new QueryClient();
+
 export default function App() {
   const Stack = createNativeStackNavigator();
   return (

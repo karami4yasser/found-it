@@ -18,6 +18,7 @@ import { Coordinates } from "../../utils/MapUtils";
 import { useSearchFilter } from "../../utils/SearchFilterProvider";
 import { ParamListBase, useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+
 interface ITheme {
   mainColor: string;
   activeTextColor: string;
@@ -210,7 +211,7 @@ export function MoreFilter() {
                   handleDateLeftChange(date);
                 }}
                 headerButtonColor={theme?.mainColor}
-                selectedItemColor={"#6B240C"}
+                selectedItemColor={COLORS.tertiary}
                 // eslint-disable-next-line react-native/no-inline-styles
                 selectedTextStyle={{
                   fontWeight: "bold",
@@ -255,7 +256,7 @@ export function MoreFilter() {
                   handleDateRightChange(date);
                 }}
                 headerButtonColor={theme?.mainColor}
-                selectedItemColor={"#6B240C"}
+                selectedItemColor={COLORS.tertiary}
                 // eslint-disable-next-line react-native/no-inline-styles
                 selectedTextStyle={{
                   fontWeight: "bold",
@@ -312,7 +313,7 @@ export function MoreFilter() {
             style={MoreFilterStyle.iconCalendar}
           >
             <Icon.Map
-              color={"#6B240C"}
+              color={COLORS.tertiary}
               width={25 * factor}
               height={25 * factor}
               strokeWidth={3}
@@ -334,7 +335,7 @@ export function MoreFilter() {
             style={MoreFilterStyle.iconCalendar}
           >
             <Icon.Calendar
-              color={"#6B240C"}
+              color={COLORS.tertiary}
               width={25 * factor}
               height={25 * factor}
               strokeWidth={3}
@@ -352,7 +353,7 @@ export function MoreFilter() {
             style={MoreFilterStyle.iconCalendar}
           >
             <Icon.Calendar
-              color={"#6B240C"}
+              color={COLORS.tertiary}
               width={25 * factor}
               height={25 * factor}
               strokeWidth={3}

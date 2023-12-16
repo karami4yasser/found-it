@@ -5,7 +5,7 @@ import { COLORS } from "../styles/theme";
 import Feed from "../screens/Feed/Feed";
 import { Notifications } from "../screens/Notifications/Notifications";
 import { Profile } from "../screens/Profile/Profile";
-import { PostItem } from "../screens/PostItem/PostItem";
+import PostItem from "../screens/PostItem/PostItem";
 
 //Screen names
 const feedName = "Feed";
