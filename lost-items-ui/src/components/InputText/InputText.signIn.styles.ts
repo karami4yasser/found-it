@@ -22,7 +22,6 @@ const InputTextWithPurpleBackgroundStyles = StyleSheet.create({
       width: "80%",
       height: 40,
       borderColor: COLORS.red,
-      borderStyle: "dotted",
       borderWidth: 2,
       borderRadius: 5,
       marginBottom: 10,

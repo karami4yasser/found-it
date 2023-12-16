@@ -84,7 +84,7 @@ export default function SignIn() {
       setPhoneNumberEmailHasError(true);
       hasError = true;
     } else if (
-      !isValidPhoneNumber(signInForm.emailOrPhone) &&
+      !validPhoneNumber(signInForm.emailOrPhone) &&
       !isValidEmail(signInForm.emailOrPhone)
     ) {
       Toaster.show(
@@ -117,11 +117,10 @@ export default function SignIn() {
       /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@(([^<>()\[\]\\.,;:\s@"]+\.)+[^<>()\[\]\\.,;:\s@"]{2,})$/;
     return emailRegex.test(input);
   }
-  function isValidPhoneNumber(input: string) {
-    return (
-      input.length === 10 &&
-      Array.from(input).every((c) => c <= "9" && c >= "0")
-    );
+  function validPhoneNumber(phoneNumber: string): boolean {
+    const emailRegex =
+      /^(00\d{1,3}( )?|\+\d{1,3}( )?)?((\(\d{1,3}\))|\d{1,3})[- .]?\d{3,4}[- .]?\d{4}$/g;
+    return emailRegex.test(phoneNumber);
   }
   const setSignInFormItem = useCallback(
     (fieldName: string, value: any) => {

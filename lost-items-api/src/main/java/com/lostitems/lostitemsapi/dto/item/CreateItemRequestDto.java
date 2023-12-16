@@ -15,7 +15,7 @@ public record CreateItemRequestDto(
         @NotBlank(message = "Title should not be empty") String title,
         @NotBlank(message = "Description should not be empty") String description,
         @NotNull(message = "Longitude should not be null") Double longitude,
-        @NotNull(message = "Latitude should not be null") double latitude,
-        double range
+        @NotNull(message = "Latitude should not be null") Double latitude,
+        Double range
 ) {
 }

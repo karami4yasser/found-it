@@ -9,7 +9,7 @@ type InputTextPropsType = {
   currentValue: string;
   placeholder: string;
   type: any;
-  hasError: boolean;
+  hasError?: boolean;
   numberOfLines?: number;
   page: "postItem" | "signIn";
 };

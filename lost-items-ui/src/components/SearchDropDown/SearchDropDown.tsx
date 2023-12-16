@@ -13,11 +13,19 @@ export type DropDownProps = {
     options: string[];
     onOptionSelected: (option: string) => void;
     placeholder: string;
+    hasError?: boolean;
 }
 
 const Dropdown = (props: DropDownProps) => {
     const [searchText, setSearchText] = useState("");
     const [filteredOptions, setFilteredOptions] = useState(props.options);
+    const searchDropDownContainer = [styles.searchDropDownContainer];
+    const searchDropDownSearch = [styles.searchDropDownSearch];
+
+    if (props.hasError) {
+      searchDropDownContainer.push(styles.searchDropDownContainerError); //style for the red border
+      searchDropDownSearch.push(styles.searchDropDownSearchError); //style for the red border
+    }
   
     const filterOptions = (text) => {
       setSearchText(text);
@@ -40,12 +48,12 @@ const Dropdown = (props: DropDownProps) => {
           value={searchText}
           onChangeText={filterOptions}
           placeholder={props.placeholder}
-          style={styles.searchDropDownSearch}
+          style={searchDropDownSearch}
         />
           <FlatList
             data={filteredOptions}
             scrollEnabled={true}
-            style={styles.searchDropDownContainer}
+            style={searchDropDownContainer}
             renderItem={({ item }) => (
               <TouchableOpacity
                 onPress={() => onOptionPress(item)}
