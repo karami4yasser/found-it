@@ -30,9 +30,7 @@
                 <constraints nullable="false" notNullConstraintName="items-latitude-nn"/>
             </column>
             <column name="returned" type="BOOLEAN"/>
-            <column name="categoryId" type="UUID">
-                <constraints nullable="false" references="categories(id)" foreignKeyName="category-fk"/>
-            </column>
+            <column name="category" type="VARCHAR(255)"/>
             <column name="posterId" type="UUID">
                 <constraints nullable="false" references="users(id)" foreignKeyName="poster-fk"/>
             </column>

@@ -1,19 +1,21 @@
 package com.lostitems.lostitemsapi.dto.item;
 
 import com.lostitems.lostitemsapi.enumeration.ItemType;
+import com.lostitems.lostitemsapi.validation.constraints.FoundItCategory;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 
 public record CreateItemRequestDto(
-        @NotBlank(message = "Date should not be empty") LocalDate date, // found or lost date
-        String categoryName,
+        LocalDate date, // found or lost date
+        @FoundItCategory String category,
         String photo, // link to s3 object image
-        @NotBlank(message = "Type should not be empty") ItemType type,
+        @NotNull(message = "Type should not be null") ItemType type,
         @NotBlank(message = "Title should not be empty") String title,
         @NotBlank(message = "Description should not be empty") String description,
-        @NotBlank(message = "Longitude should not be empty") double longitude,
-        @NotBlank(message = "Latitude should not be empty") double latitude,
+        @NotNull(message = "Longitude should not be null") Double longitude,
+        @NotNull(message = "Latitude should not be null") double latitude,
         double range
 ) {
 }

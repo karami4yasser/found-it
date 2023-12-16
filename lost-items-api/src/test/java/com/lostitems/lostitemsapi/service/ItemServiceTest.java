@@ -3,9 +3,7 @@ package com.lostitems.lostitemsapi.service;
 
 import com.lostitems.lostitemsapi.dto.item.CreateItemRequestDto;
 import com.lostitems.lostitemsapi.dto.item.ItemOverviewCollection;
-import com.lostitems.lostitemsapi.dto.item.ItemOverviewDto;
 import com.lostitems.lostitemsapi.enumeration.ItemType;
-import com.lostitems.lostitemsapi.exception.FoundItCategoryNotFoundException;
 import com.lostitems.lostitemsapi.exception.FoundItInvalidItemInputDataException;
 import com.lostitems.lostitemsapi.exception.FoundItNotPremiumException;
 import com.lostitems.lostitemsapi.utils.BaseTest;
@@ -17,7 +15,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Sort;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -63,7 +60,7 @@ public class ItemServiceTest extends BaseTest {
                 Optional.empty(),
                 new OffsetBasedPageRequest(0, 10, Sort.by(Sort.Direction.DESC, "postDate"))
         );
-        assertEquals(1,items.totalResults);
+        assertEquals(1, items.totalResults);
     }
 
     @Test
@@ -81,28 +78,6 @@ public class ItemServiceTest extends BaseTest {
                 new OffsetBasedPageRequest(0, 10, Sort.by(Sort.Direction.DESC, "postDate"))
         );
         assertEquals(0,items.totalResults);
-    }
-
-    @Test
-    void itemServiceTest_getItems_CategoryDoesNotExist() {
-        FoundItCategoryNotFoundException exception =
-                assertThrows(
-                        FoundItCategoryNotFoundException.class, () -> {
-                            itemService.getItems(
-                                    Optional.of("non existent category"),
-                                    Optional.empty(),
-                                    Optional.empty(),
-                                    Optional.empty(),
-                                    Optional.empty(),
-                                    Optional.empty(),
-                                    Optional.empty(),
-                                    Optional.empty(),
-                                    Optional.empty(),
-                                    new OffsetBasedPageRequest(0, 10, Sort.by(Sort.Direction.DESC, "postDate"))
-
-                            );
-                        });
-        assertEquals("Category with name 'non existent category' not found",exception.getMessage());
     }
 
     @Test
@@ -161,28 +136,6 @@ public class ItemServiceTest extends BaseTest {
     }
 
     @Test
-    public void testCreateItem_categoryDoesNotExist() {
-        FoundItCategoryNotFoundException exception = assertThrows(FoundItCategoryNotFoundException.class, () -> {
-            itemService.createItem(
-                    new CreateItemRequestDto(
-                            null,
-                            "non existent category",
-                            null,
-                            ItemType.FOUND,
-                            "test",
-                            "test",
-                            33.533845,
-                            -7.648460,
-                            150.0
-                    ),
-                    JwtTestUtils.DUMMY_TOKEN
-            );
-        });
-
-        assertEquals("Category with name 'non existent category' not found", exception.getMessage());
-    }
-
-    @Test
     public void testCreateItem_invalidLatitude() {
         FoundItInvalidItemInputDataException exception = assertThrows(FoundItInvalidItemInputDataException.class, () -> {
             itemService.createItem(
@@ -193,8 +146,8 @@ public class ItemServiceTest extends BaseTest {
                             ItemType.FOUND,
                             "test",
                             "test",
-                            100,
-                            -100,
+                            100.0,
+                            -100.0,
                             150.0
                     ),
                     JwtTestUtils.DUMMY_TOKEN
@@ -215,8 +168,8 @@ public class ItemServiceTest extends BaseTest {
                             ItemType.FOUND,
                             "test",
                             "test",
-                            190,
-                            -5,
+                            190.0,
+                            -5.0,
                             150.0
                     ),
                     JwtTestUtils.DUMMY_TOKEN
@@ -232,13 +185,13 @@ public class ItemServiceTest extends BaseTest {
             itemService.createItem(
                     new CreateItemRequestDto(
                             LocalDate.of(2021, 1, 1),
-                            "categoryItem",
+                            "Electronics",
                             null,
                             ItemType.LOST,
                             "test",
                             "test",
-                            100,
-                            -5,
+                            100.0,
+                            -5.0,
                             150.0
                     ),
                     JwtTestUtils.DUMMY_TOKEN

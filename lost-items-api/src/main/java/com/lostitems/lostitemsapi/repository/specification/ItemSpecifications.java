@@ -1,7 +1,6 @@
 package com.lostitems.lostitemsapi.repository.specification;
 
 import com.lostitems.lostitemsapi.enumeration.ItemType;
-import com.lostitems.lostitemsapi.model.Category;
 import com.lostitems.lostitemsapi.model.Item;
 import com.lostitems.lostitemsapi.model.Item_;
 import com.lostitems.lostitemsapi.repository.criteria.Predicates;
@@ -52,7 +51,7 @@ public class ItemSpecifications {
     }
 
     
-    public Specification<Item> categoryFilter( Optional<Category> categoryTypeOpt){
+    public Specification<Item> categoryFilter( Optional<String> categoryTypeOpt){
         return categoryTypeOpt
                 .map(s -> (Specification<Item>) (itemRoot, query, cb) -> cb.equal(itemRoot.get(Item_.category),s))
                 .orElse(trueSpec());
