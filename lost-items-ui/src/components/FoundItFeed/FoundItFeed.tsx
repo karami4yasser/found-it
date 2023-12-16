@@ -6,33 +6,28 @@ import React, { useState } from "react";
 import { useInfiniteQueryCustom } from "../../utils/useInfiniteQueryCustom";
 import Loading from "../../screens/Loading/Loading";
 import { useSearchFilter } from "../../utils/SearchFilterProvider";
+import { UseInfiniteQueryResult } from "react-query";
+import { ItemOverviewCollection } from "../../typing/item";
 
-export default function FoundItFeed() {
+type FoundItFeedProps = {
+  result: UseInfiniteQueryResult<ItemOverviewCollection, Error>;
+};
+
+export default function FoundItFeed({ result }: FoundItFeedProps) {
   const { width, height } = Dimensions.get("window");
   const factor = width * height > 600000 ? 2 : 1;
-  const itemFilterOptions = useSearchFilter();
-
-  const {
-    isLoading,
-    data,
-    hasNextPage,
-    fetchNextPage,
-    isFetchingNextPage,
-    isError,
-    error,
-  } = useInfiniteQueryCustom(itemFilterOptions.itemFilterOptionsState);
 
   const handleFunction = () => {
     console.log("clicked");
   };
 
   const handleEndReached = () => {
-    if (!isLoading && hasNextPage) {
-      fetchNextPage();
+    if (!result.isLoading && result.hasNextPage) {
+      result.fetchNextPage();
     }
   };
 
-  if (isLoading)
+  if (result.isLoading)
     return (
       <View
         style={{
@@ -45,11 +40,11 @@ export default function FoundItFeed() {
       </View>
     );
 
-  if (isError) return <Text>{error.message}</Text>;
+  if (result.isError) return <Text>{result.error.message}</Text>;
 
   return (
     <FlashList
-      data={data?.pages.flatMap((page) => page.items)}
+      data={result.data?.pages.flatMap((page) => page.items)}
       contentContainerStyle={{
         padding: 10 * factor,
         paddingBottom: 50,
@@ -68,7 +63,7 @@ export default function FoundItFeed() {
       onEndReachedThreshold={0.8}
       ListEmptyComponent={() => <Text>NO DATA</Text>}
       ListFooterComponent={() =>
-        isFetchingNextPage ? (
+        result.isFetchingNextPage ? (
           <ActivityIndicator
             style={{
               marginTop: 10,

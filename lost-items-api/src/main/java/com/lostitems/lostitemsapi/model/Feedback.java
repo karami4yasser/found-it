@@ -28,7 +28,7 @@ public class Feedback {
     @Column(name = "rating", nullable = false)
     @Min(1)
     @Max(5)
-    private Short rating;
+    private Float rating;
 
     @Column(name = "comment")
     private String comment;

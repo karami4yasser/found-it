@@ -13,15 +13,15 @@ import { CreateUserApiCall } from "../../api/user/CreateUserApiCall";
 import Toaster from "../../utils/Toaster";
 import { useAuth } from "../../utils/AuthProvider";
 import GoogleAuthButton from "../../components/GoogleAuthButton/GoogleAuthButton";
+import { validatingFieldsSignUp } from "../../utils/ValidationFields";
 
+export type SignUpForm = {
+  firstName: string;
+  lastName: string;
+  phone: string;
+  password: string;
+};
 export default function SignUp() {
-  type SignUpForm = {
-    firstName: string;
-    lastName: string;
-    phone: string;
-    password: string;
-  };
-
   const [signUpForm, setSignUpForm] = useState<SignUpForm>({
     firstName: "",
     lastName: "",
@@ -48,7 +48,15 @@ export default function SignUp() {
     });
   };
   const handleSignUp = useCallback(async () => {
-    if (validatingFields()) {
+    if (
+      validatingFieldsSignUp({
+        createUserDetailsForm: signUpForm,
+        setFirstNameHasError: setFirstNameHasError,
+        setLastNameHasError: setLastNameHasError,
+        setphoneHasError: setPhoneNumberHasError,
+        setPasswordHasError: setPasswordHasError,
+      })
+    ) {
       setLoading(true);
       const createUserResponse = await CreateUserApiCall({
         firstName: signUpForm.firstName,
@@ -69,6 +77,11 @@ export default function SignUp() {
           true,
           COLORS.green
         );
+        currentUser.setTheUserDetails(
+          signUpForm.firstName,
+          signUpForm.lastName,
+          signUpForm.phone
+        );
         navigateToRout("TabNavigation");
       } else if (createUserResponse.status === 409) {
         setLoading(false);
@@ -84,71 +97,6 @@ export default function SignUp() {
       }
     }
   }, [signUpForm]);
-
-  const validatingFields = () => {
-    let hasError = false;
-    // Minimum and maximum length validation for First Name (e.g., between 2 and 30 characters).
-    if (
-      signUpForm.firstName === "" ||
-      signUpForm.firstName.length < 2 ||
-      signUpForm.firstName.length > 30
-    ) {
-      Toaster.show(
-        "First Name should be between 2 and 30 characters",
-        1500,
-        true,
-        COLORS.red
-      );
-      setFirstNameHasError(true);
-      hasError = true;
-    } else {
-      setFirstNameHasError(false);
-    }
-
-    // Minimum and maximum length validation for Last Name (e.g., between 2 and 30 characters).
-    if (
-      signUpForm.lastName === "" ||
-      signUpForm.lastName.length < 2 ||
-      signUpForm.lastName.length > 30
-    ) {
-      Toaster.show(
-        "Last Name should be between 2 and 30 characters",
-        1500,
-        true,
-        COLORS.red
-      );
-      setLastNameHasError(true);
-      hasError = true;
-    } else {
-      setLastNameHasError(false);
-    }
-    if (!validPhoneNumber(signUpForm.phone)) {
-      Toaster.show("Phone number is not valid", 1500, true, COLORS.red);
-      setPhoneNumberHasError(true);
-      hasError = true;
-    } else {
-      setPhoneNumberHasError(false);
-    }
-    if (signUpForm.password === "" || signUpForm.password.length < 6) {
-      Toaster.show(
-        "Password must be at least 6 characters",
-        1500,
-        true,
-        COLORS.red
-      );
-      setPasswordHasError(true);
-      hasError = true;
-    } else {
-      setPasswordHasError(false);
-    }
-
-    return !hasError;
-  };
-  function validPhoneNumber(phoneNumber: string): boolean {
-    const emailRegex =
-      /^(00\d{1,3}( )?|\+\d{1,3}( )?)?((\(\d{1,3}\))|\d{1,3})[- .]?\d{3,4}[- .]?\d{4}$/g;
-    return emailRegex.test(phoneNumber);
-  }
 
   const setSignUpFormItem = useCallback(
     (fieldName: string, value: any) => {

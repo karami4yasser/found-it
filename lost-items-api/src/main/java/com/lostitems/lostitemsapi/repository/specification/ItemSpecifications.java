@@ -3,6 +3,7 @@ package com.lostitems.lostitemsapi.repository.specification;
 import com.lostitems.lostitemsapi.enumeration.ItemType;
 import com.lostitems.lostitemsapi.model.Item;
 import com.lostitems.lostitemsapi.model.Item_;
+import com.lostitems.lostitemsapi.model.User;
 import com.lostitems.lostitemsapi.repository.criteria.Predicates;
 import com.lostitems.lostitemsapi.repository.criteria.SpecificationUtils;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -76,6 +77,12 @@ public class ItemSpecifications {
                     root.get(Item_.range), root.get(Item_.latitude), root.get(Item_.longitude), builder.literal(inputLatitude).as(Double.class), builder.literal(inputLongitude).as(Double.class));
             return builder.lessThanOrEqualTo(distanceBetweenTwoPoints, distanceInM);
         };
+    }
+
+    public Specification<Item> postedByUser( Optional<User> userOpt) {
+        return userOpt
+                .map(s -> (Specification<Item>) (itemRoot, query, cb) -> cb.equal(itemRoot.get(Item_.poster), s))
+                .orElse(trueSpec());
     }
 }
 

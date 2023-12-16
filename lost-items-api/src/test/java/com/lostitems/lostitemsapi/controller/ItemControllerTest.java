@@ -220,6 +220,7 @@ public class ItemControllerTest extends BaseControllerTest {
                 Optional.empty(),
                 Optional.empty(),
                 Optional.empty(),
+                Optional.empty(),
                 new OffsetBasedPageRequest(0, 1, Sort.by(Sort.Direction.DESC, "postDate"))
         );
 

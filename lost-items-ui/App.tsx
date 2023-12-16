@@ -15,6 +15,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { SearchFilterProvider } from "./src/utils/SearchFilterProvider";
 import MoreFilters from "./src/screens/MoreFilters/MoreFilters";
 import TabNavigation from "./src/TabNavigation/TabNavigation";
+import { EditProfile } from "./src/screens/EditProfile/EditProfile";
 const queryClient = new QueryClient();
 
 export default function App() {
@@ -47,6 +48,11 @@ export default function App() {
                   <Stack.Screen
                     name="MoreFilters"
                     component={MoreFilters}
+                    options={{ headerShown: false, headerLeft: () => null }}
+                  />
+                  <Stack.Screen
+                    name="EditProfile"
+                    component={EditProfile}
                     options={{ headerShown: false, headerLeft: () => null }}
                   />
                 </Stack.Navigator>

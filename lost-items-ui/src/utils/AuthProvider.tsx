@@ -8,6 +8,14 @@ type AuthContextType = {
   setTheRefreshToken: (refreshToken: string) => void;
   clearTokens: () => void;
   autoRefreshAccessToken: (refreshToken: string) => Promise<boolean>;
+  userFirstName: string | any;
+  userLastName: string | any;
+  userPhoneNumber: string | any;
+  setTheUserDetails: (
+    userFirstName: string,
+    userLastName: string,
+    userPhoneNumber: string
+  ) => void;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -17,6 +25,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 }) => {
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [refreshToken, setRefreshToken] = useState<string | null>(null);
+
+  const [userFirstName, setUserFirstName] = useState<string | null>(null);
+  const [userLastName, setUserLastName] = useState<string | null>(null);
+  const [userPhoneNumber, setUserPhoneNumber] = useState<string | null>(null);
 
   const setTheAccessToken = (newAccessToken: string) => {
     setAccessToken(newAccessToken);
@@ -31,6 +43,17 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     setAccessToken(null);
     setRefreshToken(null);
   };
+
+  const setTheUserDetails = (
+    userFirstName: string,
+    userLastName: string,
+    userPhoneNumber: string
+  ) => {
+    setUserFirstName(userFirstName);
+    setUserLastName(userLastName);
+    setUserPhoneNumber(userPhoneNumber);
+  };
+
   const autoRefreshAccessToken = async (
     refreshToken: string
   ): Promise<boolean> => {
@@ -70,6 +93,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         setTheRefreshToken,
         clearTokens,
         autoRefreshAccessToken,
+        userFirstName,
+        userLastName,
+        userPhoneNumber,
+        setTheUserDetails,
       }}
     >
       {children}

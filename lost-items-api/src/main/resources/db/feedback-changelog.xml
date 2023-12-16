@@ -22,4 +22,7 @@
             </column>
         </createTable>
     </changeSet>
+    <changeSet id="modify-rating-dataType" author="Yasser Karami">
+        <modifyDataType tableName="feedbacks" columnName="rating" newDataType="Float"/>
+    </changeSet>
 </databaseChangeLog>
