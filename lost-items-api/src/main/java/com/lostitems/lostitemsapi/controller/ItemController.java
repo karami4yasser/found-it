@@ -2,32 +2,22 @@ package com.lostitems.lostitemsapi.controller;
 
 
 import com.lostitems.lostitemsapi.dto.item.CreateItemRequestDto;
+import com.lostitems.lostitemsapi.dto.item.ItemDetailsDto;
 import com.lostitems.lostitemsapi.dto.item.ItemOverviewCollection;
-import com.lostitems.lostitemsapi.dto.item.ItemOverviewDto;
 import com.lostitems.lostitemsapi.enumeration.ItemType;
-import com.lostitems.lostitemsapi.model.Item;
 import com.lostitems.lostitemsapi.service.ItemService;
 import com.lostitems.lostitemsapi.utils.OffsetBasedPageRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.time.LocalDate;
@@ -104,5 +94,14 @@ public class ItemController {
     public ResponseEntity<List<String>> getCategories() {
         List<String> categories = itemService.getCategories();
         return ResponseEntity.ok(categories);
+    }
+
+    @GetMapping(value ="/{id}" , produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("permitAll()")
+    public ResponseEntity<ItemDetailsDto>  getItem(
+            @PathVariable UUID id
+    ) {
+        ItemDetailsDto item = itemService.getItem(id);
+        return new ResponseEntity<>(item, HttpStatus.OK);
     }
 }

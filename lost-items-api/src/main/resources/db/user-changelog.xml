@@ -25,4 +25,9 @@
             <column name="email" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
+    <changeSet id="add-user-photo" author="Yasser Karami">
+        <addColumn tableName="users">
+            <column name="photo" type="VARCHAR(255)"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

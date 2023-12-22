@@ -2,10 +2,11 @@ package com.lostitems.lostitemsapi.service;
 
 
 import com.lostitems.lostitemsapi.dto.item.CreateItemRequestDto;
+import com.lostitems.lostitemsapi.dto.item.ItemDetailsDto;
 import com.lostitems.lostitemsapi.dto.item.ItemOverviewCollection;
-import com.lostitems.lostitemsapi.dto.item.ItemOverviewDto;
 import com.lostitems.lostitemsapi.enumeration.ItemType;
 import com.lostitems.lostitemsapi.exception.FoundItInvalidItemInputDataException;
+import com.lostitems.lostitemsapi.exception.FoundItItemNotFoundException;
 import com.lostitems.lostitemsapi.exception.FoundItNotPremiumException;
 import com.lostitems.lostitemsapi.utils.BaseTest;
 import com.lostitems.lostitemsapi.utils.JwtTestUtils;
@@ -16,13 +17,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Sort;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class ItemServiceTest extends BaseTest {
@@ -225,5 +223,22 @@ public class ItemServiceTest extends BaseTest {
             // cleanup in order to not affect other tests
             itemService.deleteItem(items.items.get(0).id());
         });
+    }
+
+    @Test
+    void itemServiceTest_getItem_Exist() {
+        ItemDetailsDto itemDetailsDto = itemService.getItem(UUID.fromString("0ebacabc-83fa-11ee-b962-0242ac120001"));
+        assertEquals("userXf userXl",itemDetailsDto.getPosterFullName());
+        assertEquals("+212602394387",itemDetailsDto.getPosterPhoneNumber());
+        assertEquals("0ebacabc-83fa-11ee-b962-0242ac120001",itemDetailsDto.getId().toString());
+    }
+
+    @Test
+    void itemServiceTest_getItem_Not_Exist() {
+        FoundItItemNotFoundException exception = assertThrows(FoundItItemNotFoundException.class,()-> {
+            itemService.getItem(UUID.randomUUID());
+        });
+
+        assertEquals("Item was not found",exception.getMessage());
     }
 }

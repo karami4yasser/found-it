@@ -21,3 +21,22 @@ export type ItemOverviewCollection = {
   offset: number;
   hasMore: Boolean;
 };
+
+export type ItemDetailsDto = {
+  id: string;
+  date: string;
+  postDate: string;
+  type: ItemType;
+  title: string;
+  description: string;
+  image: string;
+  latitude: number;
+  longitude: number;
+  range: number;
+
+  posterFullName: string;
+  posterPhoneNumber: string;
+  posterImage: string;
+
+  returned: Boolean;
+};

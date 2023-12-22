@@ -1,7 +1,9 @@
-import { Image, Text, View } from "react-native";
+import { Image, Pressable, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
 import ItemStyle from "./Item.styles";
 import { ItemOverviewDto } from "../../typing/item";
+import { ParamListBase, useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 type ItemProps = {
   itemOverviewDto: ItemOverviewDto;
@@ -9,8 +11,17 @@ type ItemProps = {
 };
 
 export default function Item(props: ItemProps) {
+  const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
+
   return (
-    <View style={ItemStyle.container}>
+    <TouchableOpacity
+      style={ItemStyle.container}
+      onPress={() =>
+        navigation.navigate("ItemDetailScreen", {
+          itemId: props.itemOverviewDto.id,
+        })
+      }
+    >
       <View style={ItemStyle.imageContainer}>
         <Image
           //source={{ uri: props.itemOverviewDto.image }}
@@ -38,6 +49,6 @@ export default function Item(props: ItemProps) {
           </Text>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 }
