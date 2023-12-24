@@ -86,6 +86,7 @@ export default function ItemDetail(props: ItemDetailProps) {
             style={ItemDetailsStyle.itemImage}
           />
         </View>
+
         <View style={ItemDetailsStyle.textDetailsContainer}>
           <View
             style={{
@@ -93,7 +94,7 @@ export default function ItemDetail(props: ItemDetailProps) {
               justifyContent: "space-between",
             }}
           >
-            <Text numberOfLines={2} style={ItemDetailsStyle.textBigBlack}>
+            <Text numberOfLines={4} style={ItemDetailsStyle.textBigBlack}>
               {itemDetails?.title}
             </Text>
             <Text style={ItemDetailsStyle.textSmallTertiary}>
@@ -107,6 +108,15 @@ export default function ItemDetail(props: ItemDetailProps) {
             </Text>
           </View>
         </View>
+        <View
+          style={{
+            flex: 2,
+            marginVertical: factor == 1 ? 20 : 60,
+            marginHorizontal: factor == 1 ? 40 : 60,
+            borderBottomColor: COLORS.tertiary,
+            borderWidth: 0.5,
+          }}
+        />
         <View style={ItemDetailsStyle.extraInfoDetailsContainer}>
           <View>
             <Text style={ItemDetailsStyle.textItemState}>
@@ -114,7 +124,7 @@ export default function ItemDetail(props: ItemDetailProps) {
             </Text>
             <TouchableOpacity
               style={{
-                paddingBottom: 20,
+                marginBottom: factor == 1 ? 18 : 50,
               }}
               onPress={() => {
                 setShowMap(true);
@@ -122,8 +132,8 @@ export default function ItemDetail(props: ItemDetailProps) {
             >
               <Icon.Map
                 color={COLORS.tertiary}
-                width={25 * factor}
-                height={25 * factor}
+                width={factor == 1 ? 25 : 70}
+                height={factor == 1 ? 25 : 70}
                 strokeWidth={3}
               />
             </TouchableOpacity>
@@ -134,19 +144,29 @@ export default function ItemDetail(props: ItemDetailProps) {
               marginLeft: "10%",
             }}
           >
-            <Text style={ItemDetailsStyle.textSmallBlack}>
+            <Text style={ItemDetailsStyle.textItemValue}>
               in {itemDetails?.date}
             </Text>
-            <Text style={ItemDetailsStyle.textSmallBlack}>Show in Map</Text>
-            <Text style={ItemDetailsStyle.textSmallBlack}>
+            <Text style={ItemDetailsStyle.textItemValue}>Show in Map</Text>
+            <Text style={ItemDetailsStyle.textItemValue}>
               {itemDetails?.returned ? "Returned" : "Available"}
             </Text>
           </View>
         </View>
+        <View
+          style={{
+            flex: 2,
+            marginVertical: factor == 1 ? 20 : 60,
+            marginHorizontal: factor == 1 ? 40 : 60,
+            borderBottomColor: COLORS.tertiary,
+            borderWidth: 0.5,
+          }}
+        />
         <View style={ItemDetailsStyle.userContactContainer}>
           <View
             style={{
               flexDirection: "column",
+              alignItems: "center",
             }}
           >
             <Image

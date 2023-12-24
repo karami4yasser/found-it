@@ -5,7 +5,7 @@ import { COLORS } from "../../styles/theme";
 import { Colors } from "react-native/Libraries/NewAppScreen";
 const ItemDetailsStyle = StyleSheet.create({
   itemImageContainer: {
-    marginTop: 120 * factor,
+    marginTop: 100 * factor,
     marginBottom: 30,
     alignSelf: "center",
   },
@@ -15,16 +15,17 @@ const ItemDetailsStyle = StyleSheet.create({
   },
   textDetailsContainer: {
     flexDirection: "column",
-    marginHorizontal: 40,
-    borderBottomColor: COLORS.tertiary,
+    marginHorizontal: factor == 1 ? 40 : 60,
+    /*     borderBottomColor: COLORS.tertiary,
     borderBottomWidth: 1,
-    paddingBottom: 30,
+    paddingBottom: 30, */
   },
   textBigBlack: {
-    fontSize: 17,
+    fontSize: factor == 1 ? 17 : 25,
     fontWeight: "700",
     color: COLORS.black,
     flex: 1,
+    marginBottom: factor == 1 ? 10 : 25,
   },
   textBigTertiary: {
     fontSize: 17,
@@ -33,13 +34,13 @@ const ItemDetailsStyle = StyleSheet.create({
     flex: 2,
   },
   textSmallTertiary: {
-    fontSize: 15,
+    fontSize: factor == 1 ? 15 : 20,
     fontWeight: "700",
     color: COLORS.tertiary,
     flex: 1,
   },
   textSmallBlack: {
-    fontSize: 15,
+    fontSize: factor == 1 ? 15 : 20,
     fontWeight: "500",
     color: COLORS.black,
     flex: 1,
@@ -47,7 +48,7 @@ const ItemDetailsStyle = StyleSheet.create({
 
   extraInfoDetailsContainer: {
     flexDirection: "row",
-    marginHorizontal: 40,
+    marginLeft: factor == 1 ? 40 : 60,
     paddingTop: 10,
   },
 
@@ -60,10 +61,10 @@ const ItemDetailsStyle = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    borderTopColor: COLORS.tertiary,
+    /*     borderTopColor: COLORS.tertiary,
     borderTopWidth: 1,
-    paddingTop: 5,
-    marginHorizontal: 40,
+    paddingTop: 5, */
+    marginHorizontal: factor == 1 ? 40 : 60,
   },
   button: {
     backgroundColor: COLORS.tertiary,
@@ -78,8 +79,8 @@ const ItemDetailsStyle = StyleSheet.create({
     fontWeight: "500",
   },
   userImage: {
-    width: factor == 1 ? 56 : 360,
-    height: factor == 1 ? 56 : 360,
+    width: factor == 1 ? 56 : 120,
+    height: factor == 1 ? 56 : 120,
     borderRadius: 100,
     flex: 2,
   },
@@ -90,17 +91,18 @@ const ItemDetailsStyle = StyleSheet.create({
     marginTop: "20%",
   },
   textItemState: {
-    fontSize: 18,
-    fontWeight: "700",
+    fontSize: factor == 1 ? 18 : 30,
+    fontWeight: "500",
     color: COLORS.tertiary,
-
-    paddingBottom: 20,
+    marginBottom: factor == 1 ? 18 : 50,
+    flex: 1,
   },
   textItemValue: {
-    fontSize: 16,
+    fontSize: factor == 1 ? 18 : 30,
     fontWeight: "500",
     color: COLORS.black,
-    paddingBottom: 20,
+    marginBottom: factor == 1 ? 18 : 50,
+    flex: 1,
   },
 });
 
