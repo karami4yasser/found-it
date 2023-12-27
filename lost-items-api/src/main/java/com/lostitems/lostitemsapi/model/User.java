@@ -43,6 +43,9 @@ public class User {
     @Column(name = "password", nullable = false)
     private String password;
 
+    @Column(name = "photo")
+    private String photo;
+
     @OneToMany(
             targetEntity = Item.class,
             fetch = FetchType.LAZY,

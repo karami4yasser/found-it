@@ -25,6 +25,7 @@ export type FoundItMap = {
   setTar: (tar: number) => void;
   setPosition: (location: Coordinates) => void;
   closeMap: () => void;
+  immutable: boolean;
 };
 
 export default function FoundItMap(props: FoundItMap) {
@@ -58,6 +59,7 @@ export default function FoundItMap(props: FoundItMap) {
 
   const handleClickMap = useCallback(
     (event: MapPressEvent) => {
+      if (props.immutable) return;
       setTempPosition(event.nativeEvent.coordinate);
     },
     [setTempPosition]
@@ -97,6 +99,7 @@ export default function FoundItMap(props: FoundItMap) {
           radius={tempTar}
         />
       </MapView>
+
       <View style={styles.mapSettingsContainer}>
         <View style={styles.mapSettingsTitleContainer}>
           <Text style={styles.mapSettingsTitleText}>Select Location</Text>
@@ -116,34 +119,37 @@ export default function FoundItMap(props: FoundItMap) {
           <Text style={styles.mapSettingsKVKey}>TAR :</Text>
           <Text style={styles.mapSettingsKVValue}>{tempTar} m</Text>
         </View>
-        {/* Did not include premium for now since we don't have it, will add it in the future */}
-        <View style={styles.mapSettingsTARContainer}>
-          <View style={styles.mapSettingsTarBoundries}>
-            <Text style={styles.mapSettingsTarBoundryValue}>0 m</Text>
-            <Text style={styles.mapSettingsTarBoundryValue}>
-              {props.itemType === ItemType.FOUND
-                ? MAX_ITEM_POST_RANGE
-                : MAX_NON_PREMIUM_ITEM_POST_RANGE}{" "}
-              m
-            </Text>
+        {!props.immutable && (
+          <View style={styles.mapSettingsTARContainer}>
+            <View style={styles.mapSettingsTarBoundries}>
+              <Text style={styles.mapSettingsTarBoundryValue}>0 m</Text>
+              <Text style={styles.mapSettingsTarBoundryValue}>
+                {props.itemType === ItemType.FOUND
+                  ? MAX_ITEM_POST_RANGE
+                  : MAX_NON_PREMIUM_ITEM_POST_RANGE}{" "}
+                m
+              </Text>
+            </View>
+            <Slider
+              style={styles.mapSettingsTARSlider}
+              minimumValue={0}
+              maximumValue={
+                props.itemType === ItemType.FOUND
+                  ? MAX_ITEM_POST_RANGE
+                  : MAX_NON_PREMIUM_ITEM_POST_RANGE
+              }
+              minimumTrackTintColor={COLORS.tertiary}
+              maximumTrackTintColor={COLORS.grayLight}
+              step={1}
+              value={props.tar}
+              onValueChange={handleTarSliderChange}
+            />
           </View>
-          <Slider
-            style={styles.mapSettingsTARSlider}
-            minimumValue={0}
-            maximumValue={
-              props.itemType === ItemType.FOUND
-                ? MAX_ITEM_POST_RANGE
-                : MAX_NON_PREMIUM_ITEM_POST_RANGE
-            }
-            minimumTrackTintColor={COLORS.tertiary}
-            maximumTrackTintColor={COLORS.grayLight}
-            step={1}
-            value={props.tar}
-            onValueChange={handleTarSliderChange}
-          />
-        </View>
+        )}
+        {/* Did not include premium for now since we don't have it, will add it in the future */}
+
         <SubmitButton
-          name="Save Position"
+          name={props.immutable ? "Close Map" : "Save Position"}
           handleFunction={handleSavePosition}
         />
       </View>

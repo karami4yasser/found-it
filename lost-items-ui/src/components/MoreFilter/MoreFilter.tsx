@@ -179,6 +179,7 @@ export function MoreFilter() {
             tar={itemTAR ? itemTAR : 0}
             setTar={setItemTAR}
             closeMap={handleSaveLocation}
+            immutable={false}
           />
         </View>
       )}

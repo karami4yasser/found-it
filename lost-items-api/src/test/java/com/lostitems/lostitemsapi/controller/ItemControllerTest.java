@@ -3,6 +3,7 @@ package com.lostitems.lostitemsapi.controller;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lostitems.lostitemsapi.dto.item.CreateItemRequestDto;
+import com.lostitems.lostitemsapi.dto.item.ItemDetailsDto;
 import com.lostitems.lostitemsapi.dto.item.ItemOverviewCollection;
 import com.lostitems.lostitemsapi.enumeration.ItemType;
 import com.lostitems.lostitemsapi.service.ItemService;
@@ -284,6 +285,23 @@ public class ItemControllerTest extends BaseControllerTest {
         assertEquals(expectedCategories.size(), actualCategories.size());
         assertTrue(expectedCategories.containsAll(actualCategories));
         assertTrue(actualCategories.containsAll(expectedCategories));
+    }
+
+    @Test
+    void testGetItems_ItemById() {
+        ItemDetailsDto response = given().when().get(ITEM_CONTEXT_PATH + "/0ebacabc-83fa-11ee-b962-0242ac120001")
+                .then()
+                .statusCode(200)
+                .and()
+                .extract()
+                .response()
+                .body()
+                .as(ItemDetailsDto.class);
+        assertEquals("userXf userXl",response.getPosterFullName());
+        assertEquals("+212602394387",response.getPosterPhoneNumber());
+        assertEquals("0ebacabc-83fa-11ee-b962-0242ac120001",response.getId().toString());
+
+
     }
 
 }

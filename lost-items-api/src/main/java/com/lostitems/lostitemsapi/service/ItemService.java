@@ -4,8 +4,8 @@ package com.lostitems.lostitemsapi.service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lostitems.lostitemsapi.dto.item.CreateItemRequestDto;
+import com.lostitems.lostitemsapi.dto.item.ItemDetailsDto;
 import com.lostitems.lostitemsapi.dto.item.ItemOverviewCollection;
-import com.lostitems.lostitemsapi.dto.item.ItemOverviewDto;
 import com.lostitems.lostitemsapi.enumeration.ItemType;
 import com.lostitems.lostitemsapi.exception.FoundItException;
 import com.lostitems.lostitemsapi.exception.FoundItInvalidItemInputDataException;
@@ -22,11 +22,11 @@ import lombok.AllArgsConstructor;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import java.io.IOException;
@@ -41,6 +41,7 @@ import static com.lostitems.lostitemsapi.repository.criteria.SpecificationUtils.
 @Service
 @Validated
 @AllArgsConstructor
+@Transactional
 public class ItemService {
 
     private final ItemRepository itemRepository;
@@ -168,5 +169,17 @@ public class ItemService {
         } catch (IOException e) {
             throw new FoundItException("Cannot read categories", HttpStatusCode.valueOf(500));
         }
+    }
+
+    public ItemDetailsDto getItem(UUID itemId) {
+
+        Item item = itemRepository.findById(itemId).orElseThrow(
+                FoundItItemNotFoundException::new
+        );
+        ItemDetailsDto itemDetailsDto = itemMapper.itemToItemDetailsDto(item);
+        itemDetailsDto.setPosterFullName(item.getPoster().getFirstName() + " " + item.getPoster().getLastName());
+        itemDetailsDto.setPosterImage(item.getPoster().getPhoto());
+        itemDetailsDto.setPosterPhoneNumber(item.getPoster().getPhone());
+        return itemDetailsDto;
     }
 }
