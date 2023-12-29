@@ -15,12 +15,26 @@ import MoreFilters from "./src/screens/MoreFilters/MoreFilters";
 import TabNavigation from "./src/TabNavigation/TabNavigation";
 import { EditProfile } from "./src/screens/EditProfile/EditProfile";
 import ItemDetailScreen from "./src/screens/ItemDetail/ItemDetail";
-const queryClient = new QueryClient();
+import AddFeedback from "./src/screens/AddFeedback/AddFeedback";
+import Report from "./src/screens/Report/Report";
+import Reviews from "./src/screens/Reviews/Reviews";
+
 export type RootStackParamList = {
+  AddFeedback: { userId: string };
+  Report: { userId: string };
+  Reviews: { userId: string };
+  SignUp: undefined;
+  TabNavigation: undefined;
+  MoreFilters: undefined;
+  Loading: undefined;
+  EditProfile: undefined;
   ItemDetailScreen: { itemId: string };
 };
+
+const queryClient = new QueryClient();
+
 export default function App() {
-  const Stack = createNativeStackNavigator();
+  const Stack = createNativeStackNavigator<RootStackParamList>();
   return (
     <QueryClientProvider client={queryClient}>
       <SafeAreaView style={{ flex: 1 }}>
@@ -31,8 +45,13 @@ export default function App() {
                 <StatusBar style="auto" />
                 <Stack.Navigator initialRouteName="TabNavigation">
                   <Stack.Screen
-                    name="SignIn"
-                    component={SignIn}
+                    name="AddFeedback"
+                    component={AddFeedback}
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen
+                    name="Report"
+                    component={Report}
                     options={{ headerShown: false }}
                   />
                   <Stack.Screen
@@ -54,6 +73,11 @@ export default function App() {
                   <Stack.Screen
                     name="EditProfile"
                     component={EditProfile}
+                    options={{ headerShown: false, headerLeft: () => null }}
+                  />
+                  <Stack.Screen
+                    name="Reviews"
+                    component={Reviews}
                     options={{ headerShown: false, headerLeft: () => null }}
                   />
                   <Stack.Screen

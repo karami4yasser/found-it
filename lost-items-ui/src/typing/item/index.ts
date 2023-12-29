@@ -40,3 +40,20 @@ export type ItemDetailsDto = {
 
   returned: Boolean;
 };
+
+export type GetUserFeedbackItemDto = {
+  raterId: string;
+  rating: number;
+  comment: string;
+  raterName: string;
+  raterImage: string;
+};
+
+export type FeedbackCollection = {
+  feedbacks: GetUserFeedbackItemDto[];
+  totalResults: number;
+  limit: number;
+  count: number;
+  offset: number;
+  hasMore: Boolean;
+};

@@ -1,12 +1,13 @@
-import { GetItemsOverviewApiCall } from "../api/item/GetItemsOverviewApiCall";
-import { ItemOverviewCollection } from "../typing/item";
-import { generateQueryString } from "./FeedUtils";
+import { GetItemsOverviewApiCall } from "./GetItemsOverviewApiCall";
+import { ItemOverviewCollection } from "../../typing/item";
+import { generateQueryString } from "../../utils/FeedUtils";
 import { useInfiniteQuery } from "react-query";
-import { State, useSearchFilter } from "./SearchFilterProvider";
+import { State, useSearchFilter } from "../../utils/SearchFilterProvider";
 
-export const useInfiniteQueryCustom = (
+export const getItemsInfiniteQuery = (
   itemFilterOptions: State,
-  token: string | null
+  token: string | null,
+  userId: string | null,
 ) => {
   const s = useSearchFilter();
   const queryString = generateQueryString(itemFilterOptions);
@@ -14,7 +15,7 @@ export const useInfiniteQueryCustom = (
   return useInfiniteQuery<ItemOverviewCollection, Error>(
     ["items", itemFilterOptions, s.setItemTypeFilter],
     ({ pageParam = 0 }) =>
-      GetItemsOverviewApiCall(queryString, pageParam, token),
+      GetItemsOverviewApiCall(queryString, pageParam, token, userId),
     {
       getNextPageParam: (lastPage) =>
         lastPage.hasMore ? lastPage.offset + lastPage.limit : null,

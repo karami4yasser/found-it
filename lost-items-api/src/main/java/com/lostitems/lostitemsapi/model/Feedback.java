@@ -11,8 +11,10 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Entity
@@ -31,7 +33,11 @@ public class Feedback {
     private Float rating;
 
     @Column(name = "comment")
+    @Size(max = 4096)
     private String comment;
+
+    @Column(name = "date")
+    private LocalDate date;
 
     @ManyToOne(
             targetEntity = User.class,

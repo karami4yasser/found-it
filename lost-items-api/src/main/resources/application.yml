@@ -11,6 +11,9 @@ server:
   port: 8400
 
 spring:
+  main:
+    allow-circular-references: true
+
   autoconfigure:
     exclude: org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
   application:

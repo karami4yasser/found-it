@@ -65,7 +65,7 @@ const ProfileDetailsStyle = StyleSheet.create({
     alignItems: "center",
   },
   button: {
-    flex: 4,
+    flex: 7,
     backgroundColor: COLORS.tertiary,
     alignItems: "center",
     borderRadius: 20,
@@ -85,6 +85,9 @@ const ProfileDetailsStyle = StyleSheet.create({
     borderBottomWidth: factor == 1 ? 1 : 3,
     borderColor: "#CBC4C4",
   },
+  buttonsContainer : {
+    flex: 1,
+  }
 });
 
 export default ProfileDetailsStyle;

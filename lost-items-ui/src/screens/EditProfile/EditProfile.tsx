@@ -1,4 +1,3 @@
-import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 import { ParamListBase, useNavigation } from "@react-navigation/native";
 import React, { useCallback, useState } from "react";
 import { Image, SafeAreaView, Text, View } from "react-native";
@@ -6,10 +5,9 @@ import EditProfileStyle from "./EditProfile.styles";
 import * as Icon from "react-native-feather";
 import { FontAwesome } from "@expo/vector-icons"; // You might need to install the FontAwesome package
 
-import { bigFactor, factor } from "../../utils/stylesUtils";
+import { factor } from "../../utils/stylesUtils";
 import { COLORS, SIZES } from "../../styles/theme";
 import { TouchableOpacity } from "react-native";
-import PasswordInputWithToggle from "../../components/PasswordInputWithToggle/PasswordInputWithToggle";
 import { UpdateUserApiCall } from "../../api/user/UpdateUserApiCall";
 import { useAuth } from "../../utils/AuthProvider";
 import Toaster from "../../utils/Toaster";

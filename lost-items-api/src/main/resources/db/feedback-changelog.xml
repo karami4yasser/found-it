@@ -25,4 +25,9 @@
     <changeSet id="modify-rating-dataType" author="Yasser Karami">
         <modifyDataType tableName="feedbacks" columnName="rating" newDataType="Float"/>
     </changeSet>
+    <changeSet id="add-date" author="Mimoun Ghordou">
+        <addColumn tableName="feedbacks">
+            <column name="date" type="DATE" />
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

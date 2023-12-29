@@ -2,10 +2,7 @@ import { FlashList } from "@shopify/flash-list";
 import Item from "../Item/Item";
 import { ActivityIndicator, Dimensions, Text, View } from "react-native";
 import { COLORS } from "../../styles/theme";
-import React, { useState } from "react";
-import { useInfiniteQueryCustom } from "../../utils/useInfiniteQueryCustom";
-import Loading from "../../screens/Loading/Loading";
-import { useSearchFilter } from "../../utils/SearchFilterProvider";
+import React from "react";
 import { UseInfiniteQueryResult } from "react-query";
 import { ItemOverviewCollection } from "../../typing/item";
 

@@ -5,7 +5,7 @@ import Search from "../../components/Search/Search";
 
 import FoundItFeed from "../../components/FoundItFeed/FoundItFeed";
 import { useSearchFilter } from "../../utils/SearchFilterProvider";
-import { useInfiniteQueryCustom } from "../../utils/useInfiniteQueryCustom";
+import { getItemsInfiniteQuery } from "../../api/item/GetItemsInfiniteQuery";
 
 export default function Feed() {
   console.log("feed render");
@@ -14,8 +14,9 @@ export default function Feed() {
     LogBox.ignoreLogs(["AxiosError: Network Error"]);
   }, []);
   const itemFilterOptions = useSearchFilter();
-  const result = useInfiniteQueryCustom(
+  const result = getItemsInfiniteQuery(
     itemFilterOptions.itemFilterOptionsState,
+    null,
     null
   );
 

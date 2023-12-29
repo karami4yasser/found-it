@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.24.xsd"
+>
+    <changeSet id="create-report-table" author="Mimoun Ghordou">
+        <createTable tableName="reports">
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="report-pk"/>
+            </column>
+            <column name="title" type="VARCHAR(255)" >
+                <constraints nullable="false" notNullConstraintName="report-title-not-null"/>
+            </column>
+            <column name="comment" type="VARCHAR(4095)" >
+                <constraints nullable="false" notNullConstraintName="report-comment-not-null"/>
+            </column>
+            <column name="reporterUserId" type="UUID">
+                <constraints nullable="false" references="users(id)" foreignKeyName="reporter-fk"/>
+            </column>
+            <column name="reportedUserId" type="UUID">
+                <constraints nullable="false" references="users(id)" foreignKeyName="reported-fk"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>
