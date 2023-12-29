@@ -1,12 +1,9 @@
 import React, { useCallback, useEffect, useState } from "react";
 import {
   ActivityIndicator,
-  Button,
   Image,
-  Pressable,
   SafeAreaView,
   Text,
-  TouchableHighlight,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -23,6 +20,7 @@ import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { isTokenExpired } from "../../utils/isTokenExpired";
 import Toaster from "../../utils/Toaster";
+import { FontAwesome } from '@expo/vector-icons';
 
 type ProfileDetailsProps = {
   setState: React.Dispatch<React.SetStateAction<State>>;
@@ -44,58 +42,57 @@ export function ProfileDetails({ setState, state, userId }: ProfileDetailsProps)
     });
   };
   const fetchUserDetails = useCallback(async () => {
-    if (currentUser.accessToken !== null && currentUser.refreshToken !== "") {
-      try {
-        if (isTokenExpired(currentUser.accessToken)) {
-          if (
-            !(await currentUser.autoRefreshAccessToken(
-              currentUser.refreshToken
-            ))
-          ) {
-            navigateToRout("SignIn");
-          }
-        }
-        setIsLoading(true);
-        const response = await GetCurrentUserDetailsApiCall(
-          currentUser.accessToken
-        );
-
-        if (response.status === 200) {
-          setUser(response.data);
-          currentUser.setTheUserDetails(
-            response.data.firstName,
-            response.data.lastName,
-            response.data.phone
-          );
-          setIsLoading(false);
-        } else if (response.status === 401) {
-          Toaster.show(response.data.message, 1500, true, COLORS.red);
-          setIsError(true);
-          setIsLoading(false);
+    try {
+      if (currentUser.accessToken !== null && currentUser.refreshToken !== "" && isTokenExpired(currentUser.accessToken)) {
+        if (
+          !(await currentUser.autoRefreshAccessToken(
+            currentUser.refreshToken
+          ))
+        ) {
           navigateToRout("SignIn");
-        } else if (response.status === 404) {
-          Toaster.show(response.data.message, 1500, true, COLORS.red);
-          setIsError(true);
-          setIsLoading(false);
-          navigateToRout("SignUp");
-        } else if (response.status === 400) {
-          setIsError(true);
-          setIsLoading(false);
-          response.data.errors.forEach((err: any) => {
-            Toaster.show(err, 1500, true, COLORS.red);
-          });
-        } else {
-          setIsError(true);
-          setIsLoading(false);
-          Toaster.show("User error!", 1500, true, COLORS.red);
         }
-      } catch (error) {
+      }
+      setIsLoading(true);
+      const response = await GetCurrentUserDetailsApiCall(
+        currentUser.accessToken,
+        userId
+      );
+
+      if (response.status === 200) {
+        setUser(response.data);
+        currentUser.setTheUserDetails(
+          response.data.firstName,
+          response.data.lastName,
+          response.data.phone
+        );
+        setIsLoading(false);
+      } else if (response.status === 401) {
+        Toaster.show(response.data.message, 1500, true, COLORS.red);
         setIsError(true);
         setIsLoading(false);
-        Toaster.show("User error Error!", 1500, true, COLORS.red);
+        navigateToRout("SignIn");
+      } else if (response.status === 404) {
+        Toaster.show(response.data.message, 1500, true, COLORS.red);
+        setIsError(true);
+        setIsLoading(false);
+        navigateToRout("SignUp");
+      } else if (response.status === 400) {
+        setIsError(true);
+        setIsLoading(false);
+        response.data.errors.forEach((err: any) => {
+          Toaster.show(err, 1500, true, COLORS.red);
+        });
+      } else {
+        setIsError(true);
+        setIsLoading(false);
+        Toaster.show("User error!", 1500, true, COLORS.red);
       }
+    } catch (error) {
+      setIsError(true);
+      setIsLoading(false);
+      Toaster.show("User error Error!", 1500, true, COLORS.red);
     }
-  }, []);
+  }, [userId, currentUser.accessToken, currentUser.refreshToken]);
 
   useEffect(() => {
     fetchUserDetails();
@@ -103,6 +100,16 @@ export function ProfileDetails({ setState, state, userId }: ProfileDetailsProps)
 
   return (
     <SafeAreaView style={ProfileDetailsStyle.mainContainer}>
+      {userId ?
+        <View style={ProfileDetailsStyle.closeContainer}>
+          <FontAwesome
+            name={"close"}
+            size={30 * factor}
+            color={COLORS.black}
+            onPress={() => navigationStack.goBack()}
+          />
+        </View>
+        : undefined}
       <View style={ProfileDetailsStyle.imageAndName}>
         <View style={ProfileDetailsStyle.imageContaier}>
           <Image
@@ -186,7 +193,7 @@ export function ProfileDetails({ setState, state, userId }: ProfileDetailsProps)
       </View>
       <View style={ProfileDetailsStyle.buttonsContainer}>
         {
-          userId ? (
+          userId && currentUser.accessToken && currentUser.accessToken !== "" ? (
             <View style={ProfileDetailsStyle.editOrCreateButtons}>
               <TouchableOpacity
                 style={ProfileDetailsStyle.button}
@@ -206,7 +213,7 @@ export function ProfileDetails({ setState, state, userId }: ProfileDetailsProps)
                 <Text style={ProfileDetailsStyle.buttonText}> Report</Text>
               </TouchableOpacity>
             </View>
-          ) :
+          ) : userId ? undefined :
             (
               <View style={ProfileDetailsStyle.editOrCreateButtons}>
                 <TouchableOpacity
@@ -235,7 +242,7 @@ export function ProfileDetails({ setState, state, userId }: ProfileDetailsProps)
             style={ProfileDetailsStyle.button}
             onPress={() => console.log("All posts")}
           >
-            <Text style={ProfileDetailsStyle.buttonText}>All Posts</Text> 
+            <Text style={ProfileDetailsStyle.buttonText}>All Posts</Text>
           </TouchableOpacity>
           <View
             style={{

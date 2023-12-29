@@ -17,7 +17,6 @@ export const GetFeedbacksRequestApiCall = async (
     return (await axios
       .get(process.env.EXPO_PUBLIC_API_BASE_URL + "/api/feedbacks/" + userId + "?limit=10&offset=" + offset, {
         headers: {
-          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
       })).data;

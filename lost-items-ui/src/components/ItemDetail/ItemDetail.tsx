@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import {
   Image,
   Linking,
-  SafeAreaView,
   ScrollView,
   Text,
   TouchableOpacity,
@@ -15,13 +14,15 @@ import { GetItemDetailsDtoApiCall } from "../../api/item/GetItemDetailsDtoApiCal
 import { factor, height, width } from "../../utils/stylesUtils";
 import ItemDetailsStyle from "./ItemDetail.styles";
 import * as Icon from "react-native-feather";
-import Separator from "../Separator/Separator";
 import { FontAwesome } from "@expo/vector-icons";
 import FoundItMap from "../FoundItMap/FoundItMap";
-type ItemDetailProps = {
-  itemId: string;
-};
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../../../App";
+
+type ItemDetailProps = NativeStackScreenProps<RootStackParamList, 'ItemDetailScreen'>;
+
 export default function ItemDetail(props: ItemDetailProps) {
+  const itemId = props.route.params?.itemId;
   console.log("ItemDetail render");
 
   const [loading, setLoading] = useState<boolean>(true);
@@ -29,11 +30,11 @@ export default function ItemDetail(props: ItemDetailProps) {
 
   /* const auth = useAuth() if the user post is the current user don't show contact options  */
 
-  const [itemDetails, setItemDetails] = useState<ItemDetailsDto | null>(null);
+  const [itemDetails, setItemDetails] = useState<ItemDetailsDto>();
 
   useEffect(() => {
     (async () => {
-      const response = await GetItemDetailsDtoApiCall(props.itemId);
+      const response = await GetItemDetailsDtoApiCall(itemId);
       if (response.status === 200) {
         setItemDetails(response.data);
         setLoading(false);
@@ -69,15 +70,23 @@ export default function ItemDetail(props: ItemDetailProps) {
               latitude: itemDetails?.latitude ? itemDetails.latitude : 1,
               longitude: itemDetails?.longitude ? itemDetails.longitude : 1,
             }}
-            setPosition={() => {}}
+            setPosition={() => { }}
             tar={itemDetails?.range ? itemDetails.range : 0}
-            setTar={() => {}}
+            setTar={() => { }}
             closeMap={handleCloseMap}
             immutable={true}
           />
         </View>
       )}
       <ScrollView style={{ flex: 1 }}>
+        <View style={ItemDetailsStyle.closeContainer}>
+          <FontAwesome
+            name={"close"}
+            size={30 * factor}
+            color={COLORS.black}
+            onPress={() => props.navigation.goBack()}
+          />
+        </View>
         <View style={ItemDetailsStyle.itemImageContainer}>
           <Image
             source={{
@@ -180,9 +189,11 @@ export default function ItemDetail(props: ItemDetailProps) {
               {itemDetails?.posterFullName}
             </Text>
           </View>
-          <View style={ItemDetailsStyle.button}>
-            <Text style={ItemDetailsStyle.buttonText}>Contact</Text>
-          </View>
+          <TouchableOpacity
+            style={ItemDetailsStyle.button}
+            onPress={() => props.navigation.navigate("Profile", { userId: itemDetails!.userId })}>
+            <Text style={ItemDetailsStyle.buttonText}>See Profile</Text>
+          </TouchableOpacity>
 
           <TouchableOpacity
             onPress={() =>

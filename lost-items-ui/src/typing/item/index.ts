@@ -33,7 +33,7 @@ export type ItemDetailsDto = {
   latitude: number;
   longitude: number;
   range: number;
-
+  userId: string;
   posterFullName: string;
   posterPhoneNumber: string;
   posterImage: string;

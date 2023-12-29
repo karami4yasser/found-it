@@ -27,7 +27,7 @@ public class ItemDetailsDto {
     private Double latitude;
     private Double range;
     private Boolean returned;
-
+    private UUID userId;
     private String posterFullName;
     private String posterPhoneNumber;
     private String posterImage;

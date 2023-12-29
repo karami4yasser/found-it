@@ -18,6 +18,7 @@ import ItemDetailScreen from "./src/screens/ItemDetail/ItemDetail";
 import AddFeedback from "./src/screens/AddFeedback/AddFeedback";
 import Report from "./src/screens/Report/Report";
 import Reviews from "./src/screens/Reviews/Reviews";
+import { Profile } from "./src/screens/Profile/Profile";
 
 export type RootStackParamList = {
   AddFeedback: { userId: string };
@@ -29,6 +30,7 @@ export type RootStackParamList = {
   Loading: undefined;
   EditProfile: undefined;
   ItemDetailScreen: { itemId: string };
+  Profile: { userId: string };
 };
 
 const queryClient = new QueryClient();
@@ -86,6 +88,12 @@ export default function App() {
                       ItemDetailScreen
                     } /* it needs some initial props :) (if it is workng dont tach it @maimoun) */
                     options={{ headerShown: false, headerLeft: () => null }}
+                  />
+                  <Stack.Screen
+                    name={"Profile"}
+                    component={Profile}
+                    options={{ headerShown: false }}
+                    initialParams={{ userId: undefined }}
                   />
                 </Stack.Navigator>
               </NavigationContainer>

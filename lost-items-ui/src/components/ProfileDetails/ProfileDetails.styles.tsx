@@ -87,7 +87,15 @@ const ProfileDetailsStyle = StyleSheet.create({
   },
   buttonsContainer : {
     flex: 1,
-  }
+  },
+  closeContainer: {
+    flex: .1,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    position: "absolute",
+    left: "-10%",
+    top: "-20%",
+  },
 });
 
 export default ProfileDetailsStyle;

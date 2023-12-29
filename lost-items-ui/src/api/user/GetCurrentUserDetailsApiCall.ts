@@ -1,10 +1,12 @@
 import axios from "axios";
 
 export const GetCurrentUserDetailsApiCall = async (
-  token: string
+  token: string,
+  userId?: string
 ): Promise<any> => {
   try {
-    const response = await axios
+    if (!userId) {
+      return await axios
       .get(process.env.EXPO_PUBLIC_API_BASE_URL + "/api/users/profile", {
         headers: {
           "Content-Type": "application/json",
@@ -13,7 +15,16 @@ export const GetCurrentUserDetailsApiCall = async (
       })
       .then((response) => response)
       .catch((err) => err.response);
-    return response;
+    } else {
+      return await axios
+      .get(process.env.EXPO_PUBLIC_API_BASE_URL + `/api/users/profile/${userId}`, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      .then((response) => response)
+      .catch((err) => err.response);
+    }
   } catch (error) {
     console.error("API request error:", error);
     return null;

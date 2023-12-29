@@ -180,6 +180,7 @@ public class ItemService {
         itemDetailsDto.setPosterFullName(item.getPoster().getFirstName() + " " + item.getPoster().getLastName());
         itemDetailsDto.setPosterImage(item.getPoster().getPhoto());
         itemDetailsDto.setPosterPhoneNumber(item.getPoster().getPhone());
+        itemDetailsDto.setUserId(item.getPoster().getId());
         return itemDetailsDto;
     }
 }
