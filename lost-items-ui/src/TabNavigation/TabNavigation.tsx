@@ -9,17 +9,21 @@ import PostItem from "../screens/PostItem/PostItem";
 import { useAuth } from "../utils/AuthProvider";
 import SignIn from "../screens/SignIn/SignIn";
 
+export type TabRootStackParamList = {
+  Profile: { userId: string };
+  Feed: undefined;
+  Post: undefined;
+  SignIn: undefined;
+  Notifications: undefined;
+};
+
 //Screen names
 const feedName = "Feed";
 const profileName = "Profile";
 const postName = "Post";
 const notificationsName = "Notifications";
-
 const signInName = "SignIn";
-
-const sighUpName = "SignUp";
-
-const Tab = createBottomTabNavigator();
+const Tab = createBottomTabNavigator<TabRootStackParamList>();
 
 function TabNavigation() {
   const currentUser = useAuth();
@@ -70,6 +74,7 @@ function TabNavigation() {
             name={profileName}
             component={Profile}
             options={{ headerShown: false }}
+            initialParams={{ userId: undefined }}
           />
         </>
       )}

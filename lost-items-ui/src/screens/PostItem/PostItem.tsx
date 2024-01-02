@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Image, LogBox, ScrollView, Text, View } from "react-native";
-import styles, { bigFactor, factor } from "./PostItem.styles";
+import styles, { factor } from "./PostItem.styles";
 import SwitchSelector from "react-native-switch-selector";
 import { COLORS } from "../../styles/theme";
 import { ItemType } from "../../typing/item";

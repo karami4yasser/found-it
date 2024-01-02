@@ -11,6 +11,7 @@ import com.lostitems.lostitemsapi.repository.ItemRepository;
 import com.lostitems.lostitemsapi.repository.UserRepository;
 import com.lostitems.lostitemsapi.security.JwtAuthUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
@@ -29,8 +30,13 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final JwtDecoder jwtDecoder;
     private final JwtEncoder jwtEncoder;
-    private final FeedbackService feedbackService;
     private final ItemRepository itemRepository;
+    private FeedbackService feedbackService;
+
+    @Autowired
+    public void setFeedbackService(FeedbackService feedbackService) {
+        this.feedbackService = feedbackService;
+    }
 
     protected Map<String, String> signInCreatedUser(User user) {
         Instant now = Instant.now();
@@ -87,10 +93,7 @@ public class UserService {
     public GetUserDetailsResponseDto getCurrentUserDetails(String jwt) {
         JwtAuthUtils.checkTokenValidity(jwt);
         JwtAuthUtils.TokenUserInfo userInfo = JwtAuthUtils.getUserInfoFromToken(jwtDecoder, jwt);
-        GetUserDetailsResponseDto getUserDetailsResponseDto = userMapper.userToGetUserDetailsResponseDto(findUserById(userInfo.userId()));
-        getUserDetailsResponseDto.setFeedbackStatistics(feedbackService.getFeedbackStatisticsByUser((userInfo.userId())));
-        getUserDetailsResponseDto.setNumberOfPosts(itemRepository.countPostedItemsByUser(userInfo.userId()));
-        return getUserDetailsResponseDto;
+        return getUserDetails(userInfo.userId());
     }
 
     public void updateUserDetails(String jwt, UpdateUserRequestDto dto) {
@@ -101,5 +104,12 @@ public class UserService {
         user.setFirstName(dto.firstName());
         user.setLastName(dto.lastName());
         userRepository.save(user);
+    }
+
+    public GetUserDetailsResponseDto getUserDetails(UUID userId) {
+        GetUserDetailsResponseDto getUserDetailsResponseDto = userMapper.userToGetUserDetailsResponseDto(findUserById(userId));
+        getUserDetailsResponseDto.setFeedbackStatistics(feedbackService.getFeedbackStatisticsByUser((userId)));
+        getUserDetailsResponseDto.setNumberOfPosts(itemRepository.countPostedItemsByUser(userId));
+        return getUserDetailsResponseDto;
     }
 }

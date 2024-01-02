@@ -65,7 +65,7 @@ const ProfileDetailsStyle = StyleSheet.create({
     alignItems: "center",
   },
   button: {
-    flex: 4,
+    flex: 7,
     backgroundColor: COLORS.tertiary,
     alignItems: "center",
     borderRadius: 20,
@@ -84,6 +84,17 @@ const ProfileDetailsStyle = StyleSheet.create({
     justifyContent: "space-between",
     borderBottomWidth: factor == 1 ? 1 : 3,
     borderColor: "#CBC4C4",
+  },
+  buttonsContainer : {
+    flex: 1,
+  },
+  closeContainer: {
+    flex: .1,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    position: "absolute",
+    left: "-10%",
+    top: "-20%",
   },
 });
 

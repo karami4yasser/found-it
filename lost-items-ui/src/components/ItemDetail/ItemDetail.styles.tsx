@@ -71,7 +71,7 @@ const ItemDetailsStyle = StyleSheet.create({
     alignItems: "center",
     borderRadius: 20,
     padding: 10,
-    maxWidth: 250,
+    paddingHorizontal: 20,
   },
   buttonText: {
     color: COLORS.white,
@@ -103,6 +103,14 @@ const ItemDetailsStyle = StyleSheet.create({
     color: COLORS.black,
     marginBottom: factor == 1 ? 18 : 50,
     flex: 1,
+  },
+  closeContainer: {
+    flex: .1,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    position: "absolute",
+    left: "5%",
+    top: "5%",
   },
 });
 

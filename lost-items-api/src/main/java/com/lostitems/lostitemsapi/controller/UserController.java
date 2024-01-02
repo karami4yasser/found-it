@@ -3,6 +3,7 @@ package com.lostitems.lostitemsapi.controller;
 import com.lostitems.lostitemsapi.dto.user.CreateUserRequestDto;
 import com.lostitems.lostitemsapi.dto.user.GetUserDetailsResponseDto;
 import com.lostitems.lostitemsapi.dto.user.UpdateUserRequestDto;
+import com.lostitems.lostitemsapi.exception.FoundItException;
 import com.lostitems.lostitemsapi.service.UserService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -13,6 +14,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/users")
@@ -31,14 +33,24 @@ public class UserController {
         );
     }
 
-    // this is just to test UI, will be changed in the future
     @GetMapping("/profile")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<GetUserDetailsResponseDto> getCurrentUserDetails(
-            @RequestHeader("Authorization") String jwt
+            @RequestHeader(value = "Authorization") String jwt
     ) {
         return new ResponseEntity<>(
                 userService.getCurrentUserDetails(jwt),
+                HttpStatus.OK
+        );
+    }
+
+    @GetMapping("/profile/{userId}")
+    @PreAuthorize("permitAll()")
+    public ResponseEntity<GetUserDetailsResponseDto> getUserDetails(
+            @PathVariable(value = "userId", required = false) UUID userId
+            ) {
+        return new ResponseEntity<>(
+                userService.getUserDetails(userId),
                 HttpStatus.OK
         );
     }

@@ -1,6 +1,5 @@
 import axios from "axios";
-import { ItemOverviewDto, ItemType } from "../../typing/item";
-import { useAuth } from "../../utils/AuthProvider";
+import { ItemType } from "../../typing/item";
 
 export type ItemFilterOptions = {
   category: string | null;
@@ -17,7 +16,8 @@ export type ItemFilterOptions = {
 export const GetItemsOverviewApiCall = async (
   requestParamsString: string,
   offsetParams: number,
-  token: string | null
+  token: string | null,
+  userId: string | null
 ) => {
   let offsetParamsString = "";
   if (requestParamsString == "") {
@@ -25,7 +25,21 @@ export const GetItemsOverviewApiCall = async (
   } else {
     offsetParamsString = "&offset=" + offsetParams;
   }
-  if (token) {
+  if (userId) {
+    requestParamsString = requestParamsString + "&userId=" + userId;
+    const { data } = await axios.get(
+      process.env.EXPO_PUBLIC_API_BASE_URL +
+        "/api/items" +
+        requestParamsString +
+        offsetParamsString,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+    );
+    return data;
+  } else if (token) {
     const { data } = await axios.get(
       process.env.EXPO_PUBLIC_API_BASE_URL +
         "/api/items" +
@@ -44,7 +58,12 @@ export const GetItemsOverviewApiCall = async (
       process.env.EXPO_PUBLIC_API_BASE_URL +
         "/api/items" +
         requestParamsString +
-        offsetParamsString
+        offsetParamsString,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
     );
     return data;
   }
