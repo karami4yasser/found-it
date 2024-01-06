@@ -42,6 +42,7 @@ public class ItemServiceTest extends BaseTest {
                 Optional.empty(),
                 Optional.empty(),
                 Optional.empty(),
+                Optional.empty(),
                 new OffsetBasedPageRequest(0, 10, Sort.by(Sort.Direction.DESC, "postDate"))
         );
         assertEquals(4, items.totalResults);
@@ -52,6 +53,7 @@ public class ItemServiceTest extends BaseTest {
         ItemOverviewCollection items = itemService.getItems(
                 Optional.empty(),
                 Optional.of(ItemType.FOUND),
+                Optional.empty(),
                 Optional.empty(),
                 Optional.empty(),
                 Optional.empty(),
@@ -78,6 +80,7 @@ public class ItemServiceTest extends BaseTest {
                 Optional.empty(),
                 Optional.empty(),
                 Optional.empty(),
+                Optional.empty(),
                 new OffsetBasedPageRequest(0, 10, Sort.by(Sort.Direction.DESC, "postDate"))
         );
         assertEquals(0,items.totalResults);
@@ -96,6 +99,7 @@ public class ItemServiceTest extends BaseTest {
                 Optional.of(200.0),
                 Optional.empty(),
                 Optional.empty(),
+                Optional.empty(),
                 new OffsetBasedPageRequest(0, 10, Sort.by(Sort.Direction.DESC, "postDate"))
         );
         assertEquals(0, items.totalResults);
@@ -112,6 +116,7 @@ public class ItemServiceTest extends BaseTest {
                 Optional.of(33.533845),
                 Optional.of(-7.648460),
                 Optional.of(210.0),
+                Optional.empty(),
                 Optional.empty(),
                 Optional.empty(),
                 new OffsetBasedPageRequest(0, 10, Sort.by(Sort.Direction.DESC, "postDate"))
@@ -213,6 +218,7 @@ public class ItemServiceTest extends BaseTest {
                     Optional.empty(),
                     Optional.empty(),
                     Optional.empty(),
+                    Optional.empty(),
                     new OffsetBasedPageRequest(0, 10, Sort.by(Sort.Direction.DESC, "postDate"))
             );
 
@@ -240,5 +246,24 @@ public class ItemServiceTest extends BaseTest {
         });
 
         assertEquals("Item was not found",exception.getMessage());
+    }
+
+    @Test
+    void itemServiceTest_getItems_userId() {
+        ItemOverviewCollection items = itemService.getItems(
+                Optional.empty(),
+                Optional.empty(),
+                Optional.empty(),
+                Optional.empty(),
+                Optional.empty(),
+                Optional.empty(),
+                Optional.empty(),
+                Optional.empty(),
+                Optional.empty(),
+                Optional.empty(),
+                Optional.of(UUID.fromString("0ebacabc-83fa-11ee-b962-0242ac120002")),
+                new OffsetBasedPageRequest(0, 10, Sort.by(Sort.Direction.DESC, "postDate"))
+        );
+        assertEquals(4, items.totalResults);
     }
 }

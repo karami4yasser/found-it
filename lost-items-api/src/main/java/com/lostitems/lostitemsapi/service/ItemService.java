@@ -61,6 +61,7 @@ public class ItemService {
             Optional<Double> range,
             Optional<Boolean> returned,
             Optional<String> jwt,
+            Optional<UUID> userId,
             Pageable pageable
     ) {
         // TODO: add tests for these three exceptions
@@ -81,6 +82,10 @@ public class ItemService {
         if (latitude.isPresent() && (latitude.get() > HaversineUtils.LATITUDE_BOUNDARY || latitude.get() < -HaversineUtils.LATITUDE_BOUNDARY)) {
             throw new FoundItInvalidItemInputDataException("Latitude is not valid");
         }
+        // we will filter by user in two possible cases
+        // either user is checking his own profile, and we use jwt , or checking someone else profile by userId
+        // both it not possible
+        // if jwt is present ,not possible that userId exists as well
         Optional<User> user = Optional.empty();
         if(jwt.isPresent())
         {
@@ -89,7 +94,11 @@ public class ItemService {
             user = Optional.of(userService.findUserById(userInfo.userId()));
 
         }
+        if(userId.isPresent())
+        {
+            user = Optional.of(userService.findUserById(userId.get()));
 
+        }
         Specification<Item> querySpec = getSpec(category, itemType, text, dateLeft, dateRight, latitude, longitude, range, returned,user);
 
         Page<Item> items = itemRepository.findAll(querySpec,pageable);
