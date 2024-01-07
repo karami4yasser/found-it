@@ -24,11 +24,16 @@ export type RootStackParamList = {
   AddFeedback: { userId: string };
   Report: { userId: string };
   Reviews: { userId: string };
+  SignIn: undefined;
   SignUp: undefined;
   TabNavigation: undefined;
   MoreFilters: undefined;
   Loading: undefined;
-  EditProfile: undefined;
+  EditProfile: {
+    firstName: string | undefined;
+    lastName: string | undefined;
+    phone: string | undefined;
+  };
   ItemDetailScreen: { itemId: string };
   Profile: { userId: string };
 };
@@ -57,6 +62,11 @@ export default function App() {
                     options={{ headerShown: false }}
                   />
                   <Stack.Screen
+                    name="SignIn"
+                    component={SignIn}
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen
                     name="SignUp"
                     component={SignUp}
                     options={{ headerShown: false }}
@@ -76,6 +86,11 @@ export default function App() {
                     name="EditProfile"
                     component={EditProfile}
                     options={{ headerShown: false, headerLeft: () => null }}
+                    initialParams={{
+                      firstName: undefined,
+                      lastName: undefined,
+                      phone: undefined,
+                    }}
                   />
                   <Stack.Screen
                     name="Reviews"

@@ -70,17 +70,13 @@ export default function SignUp() {
       } else if (createUserResponse.status === 201) {
         currentUser.setTheAccessToken(createUserResponse.data.accessToken);
         currentUser.setTheRefreshToken(createUserResponse.data.refreshToken);
+        currentUser.setTheUserId(createUserResponse.data.userId);
         setLoading(false);
         Toaster.show(
           "You have successfully signed up.",
           1500,
           true,
           COLORS.green
-        );
-        currentUser.setTheUserDetails(
-          signUpForm.firstName,
-          signUpForm.lastName,
-          signUpForm.phone
         );
         navigateToRout("TabNavigation");
       } else if (createUserResponse.status === 409) {

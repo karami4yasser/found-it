@@ -16,7 +16,6 @@ export type ItemFilterOptions = {
 export const GetItemsOverviewApiCall = async (
   requestParamsString: string,
   offsetParams: number,
-  token: string | null,
   userId: string | null
 ) => {
   let offsetParamsString = "";
@@ -32,23 +31,9 @@ export const GetItemsOverviewApiCall = async (
         "/api/items" +
         requestParamsString +
         offsetParamsString,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-    );
-    return data;
-  } else if (token) {
-    const { data } = await axios.get(
-      process.env.EXPO_PUBLIC_API_BASE_URL +
-        "/api/items" +
-        requestParamsString +
-        offsetParamsString,
       {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -59,11 +44,11 @@ export const GetItemsOverviewApiCall = async (
         "/api/items" +
         requestParamsString +
         offsetParamsString,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
     );
     return data;
   }
