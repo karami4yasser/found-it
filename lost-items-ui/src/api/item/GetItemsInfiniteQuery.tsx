@@ -6,16 +6,15 @@ import { State, useSearchFilter } from "../../utils/SearchFilterProvider";
 
 export const getItemsInfiniteQuery = (
   itemFilterOptions: State,
-  token: string | null,
-  userId: string | null,
+  userId: string | null
 ) => {
   const s = useSearchFilter();
   const queryString = generateQueryString(itemFilterOptions);
   console.log("queryString:", queryString);
   return useInfiniteQuery<ItemOverviewCollection, Error>(
-    ["items", itemFilterOptions, s.setItemTypeFilter],
+    ["items", itemFilterOptions, s.setItemTypeFilter, userId],
     ({ pageParam = 0 }) =>
-      GetItemsOverviewApiCall(queryString, pageParam, token, userId),
+      GetItemsOverviewApiCall(queryString, pageParam, userId),
     {
       getNextPageParam: (lastPage) =>
         lastPage.hasMore ? lastPage.offset + lastPage.limit : null,

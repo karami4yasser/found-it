@@ -26,6 +26,7 @@ import { ParamListBase, useNavigation } from "@react-navigation/native";
 import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 import Loading from "../Loading/Loading";
 import { GetCategoriesApiCall } from "../../api/item/GetCategoriesApiCall";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 export type PostItemProps = {};
 
@@ -35,9 +36,9 @@ export type Coordinates = {
 };
 
 type FieldErrors = {
-    title: boolean,
-    category: boolean,
-    description: boolean
+  title: boolean;
+  category: boolean;
+  description: boolean;
 };
 
 const PostItem = (props: PostItemProps) => {
@@ -63,7 +64,7 @@ const PostItem = (props: PostItemProps) => {
     setTheAccessToken,
     autoRefreshAccessToken,
   } = useAuth();
-  const navigation = useNavigation<BottomTabNavigationProp<ParamListBase>>();
+  const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
   const [loading, setLoading] = useState<boolean>(false);
   const [categories, setCategories] = useState<string[]>([]);
   const [hasError, setHasError] = useState<FieldErrors>({
@@ -81,60 +82,85 @@ const PostItem = (props: PostItemProps) => {
 
   useEffect(() => {
     (async () => {
-        setLoading(true);
-        const response = await GetCategoriesApiCall();
-        if (response.status === 200) {
-            setCategories(response.data);
-            setLoading(false);
-        } else {
-            Toaster.show("Unknown error : categories!", 1500, true, COLORS.red);
-            setLoading(false);
-        }
+      setLoading(true);
+      const response = await GetCategoriesApiCall();
+      if (response.status === 200) {
+        setCategories(response.data);
+        setLoading(false);
+      } else {
+        Toaster.show("Unknown error : categories!", 1500, true, COLORS.red);
+        setLoading(false);
+      }
     })();
   }, [setCategories]);
 
-  const validFields = useCallback(() : boolean => {
+  const validFields = useCallback((): boolean => {
     let error = true;
     if (itemTitle === "") {
-        Toaster.show("Title is required.", 1500, true, COLORS.red);
-        error = false;
-        setHasError((oldErrors: FieldErrors) => ({ ...oldErrors, title: true }));
+      Toaster.show("Title is required.", 1500, true, COLORS.red);
+      error = false;
+      setHasError((oldErrors: FieldErrors) => ({ ...oldErrors, title: true }));
     } else {
-        setHasError((oldErrors: FieldErrors) => ({ ...oldErrors, title: false }));
+      setHasError((oldErrors: FieldErrors) => ({ ...oldErrors, title: false }));
     }
     if (itemDescription === "") {
-        Toaster.show("Description is required.", 1500, true, COLORS.red);
-        error = false;
-        setHasError((oldErrors: FieldErrors) => ({ ...oldErrors, description: true }));
+      Toaster.show("Description is required.", 1500, true, COLORS.red);
+      error = false;
+      setHasError((oldErrors: FieldErrors) => ({
+        ...oldErrors,
+        description: true,
+      }));
     } else {
-        setHasError((oldErrors: FieldErrors) => ({ ...oldErrors, description: false }));
+      setHasError((oldErrors: FieldErrors) => ({
+        ...oldErrors,
+        description: false,
+      }));
     }
     if (itemCategory === "") {
-        Toaster.show("Category is required.", 1500, true, COLORS.red);
-        error = false;
-        setHasError((oldErrors: FieldErrors) => ({ ...oldErrors, category: true }));
+      Toaster.show("Category is required.", 1500, true, COLORS.red);
+      error = false;
+      setHasError((oldErrors: FieldErrors) => ({
+        ...oldErrors,
+        category: true,
+      }));
     } else {
-        setHasError((oldErrors: FieldErrors) => ({ ...oldErrors, category: false }));
+      setHasError((oldErrors: FieldErrors) => ({
+        ...oldErrors,
+        category: false,
+      }));
     }
     if (!categories.includes(itemCategory)) {
-        Toaster.show("Category is invalid.", 1500, true, COLORS.red);
-        error = false;
-        setHasError((oldErrors: FieldErrors) => ({ ...oldErrors, category: true }));
+      Toaster.show("Category is invalid.", 1500, true, COLORS.red);
+      error = false;
+      setHasError((oldErrors: FieldErrors) => ({
+        ...oldErrors,
+        category: true,
+      }));
     } else {
-        setHasError((oldErrors: FieldErrors) => ({ ...oldErrors, category: false }));
+      setHasError((oldErrors: FieldErrors) => ({
+        ...oldErrors,
+        category: false,
+      }));
     }
     return error;
-  }, [itemTitle, itemDescription, itemCategory, categories, hasError, setHasError]);
+  }, [
+    itemTitle,
+    itemDescription,
+    itemCategory,
+    categories,
+    hasError,
+    setHasError,
+  ]);
 
   const createItem = useCallback(async () => {
     if (!validFields()) {
-        return;
+      return;
     }
     try {
       setLoading(true);
       if (isTokenExpired(accessToken)) {
         if (!(await autoRefreshAccessToken(refreshToken))) {
-          navigation.navigate("SignIn");
+          navigateToRout("TabNavigation");
         }
       }
       const response = await CreateItemApiCall(accessToken, {
@@ -155,7 +181,7 @@ const PostItem = (props: PostItemProps) => {
       } else if (response.status === 401) {
         Toaster.show(response.data.message, 1500, true, COLORS.red);
         setLoading(false);
-        navigateToRout("SignIn");
+        navigateToRout("TabNavigation");
       } else if (response.status === 404) {
         Toaster.show(response.data.message, 1500, true, COLORS.red);
         setLoading(false);
@@ -171,7 +197,7 @@ const PostItem = (props: PostItemProps) => {
         setLoading(false);
       }
     } catch (error) {
-    console.log(JSON.stringify(error));
+      console.log(JSON.stringify(error));
       Toaster.show("Unknown Error 2!", 1500, true, COLORS.red);
       setLoading(false);
     }
@@ -191,7 +217,7 @@ const PostItem = (props: PostItemProps) => {
     itemPosition,
     itemTAR,
     itemImage,
-    validFields
+    validFields,
   ]);
 
   useEffect(() => {
@@ -252,11 +278,13 @@ const PostItem = (props: PostItemProps) => {
     { label: "Found", value: "FOUND" },
   ];
 
-  {console.log(hasError.title)}
+  {
+    console.log(hasError.title);
+  }
 
   return loading ? (
-        <Loading />
-    ) : mapOpened ? (
+    <Loading />
+  ) : mapOpened ? (
     <FoundItMap
       itemType={itemType}
       position={itemPosition}
@@ -264,6 +292,7 @@ const PostItem = (props: PostItemProps) => {
       tar={itemTAR}
       setTar={setItemTAR}
       closeMap={() => setMapOpened(false)}
+      immutable={false}
     />
   ) : (
     <>

@@ -61,6 +61,7 @@ export default function SignIn() {
       } else if (AuthResponse.status === 200) {
         currentUser.setTheAccessToken(AuthResponse.data.accessToken);
         currentUser.setTheRefreshToken(AuthResponse.data.refreshToken);
+        currentUser.setTheUserId(AuthResponse.data.userId);
         setLoading(false);
         Toaster.show(
           "You have successfully signed up.",
@@ -109,11 +110,13 @@ export default function SignIn() {
           </View>
           <View style={SignInStyle.formContainer}>
             <InputText
-                hasError={PhoneNumberEmailHasError}
-                currentValue={signInForm.emailOrPhone}
-                setValue={(value) => setSignInFormItem("emailOrPhone", value)}
-                placeholder="Email or Phone number"
-                type={"default"} page={"signIn"}            />
+              hasError={PhoneNumberEmailHasError}
+              currentValue={signInForm.emailOrPhone}
+              setValue={(value) => setSignInFormItem("emailOrPhone", value)}
+              placeholder="Email or Phone number"
+              type={"default"}
+              page={"signIn"}
+            />
             <PasswordInputWithToggle
               hasError={PasswordHasError}
               showPassword={showPassword}

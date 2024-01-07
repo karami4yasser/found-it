@@ -17,24 +17,32 @@ import { GetUserDetailsResponseDto } from "../../typing/user";
 import { GetCurrentUserDetailsApiCall } from "../../api/user/GetCurrentUserDetailsApiCall";
 import { ParamListBase, useNavigation } from "@react-navigation/native";
 import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import {
+  NativeStackNavigationProp,
+  NativeStackScreenProps,
+} from "@react-navigation/native-stack";
 import { isTokenExpired } from "../../utils/isTokenExpired";
 import Toaster from "../../utils/Toaster";
-import { FontAwesome } from '@expo/vector-icons';
+import { FontAwesome } from "@expo/vector-icons";
+import { RootStackParamList } from "../../../App";
 
 type ProfileDetailsProps = {
   setState: React.Dispatch<React.SetStateAction<State>>;
   state: State;
   userId?: string;
 };
-
-export function ProfileDetails({ setState, state, userId }: ProfileDetailsProps) {
+export function ProfileDetails({
+  setState,
+  state,
+  userId,
+}: ProfileDetailsProps) {
   const currentUser = useAuth();
   const navigationBar = useNavigation<BottomTabNavigationProp<ParamListBase>>();
   const [user, setUser] = useState<GetUserDetailsResponseDto>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isError, setIsError] = useState<boolean>(false);
-  const navigationStack = useNavigation<NativeStackNavigationProp<ParamListBase>>();
+  const navigationStack =
+    useNavigation<NativeStackNavigationProp<ParamListBase>>();
   const navigateToRout = (routName: string) => {
     navigationStack.reset({
       index: 0,
@@ -43,13 +51,17 @@ export function ProfileDetails({ setState, state, userId }: ProfileDetailsProps)
   };
   const fetchUserDetails = useCallback(async () => {
     try {
-      if (currentUser.accessToken !== null && currentUser.refreshToken !== "" && isTokenExpired(currentUser.accessToken)) {
+      if (
+        currentUser.accessToken !== null &&
+        currentUser.refreshToken !== "" &&
+        currentUser.userId == userId &&
+        isTokenExpired(currentUser.accessToken)
+      ) {
         if (
-          !(await currentUser.autoRefreshAccessToken(
-            currentUser.refreshToken
-          ))
+          !(await currentUser.autoRefreshAccessToken(currentUser.refreshToken))
         ) {
-          navigateToRout("SignIn");
+          currentUser.clearTokens();
+          navigateToRout("TabNavigation");
         }
       }
       setIsLoading(true);
@@ -60,36 +72,36 @@ export function ProfileDetails({ setState, state, userId }: ProfileDetailsProps)
 
       if (response.status === 200) {
         setUser(response.data);
-        currentUser.setTheUserDetails(
-          response.data.firstName,
-          response.data.lastName,
-          response.data.phone
-        );
         setIsLoading(false);
       } else if (response.status === 401) {
         Toaster.show(response.data.message, 1500, true, COLORS.red);
         setIsError(true);
         setIsLoading(false);
-        navigateToRout("SignIn");
+        currentUser.clearTokens();
+        navigateToRout("TabNavigation");
       } else if (response.status === 404) {
         Toaster.show(response.data.message, 1500, true, COLORS.red);
         setIsError(true);
         setIsLoading(false);
+        currentUser.clearTokens();
         navigateToRout("SignUp");
       } else if (response.status === 400) {
         setIsError(true);
         setIsLoading(false);
+        currentUser.clearTokens();
         response.data.errors.forEach((err: any) => {
           Toaster.show(err, 1500, true, COLORS.red);
         });
       } else {
         setIsError(true);
         setIsLoading(false);
+        currentUser.clearTokens();
         Toaster.show("User error!", 1500, true, COLORS.red);
       }
     } catch (error) {
       setIsError(true);
       setIsLoading(false);
+      currentUser.clearTokens();
       Toaster.show("User error Error!", 1500, true, COLORS.red);
     }
   }, [userId, currentUser.accessToken, currentUser.refreshToken]);
@@ -100,7 +112,7 @@ export function ProfileDetails({ setState, state, userId }: ProfileDetailsProps)
 
   return (
     <SafeAreaView style={ProfileDetailsStyle.mainContainer}>
-      {userId ?
+      {userId ? (
         <View style={ProfileDetailsStyle.closeContainer}>
           <FontAwesome
             name={"close"}
@@ -109,7 +121,7 @@ export function ProfileDetails({ setState, state, userId }: ProfileDetailsProps)
             onPress={() => navigationStack.goBack()}
           />
         </View>
-        : undefined}
+      ) : undefined}
       <View style={ProfileDetailsStyle.imageAndName}>
         <View style={ProfileDetailsStyle.imageContaier}>
           <Image
@@ -192,50 +204,60 @@ export function ProfileDetails({ setState, state, userId }: ProfileDetailsProps)
         </View>
       </View>
       <View style={ProfileDetailsStyle.buttonsContainer}>
-        {
-          userId && currentUser.accessToken && currentUser.accessToken !== "" ? (
-            <View style={ProfileDetailsStyle.editOrCreateButtons}>
-              <TouchableOpacity
-                style={ProfileDetailsStyle.button}
-                onPress={() => navigationBar.navigate("AddFeedback", { userId: userId })}
-              >
-                <Text style={ProfileDetailsStyle.buttonText}> Add Feedback</Text>
-              </TouchableOpacity>
-              <View
-                style={{
-                  flex: 1,
-                }}
-              ></View>
-              <TouchableOpacity
-                style={ProfileDetailsStyle.button}
-                onPress={() => navigationBar.navigate("Report", { userId: userId })}
-              >
-                <Text style={ProfileDetailsStyle.buttonText}> Report</Text>
-              </TouchableOpacity>
-            </View>
-          ) : userId ? undefined :
-            (
-              <View style={ProfileDetailsStyle.editOrCreateButtons}>
-                <TouchableOpacity
-                  style={ProfileDetailsStyle.button}
-                  onPress={() => navigateToRout("EditProfile")}
-                >
-                  <Text style={ProfileDetailsStyle.buttonText}> Edit Profile</Text>
-                </TouchableOpacity>
-                <View
-                  style={{
-                    flex: 1,
-                  }}
-                ></View>
-                <TouchableOpacity
-                  style={ProfileDetailsStyle.button}
-                  onPress={() => navigationBar.navigate("Post")}
-                >
-                  <Text style={ProfileDetailsStyle.buttonText}> Create Item</Text>
-                </TouchableOpacity>
-              </View>
-            )
-        }
+        {userId &&
+        currentUser.accessToken &&
+        currentUser.accessToken !== "" &&
+        userId !== currentUser.userId ? (
+          <View style={ProfileDetailsStyle.editOrCreateButtons}>
+            <TouchableOpacity
+              style={ProfileDetailsStyle.button}
+              onPress={() =>
+                navigationBar.navigate("AddFeedback", { userId: userId })
+              }
+            >
+              <Text style={ProfileDetailsStyle.buttonText}> Add Feedback</Text>
+            </TouchableOpacity>
+            <View
+              style={{
+                flex: 1,
+              }}
+            ></View>
+            <TouchableOpacity
+              style={ProfileDetailsStyle.button}
+              onPress={() =>
+                navigationBar.navigate("Report", { userId: userId })
+              }
+            >
+              <Text style={ProfileDetailsStyle.buttonText}> Report</Text>
+            </TouchableOpacity>
+          </View>
+        ) : userId && userId !== currentUser.userId ? undefined : (
+          <View style={ProfileDetailsStyle.editOrCreateButtons}>
+            <TouchableOpacity
+              style={ProfileDetailsStyle.button}
+              onPress={() =>
+                navigationStack.navigate("EditProfile", {
+                  firstName: user?.firstName,
+                  lastName: user?.lastName,
+                  phone: user?.phone,
+                })
+              }
+            >
+              <Text style={ProfileDetailsStyle.buttonText}> Edit Profile</Text>
+            </TouchableOpacity>
+            <View
+              style={{
+                flex: 1,
+              }}
+            ></View>
+            <TouchableOpacity
+              style={ProfileDetailsStyle.button}
+              onPress={() => navigationBar.navigate("Post")}
+            >
+              <Text style={ProfileDetailsStyle.buttonText}> Create Item</Text>
+            </TouchableOpacity>
+          </View>
+        )}
         <View style={ProfileDetailsStyle.editOrCreateButtons}>
           {/* TODO: add navigation to feed for this user posts */}
           <TouchableOpacity
@@ -251,7 +273,9 @@ export function ProfileDetails({ setState, state, userId }: ProfileDetailsProps)
           ></View>
           <TouchableOpacity
             style={ProfileDetailsStyle.button}
-            onPress={() => navigationBar.navigate("Reviews", { userId: userId })}
+            onPress={() =>
+              navigationBar.navigate("Reviews", { userId: userId })
+            }
           >
             <Text style={ProfileDetailsStyle.buttonText}>Reviews</Text>
           </TouchableOpacity>

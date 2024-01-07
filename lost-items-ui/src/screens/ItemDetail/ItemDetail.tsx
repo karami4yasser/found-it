@@ -10,14 +10,17 @@ type itemDetailScreenRouteProp = RouteProp<
   "ItemDetailScreen"
 >;
 
-type ItemDetailProps =  NativeStackScreenProps<RootStackParamList, 'ItemDetailScreen'>;
+type ItemDetailProps = NativeStackScreenProps<
+  RootStackParamList,
+  "ItemDetailScreen"
+>;
 
 export default function ItemDetailScreen(props: ItemDetailProps) {
   console.log("ItemDetail render");
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <ItemDetail route={props.route} navigation={props.navigation}/>
+      <ItemDetail route={props.route} navigation={props.navigation} />
     </SafeAreaView>
   );
 }

@@ -60,7 +60,9 @@ public class UserService {
                 jwtEncoder
         );
 
-        return Map.of("accessToken", accessToken, "refreshToken", refreshToken);
+        UUID currentUserId = user.getId();
+
+        return Map.of("accessToken", accessToken, "refreshToken", refreshToken,"userId",currentUserId.toString());
     }
 
     public Map<String, String> createUser(CreateUserRequestDto dto) {
@@ -68,6 +70,7 @@ public class UserService {
         User user = userMapper.createUserRequestDtoToUserMapper(dto);
         user.setPassword(passwordEncoder.encode(dto.password()));
         user = userRepository.save(user);
+        userRepository.flush();
         return signInCreatedUser(user);
     }
 

@@ -4,20 +4,16 @@ import com.lostitems.lostitemsapi.dto.SignInDto;
 import com.lostitems.lostitemsapi.security.FoundItUserDetails;
 import com.lostitems.lostitemsapi.security.JwtAuthUtils;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
-import org.springframework.security.oauth2.jwt.JwsHeader;
-import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
-import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +22,7 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtEncoder jwtEncoder;
     private final JwtDecoder jwtDecoder;
+    private final UserService userService;
 
     public Map<String, String> refreshAccessToken(String refreshToken) {
         JwtAuthUtils.checkTokenValidity(refreshToken);
@@ -61,7 +58,9 @@ public class AuthService {
                 jwtEncoder
         );
 
-        return Map.of("accessToken", accessToken, "refreshToken", refreshToken);
+        UUID currentUserId = userService.findUserByPhoneOrEmail(signInDto.emailOrPhone()).getId();
+
+        return Map.of("accessToken", accessToken, "refreshToken", refreshToken,"userId",currentUserId.toString());
     }
 
 }

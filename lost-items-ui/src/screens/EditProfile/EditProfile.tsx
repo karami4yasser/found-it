@@ -11,27 +11,35 @@ import { TouchableOpacity } from "react-native";
 import { UpdateUserApiCall } from "../../api/user/UpdateUserApiCall";
 import { useAuth } from "../../utils/AuthProvider";
 import Toaster from "../../utils/Toaster";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import {
+  NativeStackNavigationProp,
+  NativeStackScreenProps,
+} from "@react-navigation/native-stack";
 import {
   validatingFieldsEditProfile,
   validatingFieldsSignUp,
 } from "../../utils/ValidationFields";
 import InputText from "../../components/InputText/InputText";
+import { RootStackParamList } from "../../../App";
 
 export type UpdateUserDetailsForm = {
   firstName: string;
   lastName: string;
   phone: string;
 };
-export function EditProfile() {
+type EditProfileProps = NativeStackScreenProps<
+  RootStackParamList,
+  "EditProfile"
+>;
+export function EditProfile(nav: EditProfileProps) {
   const currentUser = useAuth();
 
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
   const [updateUserDetailsForm, setUpdateUserDetailsForm] =
     useState<UpdateUserDetailsForm>({
-      firstName: currentUser.userFirstName,
-      lastName: currentUser.userLastName,
-      phone: currentUser.userPhoneNumber,
+      firstName: nav.route.params.firstName ? nav.route.params.firstName : "",
+      lastName: nav.route.params.lastName ? nav.route.params.lastName : "",
+      phone: nav.route.params.phone ? nav.route.params.phone : "",
     });
   const [firstNameHasError, setFirstNameHasError] = useState<boolean>(false);
   const [lastNameHasError, setLastNameHasError] = useState<boolean>(false);
@@ -67,11 +75,6 @@ export function EditProfile() {
         setLoading(false);
         Toaster.show("Update User Error!", 1500, true, COLORS.red);
       } else if (updateUserResponsee.status === 200) {
-        currentUser.setTheUserDetails(
-          updateUserDetailsForm.firstName,
-          updateUserDetailsForm.lastName,
-          updateUserDetailsForm.phone
-        );
         setLoading(false);
         Toaster.show(
           "You have successfully updated profile details.",

@@ -74,7 +74,7 @@ function TabNavigation() {
             name={profileName}
             component={Profile}
             options={{ headerShown: false }}
-            initialParams={{ userId: undefined }}
+            initialParams={{ userId: currentUser.userId }}
           />
         </>
       )}

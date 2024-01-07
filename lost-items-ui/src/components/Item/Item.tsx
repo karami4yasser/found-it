@@ -13,15 +13,14 @@ type ItemProps = {
 export default function Item(props: ItemProps) {
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
 
+  const handleItemClick = () => {
+    navigation.navigate("ItemDetailScreen", {
+      itemId: props.itemOverviewDto.id,
+    });
+  };
+
   return (
-    <TouchableOpacity
-      style={ItemStyle.container}
-      onPress={() =>
-        navigation.navigate("ItemDetailScreen", {
-          itemId: props.itemOverviewDto.id,
-        })
-      }
-    >
+    <TouchableOpacity style={ItemStyle.container} onPress={handleItemClick}>
       <View style={ItemStyle.imageContainer}>
         <Image
           //source={{ uri: props.itemOverviewDto.image }}

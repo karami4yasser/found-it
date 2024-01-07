@@ -18,8 +18,12 @@ import { FontAwesome } from "@expo/vector-icons";
 import FoundItMap from "../FoundItMap/FoundItMap";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../../App";
+import { useAuth } from "../../utils/AuthProvider";
 
-type ItemDetailProps = NativeStackScreenProps<RootStackParamList, 'ItemDetailScreen'>;
+type ItemDetailProps = NativeStackScreenProps<
+  RootStackParamList,
+  "ItemDetailScreen"
+>;
 
 export default function ItemDetail(props: ItemDetailProps) {
   const itemId = props.route.params?.itemId;
@@ -27,9 +31,7 @@ export default function ItemDetail(props: ItemDetailProps) {
 
   const [loading, setLoading] = useState<boolean>(true);
   const [showMap, setShowMap] = useState<boolean>(false);
-
-  /* const auth = useAuth() if the user post is the current user don't show contact options  */
-
+  const currentUser = useAuth();
   const [itemDetails, setItemDetails] = useState<ItemDetailsDto>();
 
   useEffect(() => {
@@ -70,9 +72,9 @@ export default function ItemDetail(props: ItemDetailProps) {
               latitude: itemDetails?.latitude ? itemDetails.latitude : 1,
               longitude: itemDetails?.longitude ? itemDetails.longitude : 1,
             }}
-            setPosition={() => { }}
+            setPosition={() => {}}
             tar={itemDetails?.range ? itemDetails.range : 0}
-            setTar={() => { }}
+            setTar={() => {}}
             closeMap={handleCloseMap}
             immutable={true}
           />
@@ -171,63 +173,84 @@ export default function ItemDetail(props: ItemDetailProps) {
             borderWidth: 0.5,
           }}
         />
-        <View style={ItemDetailsStyle.userContactContainer}>
-          <View
-            style={{
-              flexDirection: "column",
-              alignItems: "center",
-            }}
-          >
-            <Image
-              source={{
-                uri: "https://uxwing.com/wp-content/themes/uxwing/download/peoples-avatars/man-user-color-icon.png",
-              }}
-              style={ItemDetailsStyle.userImage}
-            />
-            <Text style={ItemDetailsStyle.userName}>
-              {" "}
-              {itemDetails?.posterFullName}
-            </Text>
-          </View>
-          <TouchableOpacity
-            style={ItemDetailsStyle.button}
-            onPress={() => props.navigation.navigate("Profile", { userId: itemDetails!.userId })}>
-            <Text style={ItemDetailsStyle.buttonText}>See Profile</Text>
-          </TouchableOpacity>
+        {currentUser.userId == itemDetails?.userId ? (
+          <>
+            <View>
+              <Text style={ItemDetailsStyle.textBigBlack}>Posted by you</Text>
+            </View>
+          </>
+        ) : (
+          <>
+            <View style={ItemDetailsStyle.userContactContainer}>
+              <View
+                style={{
+                  flexDirection: "column",
+                  alignItems: "center",
+                }}
+              >
+                <Image
+                  source={{
+                    uri: "https://uxwing.com/wp-content/themes/uxwing/download/peoples-avatars/man-user-color-icon.png",
+                  }}
+                  style={ItemDetailsStyle.userImage}
+                />
+                <Text style={ItemDetailsStyle.userName}>
+                  {" "}
+                  {itemDetails?.posterFullName}
+                </Text>
+              </View>
+              <TouchableOpacity
+                style={ItemDetailsStyle.button}
+                onPress={() =>
+                  props.navigation.navigate("Profile", {
+                    userId: itemDetails!.userId,
+                  })
+                }
+              >
+                <Text style={ItemDetailsStyle.buttonText}>See Profile</Text>
+              </TouchableOpacity>
 
-          <TouchableOpacity
-            onPress={() =>
-              Linking.openURL(`tel:${itemDetails?.posterPhoneNumber}`)
-                .then((data) => {
-                  console.log("phone Opened");
-                })
-                .catch(() => {
-                  Toaster.show("Make sure phone installed on your device");
-                })
-            }
-          >
-            <FontAwesome name="phone" size={25 * factor} color={COLORS.black} />
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() =>
-              Linking.openURL(
-                `https://api.whatsapp.com/send?text=hello&phone=${itemDetails?.posterPhoneNumber}`
-              )
-                .then((data) => {
-                  console.log("WhatsApp Opened");
-                })
-                .catch(() => {
-                  Toaster.show("Make sure WhatsApp installed on your device");
-                })
-            }
-          >
-            <FontAwesome
-              name="whatsapp"
-              size={25 * factor}
-              color={COLORS.black}
-            />
-          </TouchableOpacity>
-        </View>
+              <TouchableOpacity
+                onPress={() =>
+                  Linking.openURL(`tel:${itemDetails?.posterPhoneNumber}`)
+                    .then((data) => {
+                      console.log("phone Opened");
+                    })
+                    .catch(() => {
+                      Toaster.show("Make sure phone installed on your device");
+                    })
+                }
+              >
+                <FontAwesome
+                  name="phone"
+                  size={25 * factor}
+                  color={COLORS.black}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() =>
+                  Linking.openURL(
+                    `https://api.whatsapp.com/send?text=hello&phone=${itemDetails?.posterPhoneNumber}`
+                  )
+                    .then((data) => {
+                      console.log("WhatsApp Opened");
+                    })
+                    .catch(() => {
+                      Toaster.show(
+                        "Make sure WhatsApp installed on your device"
+                      );
+                    })
+                }
+              >
+                <FontAwesome
+                  name="whatsapp"
+                  size={25 * factor}
+                  color={COLORS.black}
+                />
+              </TouchableOpacity>
+            </View>
+          </>
+        )}
       </ScrollView>
     </>
   );

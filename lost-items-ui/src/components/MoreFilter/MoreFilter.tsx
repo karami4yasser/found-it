@@ -18,6 +18,7 @@ import { Coordinates } from "../../utils/MapUtils";
 import { useSearchFilter } from "../../utils/SearchFilterProvider";
 import { ParamListBase, useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { GetCategoriesApiCall } from "../../api/item/GetCategoriesApiCall";
 
 interface ITheme {
   mainColor: string;
@@ -57,6 +58,23 @@ export function MoreFilter() {
   const [UserLocation, setUserLocation] = useState<Coordinates | null>(null);
 
   const [itemTAR, setItemTAR] = useState<number | null>(null);
+
+  const [categories, setCategories] = useState<string[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  useEffect(() => {
+    (async () => {
+      setLoading(true);
+      const response = await GetCategoriesApiCall();
+      if (response.status === 200) {
+        setCategories(response.data);
+        setLoading(false);
+      } else {
+        Toaster.show("Unknown error : categories!", 1500, true, COLORS.red);
+        setLoading(false);
+      }
+    })();
+  }, [setCategories]);
+
   const handleItemTypeChange = useCallback(
     (value: ItemType | null) => {
       itemFilterOptions.setItemTypeFilter(value);
@@ -152,6 +170,14 @@ export function MoreFilter() {
     })();
   }, [setUserLocation]);
 
+  if (loading)
+    return (
+      <>
+        <View>
+          <Text>Loading...</Text>
+        </View>
+      </>
+    );
   return (
     <>
       {showMap && (
@@ -293,7 +319,7 @@ export function MoreFilter() {
         <View style={MoreFilterStyle.searchDropDown}>
           <SearchDropDown
             placeholder="Category..."
-            options={["category", "categoryItem", "findItemByThisCategory"]}
+            options={categories}
             onOptionSelected={handleCategoryChange}
           />
         </View>
