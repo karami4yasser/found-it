@@ -1,11 +1,9 @@
 package com.lostitems.lostitemsapi.controller;
 
 import com.lostitems.lostitemsapi.dto.Feedback.AddFeedbackRequestDto;
-import com.lostitems.lostitemsapi.dto.Feedback.GetUserFeedbackItemDto;
 import com.lostitems.lostitemsapi.dto.Feedback.GetUserFeedbacksDto;
 import com.lostitems.lostitemsapi.service.FeedbackService;
 import jakarta.validation.constraints.Min;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatusCode;
@@ -21,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
 import java.util.UUID;
 
 @Validated
@@ -44,8 +41,8 @@ public class FeedbackController {
             @PathVariable("ratedId") UUID ratedId,
             @RequestBody AddFeedbackRequestDto addFeedbackRequestDto
     ) {
-        feedbackService.createFeedback(jwt, ratedId, addFeedbackRequestDto);
-        return ResponseEntity.ok().build();
+        HttpStatusCode httpStatusCode =feedbackService.createOrUpdateFeedback(jwt, ratedId, addFeedbackRequestDto);
+        return ResponseEntity.status(httpStatusCode).build();
     }
 
     @GetMapping("/{ratedId}")

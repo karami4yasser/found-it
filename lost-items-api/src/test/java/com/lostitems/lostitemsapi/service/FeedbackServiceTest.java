@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatusCode;
 
 import java.util.List;
 import java.util.UUID;
@@ -58,7 +59,7 @@ public class FeedbackServiceTest extends BaseTest {
     void testCreateFeedback_validValues() {
         assertDoesNotThrow(
                 () -> {
-                    feedbackService.createFeedback(JwtTestUtils.DUMMY_TOKEN, UUID.fromString(JwtTestUtils.DUMMY_USER_ID_2), new AddFeedbackRequestDto(5.0f, "Good"));
+                    feedbackService.createOrUpdateFeedback(JwtTestUtils.DUMMY_TOKEN, UUID.fromString(JwtTestUtils.DUMMY_USER_ID_2), new AddFeedbackRequestDto(5.0f, "Good"));
                     GetUserFeedbacksDto feedbacks = feedbackService.getUserFeedbackList(UUID.fromString(JwtTestUtils.DUMMY_USER_ID_2), null, 0, 10);
                     List<GetUserFeedbackItemDto> expectedFeedbacks = List.of(
                         new GetUserFeedbackItemDto(UUID.fromString(JwtTestUtils.DUMMY_USER_ID), 5.0f, "Good", "userXf userXl", null)
@@ -67,6 +68,24 @@ public class FeedbackServiceTest extends BaseTest {
                     log.warn(feedbacks.toString());
                     assertTrue(feedbacks.feedbacks.containsAll(expectedFeedbacks));
                     assertTrue(expectedFeedbacks.containsAll(feedbacks.feedbacks));
+                }
+        );
+    }
+
+    @Test
+    void testUpdateFeedback_validValues() {
+        assertDoesNotThrow(
+                () -> {
+                    HttpStatusCode created =  feedbackService.createOrUpdateFeedback(JwtTestUtils.DUMMY_TOKEN_2, UUID.fromString(JwtTestUtils.DUMMY_USER_ID), new AddFeedbackRequestDto(5.0f, "Good"));
+                    HttpStatusCode updated = feedbackService.createOrUpdateFeedback(JwtTestUtils.DUMMY_TOKEN_2, UUID.fromString(JwtTestUtils.DUMMY_USER_ID), new AddFeedbackRequestDto(1.0f, "Not Good"));
+
+                    GetUserFeedbacksDto feedbacks = feedbackService.getUserFeedbackList(UUID.fromString(JwtTestUtils.DUMMY_USER_ID), null, 0, 10);
+                    GetUserFeedbackItemDto expectedFeedback = new GetUserFeedbackItemDto(UUID.fromString(JwtTestUtils.DUMMY_USER_ID_2), 1.0f, "Not Good", "Mimoun Ghordou", null);
+                    assertEquals(200, created.value());
+                    assertEquals(201, updated.value());
+                    log.warn(feedbacks.toString());
+                    assertTrue(feedbacks.feedbacks.contains(expectedFeedback));
+
                 }
         );
     }

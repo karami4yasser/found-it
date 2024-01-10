@@ -14,10 +14,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -39,14 +41,28 @@ public class FeedbackService {
         return feedbackRepository.getFeedbackStatisticsByUser(userId);
     }
 
-    public void createFeedback(String jwt, UUID ratedId, AddFeedbackRequestDto addFeedbackRequestDto) {
+    public HttpStatusCode createOrUpdateFeedback(String jwt, UUID ratedId, AddFeedbackRequestDto addFeedbackRequestDto) {
         JwtAuthUtils.checkTokenValidity(jwt);
         JwtAuthUtils.TokenUserInfo tokenUserInfo = JwtAuthUtils.getUserInfoFromToken(jwtDecoder, jwt);
-        Feedback feedback = feedbackMapper.createFeedbackRequestDtoToFeedbackMapper(addFeedbackRequestDto);
-        feedback.setRated(userService.findUserById(ratedId));
-        feedback.setRater(userService.findUserById(tokenUserInfo.userId()));
-        feedback.setDate(LocalDate.now());
+        List<Feedback> feedbacks = feedbackRepository.findFeedbackByUserAndRater(ratedId,tokenUserInfo.userId());
+        //if jwt user gave already a review to the rated user
+        Feedback feedback;
+        if(!feedbacks.isEmpty()) {
+            //basically only one should be present
+            feedback = feedbacks.get(0);
+            feedback.setDate(LocalDate.now());
+            feedback.setComment(addFeedbackRequestDto.comment());
+            feedback.setRating(addFeedbackRequestDto.rating());
+            return HttpStatusCode.valueOf(201);
+        }
+        else {
+            feedback = feedbackMapper.createFeedbackRequestDtoToFeedbackMapper(addFeedbackRequestDto);
+            feedback.setRated(userService.findUserById(ratedId));
+            feedback.setRater(userService.findUserById(tokenUserInfo.userId()));
+            feedback.setDate(LocalDate.now());
+        }
         feedbackRepository.save(feedback);
+        return HttpStatusCode.valueOf(200);
     }
 
     public GetUserFeedbacksDto getUserFeedbackList(UUID ratedId, String jwt, int offset, int limit) {
