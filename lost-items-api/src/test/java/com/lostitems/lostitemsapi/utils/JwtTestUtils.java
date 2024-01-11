@@ -44,6 +44,6 @@ public class JwtTestUtils {
         User user = userService.findUserById(UUID.fromString(userIdFromAccessToken));
         assertEquals(firstName, user.getFirstName());
         assertEquals(lastName, user.getLastName());
-        assertEquals(phoneNumber, user.getPhone());
+        assertEquals(PhoneUtils.normalizePhone(phoneNumber), user.getPhone());
     }
 }

@@ -18,6 +18,7 @@ import com.lostitems.lostitemsapi.repository.ItemRepository;
 import com.lostitems.lostitemsapi.repository.specification.ItemSpecifications;
 import com.lostitems.lostitemsapi.security.JwtAuthUtils;
 import com.lostitems.lostitemsapi.utils.HaversineUtils;
+import com.lostitems.lostitemsapi.utils.PhoneUtils;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
@@ -188,7 +189,7 @@ public class ItemService {
         ItemDetailsDto itemDetailsDto = itemMapper.itemToItemDetailsDto(item);
         itemDetailsDto.setPosterFullName(item.getPoster().getFirstName() + " " + item.getPoster().getLastName());
         itemDetailsDto.setPosterImage(item.getPoster().getPhoto());
-        itemDetailsDto.setPosterPhoneNumber(item.getPoster().getPhone());
+        itemDetailsDto.setPosterPhoneNumber(PhoneUtils.prefixPhone(item.getPoster().getPhone()));
         itemDetailsDto.setUserId(item.getPoster().getId());
         return itemDetailsDto;
     }

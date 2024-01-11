@@ -4,6 +4,7 @@ import com.lostitems.lostitemsapi.dto.SignInDto;
 import com.lostitems.lostitemsapi.exception.FoundItInvalidRefreshTokenException;
 import com.lostitems.lostitemsapi.model.User;
 import com.lostitems.lostitemsapi.utils.BaseTest;
+import com.lostitems.lostitemsapi.utils.PhoneUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -62,7 +63,7 @@ class AuthServiceTest extends BaseTest {
             User user = userService.findUserById(UUID.fromString(userIdFromAccessToken));
             assertEquals(firstName, user.getFirstName());
             assertEquals(lastName, user.getLastName());
-            assertEquals(phoneNumber, user.getPhone());
+            assertEquals(PhoneUtils.normalizePhone(phoneNumber), user.getPhone());
         });
     }
 

@@ -3,6 +3,7 @@ package com.lostitems.lostitemsapi.service;
 import com.lostitems.lostitemsapi.dto.SignInDto;
 import com.lostitems.lostitemsapi.security.FoundItUserDetails;
 import com.lostitems.lostitemsapi.security.JwtAuthUtils;
+import com.lostitems.lostitemsapi.utils.PhoneUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -58,9 +59,9 @@ public class AuthService {
                 jwtEncoder
         );
 
-        UUID currentUserId = userService.findUserByPhoneOrEmail(signInDto.emailOrPhone()).getId();
+        UUID currentUserId = userService.findUserByPhoneOrEmail(PhoneUtils.normalizePhone(signInDto.emailOrPhone())).getId();
 
-        return Map.of("accessToken", accessToken, "refreshToken", refreshToken,"userId",currentUserId.toString());
+        return Map.of("accessToken", accessToken, "refreshToken", refreshToken,"userId", currentUserId.toString());
     }
 
 }

@@ -47,7 +47,23 @@ class UserServiceTest extends BaseTest {
             User user = userService.findUserByPhoneOrEmail("+212602394382");
             assertEquals("userYf", user.getFirstName());
             assertEquals("userYl", user.getLastName());
-            assertEquals("+212602394382", user.getPhone());
+            assertEquals("602394382", user.getPhone());
+        });
+    }
+
+    @Test
+    void testCreateUserAndGetItByOtherForm() {
+        assertDoesNotThrow(() -> userService.createUser(new CreateUserRequestDto(
+                "userYf",
+                "userYl",
+                "+212602394386",
+                "pass"
+        )));
+        assertDoesNotThrow(() -> {
+            User user = userService.findUserByPhoneOrEmail("0602394386");
+            assertEquals("userYf", user.getFirstName());
+            assertEquals("userYl", user.getLastName());
+            assertEquals("602394386", user.getPhone());
         });
     }
 
@@ -84,7 +100,7 @@ class UserServiceTest extends BaseTest {
             User user = userService.findUserByPhoneOrEmail("+212602394387");
             assertEquals("userXf", user.getFirstName());
             assertEquals("userXl", user.getLastName());
-            assertEquals("+212602394387", user.getPhone());
+            assertEquals("602394387", user.getPhone());
         });
     }
 }
