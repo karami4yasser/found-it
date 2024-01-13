@@ -10,6 +10,7 @@ import com.lostitems.lostitemsapi.model.User;
 import com.lostitems.lostitemsapi.repository.ItemRepository;
 import com.lostitems.lostitemsapi.repository.UserRepository;
 import com.lostitems.lostitemsapi.security.JwtAuthUtils;
+import com.lostitems.lostitemsapi.utils.PhoneUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -75,13 +76,13 @@ public class UserService {
     }
 
     public void checkPhoneOrEmailDoesNotExists(String emailOrPhone) {
-        if (userRepository.userExistsByEmailOrPhone(emailOrPhone)) {
+        if (userRepository.userExistsByEmailOrPhone(PhoneUtils.normalizePhone(emailOrPhone))) {
             throw new FoundItUserAlreadyExistException(emailOrPhone);
         }
     }
 
     public User findUserByPhoneOrEmail(String emailOrPhone){
-        return userRepository.findUserByEmailOrPhone(emailOrPhone).orElseThrow(
+        return userRepository.findUserByEmailOrPhone(PhoneUtils.normalizePhone(emailOrPhone)).orElseThrow(
                 FoundItUserNotFoundException::new
         );
     }
@@ -103,7 +104,7 @@ public class UserService {
         JwtAuthUtils.checkTokenValidity(jwt);
         JwtAuthUtils.TokenUserInfo userInfo = JwtAuthUtils.getUserInfoFromToken(jwtDecoder, jwt);
         User user = findUserById(userInfo.userId());
-        user.setPhone(dto.phone());
+        user.setPhone(PhoneUtils.normalizePhone(dto.phone()));
         user.setFirstName(dto.firstName());
         user.setLastName(dto.lastName());
         userRepository.save(user);

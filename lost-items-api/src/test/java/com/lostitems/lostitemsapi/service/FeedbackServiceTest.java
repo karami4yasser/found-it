@@ -7,7 +7,10 @@ import com.lostitems.lostitemsapi.dto.Feedback.GetUserFeedbacksDto;
 import com.lostitems.lostitemsapi.utils.BaseTest;
 import com.lostitems.lostitemsapi.utils.JwtTestUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatusCode;
@@ -20,18 +23,21 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Slf4j
 public class FeedbackServiceTest extends BaseTest {
     @Autowired
     private FeedbackService feedbackService;
     @Test
+    @Order(0)
     void FeedbackServiceTest_UserHasFeedback() {
         FeedbackStatisticsDto feedbackStatisticsDto = feedbackService.getFeedbackStatisticsByUser(UUID.fromString(JwtTestUtils.DUMMY_USER_ID));
-        assertEquals(2,feedbackStatisticsDto.ratingCount());
-        assertEquals(2.8,feedbackStatisticsDto.averageRating());
+        assertEquals(2, feedbackStatisticsDto.ratingCount());
+        assertEquals(2.8, feedbackStatisticsDto.averageRating());
     }
 
     @Test
+    @Order(1)
     void FeedbackServiceTest_UserDoesNotHaveFeedback() {
         FeedbackStatisticsDto feedbackStatisticsDto = feedbackService.getFeedbackStatisticsByUser(UUID.fromString("0ebacabc-83fa-11ee-b962-0242ac120003"));
         assertEquals(0,feedbackStatisticsDto.ratingCount());
@@ -39,6 +45,7 @@ public class FeedbackServiceTest extends BaseTest {
     }
 
     @Test
+    @Order(2)
     void testGetUserFeedbacks() {
         assertDoesNotThrow(
                 () -> {
@@ -56,6 +63,7 @@ public class FeedbackServiceTest extends BaseTest {
     }
 
     @Test
+    @Order(3)
     void testCreateFeedback_validValues() {
         assertDoesNotThrow(
                 () -> {
@@ -73,6 +81,7 @@ public class FeedbackServiceTest extends BaseTest {
     }
 
     @Test
+    @Order(4)
     void testUpdateFeedback_validValues() {
         assertDoesNotThrow(
                 () -> {

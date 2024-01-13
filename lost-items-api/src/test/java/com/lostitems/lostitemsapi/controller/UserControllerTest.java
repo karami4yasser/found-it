@@ -53,7 +53,7 @@ class UserControllerTest extends BaseControllerTest{
 
         assertDoesNotThrow(() -> {
             User user = userService.findUserByPhoneOrEmail("+212644983674");
-            assertEquals("+212644983674", user.getPhone());
+            assertEquals("644983674", user.getPhone());
             assertEquals("userZf", user.getFirstName());
             assertEquals("userZl", user.getLastName());
         });
@@ -127,7 +127,7 @@ class UserControllerTest extends BaseControllerTest{
 
         assertDoesNotThrow(() -> {
             User user = userService.findUserByPhoneOrEmail("+212602394387");
-            assertEquals("+212602394387", user.getPhone());
+            assertEquals("602394387", user.getPhone());
             assertNotEquals("userFf", user.getFirstName());
             assertNotEquals("userFl", user.getLastName());
         });
