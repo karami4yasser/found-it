@@ -2,12 +2,15 @@ package com.lostitems.lostitemsapi.model;
 
 import com.lostitems.lostitemsapi.validation.constraints.PhoneNumber;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
@@ -68,4 +71,13 @@ public class User {
             mappedBy = "rated"
     )
     private List<Feedback> feedbacks;
+
+    @ElementCollection(targetClass = UUID.class, fetch = FetchType.LAZY)
+    @CollectionTable(name = "\"favItems\"", joinColumns = @JoinColumn(name = "\"userId\""))
+    @Column(name = "\"favItem\"", nullable = false)
+    private List<UUID> favItems;
+
+    public void addFavItem(UUID favItem) {
+        favItems.add(favItem);
+    }
 }

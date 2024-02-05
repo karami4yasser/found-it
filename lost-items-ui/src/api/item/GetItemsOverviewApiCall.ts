@@ -16,7 +16,8 @@ export type ItemFilterOptions = {
 export const GetItemsOverviewApiCall = async (
   requestParamsString: string,
   offsetParams: number,
-  userId: string | null
+  userId: string | null,
+  token: string | null
 ) => {
   let offsetParamsString = "";
   if (requestParamsString == "") {
@@ -34,6 +35,7 @@ export const GetItemsOverviewApiCall = async (
       {
         headers: {
           "Content-Type": "application/json",
+          "Authorization": token ? `Bearer ${token}` : null
         },
       }
     );
@@ -47,6 +49,7 @@ export const GetItemsOverviewApiCall = async (
       {
         headers: {
           "Content-Type": "application/json",
+          "Authorization": token ? `Bearer ${token}` : null
         },
       }
     );

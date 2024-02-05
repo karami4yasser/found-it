@@ -126,6 +126,47 @@ public class ItemServiceTest extends BaseTest {
     }
 
     @Test
+    void testAddItemToFav_happyPath() {
+
+        ItemOverviewCollection items = itemService.getItems(
+                Optional.empty(),
+                Optional.empty(),
+                Optional.empty(),
+                Optional.empty(),
+                Optional.empty(),
+                Optional.of(33.533845),
+                Optional.of(-7.648460),
+                Optional.of(210.0),
+                Optional.empty(),
+                Optional.of(JwtTestUtils.DUMMY_TOKEN),
+                Optional.empty(),
+                new OffsetBasedPageRequest(0, 10, Sort.by(Sort.Direction.DESC, "postDate"))
+        );
+        assertEquals(1, items.totalResults);
+        assertFalse(items.items.get(0).isFav());
+
+        itemService.addItemToFavorites(UUID.fromString("a09959e6-9451-11ee-b9d1-0242ac120002"), JwtTestUtils.DUMMY_TOKEN);
+
+        items = itemService.getItems(
+                Optional.empty(),
+                Optional.empty(),
+                Optional.empty(),
+                Optional.empty(),
+                Optional.empty(),
+                Optional.of(33.533845),
+                Optional.of(-7.648460),
+                Optional.of(210.0),
+                Optional.empty(),
+                Optional.of(JwtTestUtils.DUMMY_TOKEN),
+                Optional.empty(),
+                new OffsetBasedPageRequest(0, 10, Sort.by(Sort.Direction.DESC, "postDate"))
+        );
+
+        assertEquals(1, items.totalResults);
+        assertTrue(items.items.get(0).isFav());
+    }
+
+    @Test
     public void testCreateItem_rangeMoreThanAllowed() {
         assertThrows(FoundItNotPremiumException.class, () -> {
             itemService.createItem(

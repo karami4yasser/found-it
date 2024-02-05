@@ -1,22 +1,24 @@
 import { StyleSheet } from "react-native";
 
 import { COLORS } from "../../styles/theme";
-import { factor } from "../../utils/stylesUtils";
+import { bigFactor, factor } from "../../utils/stylesUtils";
 
 const SearchStyle = StyleSheet.create({
   searchContainer: {
     flexDirection: "row",
-    height: 40 * factor,
+    height: 45 * factor,
     borderColor: "#6B240C",
-    borderWidth: 2 * factor,
-    borderRadius: 20 * factor,
+    borderWidth: 1 * factor,
+    borderRadius: 40 * factor,
     alignItems: "center",
-    paddingRight: 30 * factor,
+    paddingRight: 15 * factor,
     paddingLeft: 15 * factor,
-    marginHorizontal: 30 * factor * factor,
-    marginTop: 20,
+    marginHorizontal: 20 * factor * factor,
+    marginBottom: 10 * factor,
+    marginTop: 60 * factor,
   },
   inputContainer: {
+    flex: 1,
     borderColor: COLORS.primary,
     paddingLeft: 10 * factor,
     fontSize: 15 * factor,
@@ -24,20 +26,22 @@ const SearchStyle = StyleSheet.create({
   searchIcon: {
     height: "100%",
     justifyContent: "center",
-    borderRadius: 20 * factor,
+  },
+  filterIcon: {
+    height: "100%",
+    justifyContent: "center",
   },
   container: {
     flexDirection: "column",
   },
-  filtersContainer: {
-    fontSize: 12 * factor,
+  itemsNumberContainer: {
+    marginTop: 7 * factor,
+    height: 20 * factor,
+    marginHorizontal: 40 * factor,
+  },
+  itemsNumber: {
+    fontSize: 15 * factor,
     fontWeight: "700",
-    flexDirection: "row",
-    marginTop: 15 * factor,
-    height: 40 * factor,
-    marginHorizontal: 10 * factor,
-    borderRadius: 20 * factor,
-    justifyContent: "flex-end",
   },
   moreFiltersContainer: {
     flex: 1,

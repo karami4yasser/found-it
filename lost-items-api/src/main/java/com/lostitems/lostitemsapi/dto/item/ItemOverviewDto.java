@@ -12,6 +12,8 @@ public record ItemOverviewDto(
         ItemType type,
         String title,
         String photo,
-        Boolean returned
+        Boolean returned,
+        Boolean isFav
 )
-{ }
+{
+}

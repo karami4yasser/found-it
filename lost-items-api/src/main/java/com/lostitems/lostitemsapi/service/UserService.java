@@ -19,6 +19,8 @@ import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 import java.util.UUID;
 
@@ -115,5 +117,14 @@ public class UserService {
         getUserDetailsResponseDto.setFeedbackStatistics(feedbackService.getFeedbackStatisticsByUser((userId)));
         getUserDetailsResponseDto.setNumberOfPosts(itemRepository.countPostedItemsByUser(userId));
         return getUserDetailsResponseDto;
+    }
+
+    public void addFavItemToUser(User user, UUID itemId) {
+        if (user.getFavItems().contains(itemId)) {
+            user.getFavItems().removeAll(Collections.singleton(itemId));
+        } else {
+            user.addFavItem(itemId);
+        }
+        userRepository.save(user);
     }
 }

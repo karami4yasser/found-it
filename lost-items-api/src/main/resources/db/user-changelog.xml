@@ -30,4 +30,14 @@
             <column name="photo" type="VARCHAR(255)"/>
         </addColumn>
     </changeSet>
+    <changeSet id="add-favItems-to-users-table" author="Mimoun Ghordou">
+        <createTable tableName="favItems">
+            <column name="userId" type="UUID">
+                <constraints foreignKeyName="favItem-user-fk" references="users(id)" deleteCascade="true"/>
+            </column>
+            <column name="favItem" type="UUID">
+                <constraints nullable="false" notNullConstraintName="user-nn-constraint"/>
+            </column>
+        </createTable>
+    </changeSet>
 </databaseChangeLog>

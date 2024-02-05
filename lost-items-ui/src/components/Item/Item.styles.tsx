@@ -1,20 +1,29 @@
 import { StyleSheet } from "react-native";
 
 import { factor } from "../../utils/stylesUtils";
+import { COLORS } from "../../styles/theme";
 const ItemStyle = StyleSheet.create({
   container: {
     flexDirection: "row",
     backgroundColor: "#FFFFFF",
-    height: 100 * factor,
+    height: 130 * factor,
     flex: 1,
     justifyContent: "center",
-    marginVertical: 5,
+    paddingVertical: 8 * factor,
+    marginVertical: 5 * factor,
     marginHorizontal: 10 / factor,
-    paddingVertical: 5,
     borderRadius: 10 * factor,
+    shadowColor: "#000000",
+    shadowOffset: {
+      width: 2,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 5
   },
   imageContainer: {
-    flex: 1,
+    flex: 2,
     justifyContent: "space-around",
   },
   itemImage: {
@@ -29,44 +38,52 @@ const ItemStyle = StyleSheet.create({
     paddingVertical: 8,
   },
   detailsTopContainer: {
-    flex: 3,
+    flex: 1,
     flexDirection: "row",
+    alignItems: "center",
+  },
+  returnedContainer: {
+    flex: 1,
+    marginVertical: 5 * factor,
+  },
+  bulletSeparator: {
+    paddingHorizontal: 5 * factor,
+    fontSize: 3 * factor,
+    textAlign: "left",
+    color: COLORS.grayDark
+  },
+  addTofav: {
+  },
+  itemType: {
+    color: "#6B240C",
+    fontWeight: "700",
+    textAlign: "left",
+    fontSize: 10 * factor,
+  },
+  itemDate: {
+    flex: 1,
+    color: COLORS.grayDark,
+    fontWeight: "500",
+    fontStyle: "italic",
+    textAlign: "left",
+    fontSize: 8 * factor,
   },
   detailsBottomContainer: {
-    flex: 1,
+    flex: 2.5,
     flexDirection: "row",
-    alignItems: "flex-end",
+    paddingVertical: 15 * factor,
   },
   itemTitle: {
-    flex: 2,
-    fontWeight: "700",
+    fontWeight: "500",
     color: "#000000",
-    fontSize: 13 * factor,
+    fontSize: 12 * factor,
   },
   itemIsRetuned: {
-    flex: 1,
     color: "#776B5D",
     fontWeight: "500",
     fontStyle: "italic",
     fontSize: 13 * factor,
-    textAlign: "right",
-    paddingRight: 15 * factor,
-  },
-  itemType: {
-    flex: 1,
-    color: "#6B240C",
-    fontWeight: "700",
-    textAlign: "right",
-    fontSize: 15 * factor,
-  },
-  itemDate: {
-    flex: 1,
-    color: "#000000",
-    fontWeight: "500",
-    fontStyle: "italic",
     textAlign: "left",
-    paddingLeft: 10 * factor,
-    fontSize: 12 * factor,
   },
 });
 

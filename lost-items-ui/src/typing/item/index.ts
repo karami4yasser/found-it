@@ -11,6 +11,7 @@ export type ItemOverviewDto = {
   postDate: string;
   date: string;
   returned: Boolean;
+  isFav: Boolean;
 };
 
 export type ItemOverviewCollection = {
