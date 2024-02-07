@@ -92,6 +92,15 @@ public class ItemController {
         return ResponseEntity.created(URI.create("/api/items/" + itemId.toString())).build();
     }
 
+    @PreAuthorize("isAuthenticated()")
+    @PutMapping(path = "/addToFav/{itemId}")
+    public ResponseEntity<Void> addItemToFavorites(
+            @RequestHeader("Authorization") String token,
+            @PathVariable("itemId") String itemId) {
+        itemService.addItemToFavorites(UUID.fromString(itemId), token);
+        return ResponseEntity.ok().build();
+    }
+
     @PreAuthorize("permitAll()")
     @GetMapping(path = "/categories")
     public ResponseEntity<List<String>> getCategories() {

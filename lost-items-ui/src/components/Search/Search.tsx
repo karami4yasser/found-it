@@ -8,7 +8,7 @@ import { factor } from "../../utils/stylesUtils";
 import { useSearchFilter } from "../../utils/SearchFilterProvider";
 import { ParamListBase, useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-export default function Search() {
+export default function Search(props: { itemsNumber?: number }) {
   const [query, setQuery] = useState("");
   const itemFilterOptions = useSearchFilter();
   const deferredQuery = query;
@@ -41,9 +41,6 @@ export default function Search() {
             <TouchableOpacity
               style={SearchStyle.searchIcon}
               onPress={setQueryFilterOption}
-              onLongPress={() => {
-                itemFilterOptions.clearItemFilterOptions();
-              }}
             >
               <Icon.Search
                 color={"#6B240C"}
@@ -60,22 +57,23 @@ export default function Search() {
               keyboardType={"default"}
               maxLength={40}
             />
-          </View>
-          <View style={SearchStyle.filtersContainer}>
-            <TouchableOpacity onPress={() => navigateToRout("MoreFilters")}>
-              <View style={SearchStyle.moreFiltersContainer}>
-                <Icon.PlusCircle
-                  color={"#6B240C"}
-                  width={25 * factor}
-                  height={25 * factor}
-                  strokeWidth={3}
-                />
-                <Text style={SearchStyle.moreFiltersContainerText}>
-                  More Filters
-                </Text>
-              </View>
+            <TouchableOpacity
+              style={SearchStyle.filterIcon}
+              onPress={() => navigateToRout("MoreFilters")}
+            >
+              <Icon.Sliders
+                color={"#6B240C"}
+                width={25 * factor}
+                height={25 * factor}
+                strokeWidth={3}
+              />
             </TouchableOpacity>
           </View>
+          {props.itemsNumber ? (
+            <View style={SearchStyle.itemsNumberContainer}>
+              <Text style={SearchStyle.itemsNumber}>Found {props.itemsNumber} Items</Text>
+            </View>
+          ) : null}
         </View>
       }
     </>

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lostitems.lostitemsapi.dto.item.CreateItemRequestDto;
 import com.lostitems.lostitemsapi.dto.item.ItemDetailsDto;
 import com.lostitems.lostitemsapi.dto.item.ItemOverviewCollection;
+import com.lostitems.lostitemsapi.dto.item.ItemOverviewDto;
 import com.lostitems.lostitemsapi.enumeration.ItemType;
 import com.lostitems.lostitemsapi.exception.FoundItException;
 import com.lostitems.lostitemsapi.exception.FoundItInvalidItemInputDataException;
@@ -32,9 +33,14 @@ import org.springframework.validation.annotation.Validated;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static com.lostitems.lostitemsapi.repository.criteria.SpecificationUtils.and;
 
@@ -88,25 +94,32 @@ public class ItemService {
         // both it not possible
         // if jwt is present ,not possible that userId exists as well
         Optional<User> user = Optional.empty();
-        if(jwt.isPresent())
-        {
-            JwtAuthUtils.checkTokenValidity(jwt.get());
-            JwtAuthUtils.TokenUserInfo userInfo = JwtAuthUtils.getUserInfoFromToken(jwtDecoder, jwt.get());
-            user = Optional.of(userService.findUserById(userInfo.userId()));
-
-        }
         if(userId.isPresent())
         {
             user = Optional.of(userService.findUserById(userId.get()));
-
         }
         Specification<Item> querySpec = getSpec(category, itemType, text, dateLeft, dateRight, latitude, longitude, range, returned,user);
 
         Page<Item> items = itemRepository.findAll(querySpec,pageable);
 
+        Set<UUID> favItemTmp = new HashSet<>();
+        if(jwt.isPresent())
+        {
+            JwtAuthUtils.checkTokenValidity(jwt.get());
+            JwtAuthUtils.TokenUserInfo userInfo = JwtAuthUtils.getUserInfoFromToken(jwtDecoder, jwt.get());
+            user = Optional.of(userService.findUserById(userInfo.userId()));
+            favItemTmp = user.get().getFavItems();
+        }
+        Set<UUID> favItems = favItemTmp;
+        List<ItemOverviewDto> itemList = items.getContent().stream().map((item) -> itemMapper.itemToItemOverviewDto(item, favItems.contains(item.getId()))).collect(Collectors.toList());
+
         return new ItemOverviewCollection(
-                items,
-                itemMapper::itemToItemOverviewDto
+                itemList,
+                items.getTotalElements(),
+                items.getSize(),
+                items.getNumberOfElements(),
+                items.getNumber() * items.getSize(),
+                items.hasNext()
         );
     }
 
@@ -182,7 +195,6 @@ public class ItemService {
     }
 
     public ItemDetailsDto getItem(UUID itemId) {
-
         Item item = itemRepository.findById(itemId).orElseThrow(
                 FoundItItemNotFoundException::new
         );
@@ -192,5 +204,15 @@ public class ItemService {
         itemDetailsDto.setPosterPhoneNumber(PhoneUtils.prefixPhone(item.getPoster().getPhone()));
         itemDetailsDto.setUserId(item.getPoster().getId());
         return itemDetailsDto;
+    }
+
+    public void addItemToFavorites(UUID itemId, String token) {
+        JwtAuthUtils.checkTokenValidity(token);
+        UUID userId = JwtAuthUtils.getUserInfoFromToken(jwtDecoder, token).userId();
+        User user = userService.findUserById(userId);
+        if (!itemRepository.existsById(itemId)) {
+            throw new FoundItItemNotFoundException();
+        }
+        userService.addFavItemToUser(user, itemId);
     }
 }

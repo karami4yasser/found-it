@@ -28,7 +28,7 @@ const globalStyles = StyleSheet.create({
     flex: 1,
     justifyContent: "space-between",
     alignItems: "stretch",
-    backgroundColor: COLORS.lightWhite,
+    backgroundColor: COLORS.white,
     width: "100%",
   },
 });
