@@ -17,6 +17,7 @@ import jakarta.validation.constraints.Email;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -75,7 +76,7 @@ public class User {
     @ElementCollection(targetClass = UUID.class, fetch = FetchType.LAZY)
     @CollectionTable(name = "\"favItems\"", joinColumns = @JoinColumn(name = "\"userId\""))
     @Column(name = "\"favItem\"", nullable = false)
-    private List<UUID> favItems;
+    private Set<UUID> favItems;
 
     public void addFavItem(UUID favItem) {
         favItems.add(favItem);

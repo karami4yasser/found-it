@@ -34,8 +34,11 @@ import org.springframework.validation.annotation.Validated;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -99,7 +102,7 @@ public class ItemService {
 
         Page<Item> items = itemRepository.findAll(querySpec,pageable);
 
-        List<UUID> favItemTmp = new ArrayList<>();
+        Set<UUID> favItemTmp = new HashSet<>();
         if(jwt.isPresent())
         {
             JwtAuthUtils.checkTokenValidity(jwt.get());
@@ -107,7 +110,7 @@ public class ItemService {
             user = Optional.of(userService.findUserById(userInfo.userId()));
             favItemTmp = user.get().getFavItems();
         }
-        List<UUID> favItems = favItemTmp;
+        Set<UUID> favItems = favItemTmp;
         List<ItemOverviewDto> itemList = items.getContent().stream().map((item) -> itemMapper.itemToItemOverviewDto(item, favItems.contains(item.getId()))).collect(Collectors.toList());
 
         return new ItemOverviewCollection(

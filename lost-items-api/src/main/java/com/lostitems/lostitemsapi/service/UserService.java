@@ -121,7 +121,7 @@ public class UserService {
 
     public void addFavItemToUser(User user, UUID itemId) {
         if (user.getFavItems().contains(itemId)) {
-            user.getFavItems().removeAll(Collections.singleton(itemId));
+            user.getFavItems().remove(itemId);
         } else {
             user.addFavItem(itemId);
         }
