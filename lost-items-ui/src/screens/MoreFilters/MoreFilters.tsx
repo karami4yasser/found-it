@@ -4,7 +4,7 @@ import { LogBox, View } from "react-native";
 import React from "react";
 import { height, width } from "../../utils/stylesUtils";
 import { COLORS } from "../../styles/theme";
-import { MoreFilter } from "../../components/MoreFilter/MoreFilter";
+import { MoreFilters as MoreFiltersComponent } from "../../components/MoreFilters/MoreFilters";
 
 export default function MoreFilters() {
   console.log("MoreFilters render");
@@ -25,7 +25,7 @@ export default function MoreFilters() {
           backgroundColor: COLORS.lightWhite,
         }}
       >
-        <MoreFilter />
+        <MoreFiltersComponent />
       </View>
     </SafeAreaView>
   );

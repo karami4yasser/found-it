@@ -41,7 +41,11 @@ const Dropdown = (props: DropDownProps) => {
   };
 
   return (
-    <View>
+    <View
+      style={{
+        width: "100%",
+      }}
+    >
       <TextInput
         value={searchText}
         onChangeText={filterOptions}
