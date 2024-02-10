@@ -11,6 +11,7 @@ export default function MoreFilters() {
 
   useEffect(() => {
     LogBox.ignoreLogs(["AxiosError: Network Error"]);
+    LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
   }, []);
 
   return (
@@ -22,7 +23,7 @@ export default function MoreFilters() {
           bottom: 0,
           width: width,
           height: height,
-          backgroundColor: COLORS.lightWhite,
+          backgroundColor: COLORS.white,
         }}
       >
         <MoreFiltersComponent />

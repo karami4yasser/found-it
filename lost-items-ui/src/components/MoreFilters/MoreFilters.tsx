@@ -232,9 +232,9 @@ export function MoreFilters() {
               UserLocation
                 ? UserLocation
                 : {
-                    latitude: 1,
-                    longitude: 1,
-                  }
+                  latitude: 1,
+                  longitude: 1,
+                }
             }
             setPosition={setSelectedLocation}
             tar={itemTAR ? itemTAR : 0}
@@ -384,9 +384,9 @@ export function MoreFilters() {
 
                   selectedItemType == null
                     ? {
-                        backgroundColor: COLORS.grayLight,
-                        borderColor: COLORS.tertiary,
-                      }
+                      backgroundColor: COLORS.alphaTertary,
+                      borderColor: COLORS.tertiary,
+                    }
                     : null,
                 ]}
                 onPress={() => {
@@ -408,9 +408,9 @@ export function MoreFilters() {
 
                   selectedItemType == ItemType.LOST
                     ? {
-                        backgroundColor: COLORS.grayLight,
-                        borderColor: COLORS.tertiary,
-                      }
+                      backgroundColor: COLORS.grayLight,
+                      borderColor: COLORS.tertiary,
+                    }
                     : null,
                 ]}
                 onPress={() => {
@@ -425,9 +425,9 @@ export function MoreFilters() {
 
                   selectedItemType == ItemType.FOUND
                     ? {
-                        backgroundColor: COLORS.grayLight,
-                        borderColor: COLORS.tertiary,
-                      }
+                      backgroundColor: COLORS.grayLight,
+                      borderColor: COLORS.tertiary,
+                    }
                     : null,
                 ]}
                 onPress={() => {
@@ -435,6 +435,81 @@ export function MoreFilters() {
                 }}
               >
                 <Text style={MoreFilterStyle.textButton}>Found</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          <View style={MoreFilterStyle.containerWithTitle}>
+            <View style={MoreFilterStyle.ContainerName}>
+              <Text
+                style={[
+                  MoreFilterStyle.BoldText,
+                  {
+                    paddingBottom: 20 * factor,
+                  },
+                ]}
+              >
+                Item Status
+              </Text>
+            </View>
+            <View style={[MoreFilterStyle.postItemSwitchSelector]}>
+              <TouchableOpacity
+                style={[
+                  MoreFilterStyle.ButtonClick,
+
+                  selectedItemStatus == null
+                    ? {
+                      backgroundColor: COLORS.grayLight,
+                      borderColor: COLORS.tertiary,
+                    }
+                    : null,
+                ]}
+                onPress={() => {
+                  handleItemStatusChange(null);
+                }}
+              >
+                <Text
+                  style={[
+                    MoreFilterStyle.textButton,
+                    { color: COLORS.tertiary },
+                  ]}
+                >
+                  All
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  MoreFilterStyle.ButtonClick,
+
+                  selectedItemStatus == false
+                    ? {
+                      backgroundColor: COLORS.grayLight,
+                      borderColor: COLORS.tertiary,
+                    }
+                    : null,
+                ]}
+                onPress={() => {
+                  handleItemStatusChange(false);
+                }}
+              >
+                <Text style={MoreFilterStyle.textButton}>Available</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  MoreFilterStyle.ButtonClick,
+
+                  selectedItemStatus == true
+                    ? {
+                      backgroundColor: COLORS.grayLight,
+                      borderColor: COLORS.tertiary,
+                    }
+                    : null,
+                ]}
+                onPress={() => {
+                  handleItemStatusChange(true);
+                }}
+              >
+                <Text style={MoreFilterStyle.textButton}>Returned</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -460,7 +535,7 @@ export function MoreFilters() {
                 <Text style={MoreFilterStyle.postItemKVValue}>
                   {selectedLocation
                     ? selectedLocation.latitude.toPrecision(5)
-                    : null}{" "}
+                    : "Not Specified"}{" "}
                   {selectedLocation
                     ? selectedLocation.longitude.toPrecision(5)
                     : null}
@@ -471,7 +546,7 @@ export function MoreFilters() {
                   Target Area Radius :
                 </Text>
                 <Text style={MoreFilterStyle.postItemKVValue2}>
-                  {itemTAR && itemTAR + " m"}
+                  {itemTAR ? itemTAR + " m" : "Not Specified"}
                 </Text>
               </View>
 
@@ -537,9 +612,9 @@ export function MoreFilters() {
                   >
                     <Icon.Calendar
                       color={COLORS.black}
-                      width={20 * factor}
-                      height={20 * factor}
-                      strokeWidth={2}
+                      width={17 * factor}
+                      height={17 * factor}
+                      strokeWidth={1}
                     />
                   </TouchableOpacity>
                   <Text style={MoreFilterStyle.dateText}>
@@ -565,9 +640,9 @@ export function MoreFilters() {
                   >
                     <Icon.Calendar
                       color={COLORS.black}
-                      width={20 * factor}
-                      height={20 * factor}
-                      strokeWidth={2}
+                      width={17 * factor}
+                      height={17 * factor}
+                      strokeWidth={1}
                     />
                   </TouchableOpacity>
                   <Text style={MoreFilterStyle.dateText}>
@@ -577,81 +652,6 @@ export function MoreFilters() {
                   </Text>
                 </View>
               </View>
-            </View>
-          </View>
-
-          <View style={MoreFilterStyle.containerWithTitle}>
-            <View style={MoreFilterStyle.ContainerName}>
-              <Text
-                style={[
-                  MoreFilterStyle.BoldText,
-                  {
-                    paddingBottom: 20 * factor,
-                  },
-                ]}
-              >
-                Item Status
-              </Text>
-            </View>
-            <View style={[MoreFilterStyle.postItemSwitchSelector]}>
-              <TouchableOpacity
-                style={[
-                  MoreFilterStyle.ButtonClick,
-
-                  selectedItemStatus == null
-                    ? {
-                        backgroundColor: COLORS.grayLight,
-                        borderColor: COLORS.tertiary,
-                      }
-                    : null,
-                ]}
-                onPress={() => {
-                  handleItemStatusChange(null);
-                }}
-              >
-                <Text
-                  style={[
-                    MoreFilterStyle.textButton,
-                    { color: COLORS.tertiary },
-                  ]}
-                >
-                  All
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[
-                  MoreFilterStyle.ButtonClick,
-
-                  selectedItemStatus == false
-                    ? {
-                        backgroundColor: COLORS.grayLight,
-                        borderColor: COLORS.tertiary,
-                      }
-                    : null,
-                ]}
-                onPress={() => {
-                  handleItemStatusChange(false);
-                }}
-              >
-                <Text style={MoreFilterStyle.textButton}>Available</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[
-                  MoreFilterStyle.ButtonClick,
-
-                  selectedItemStatus == true
-                    ? {
-                        backgroundColor: COLORS.grayLight,
-                        borderColor: COLORS.tertiary,
-                      }
-                    : null,
-                ]}
-                onPress={() => {
-                  handleItemStatusChange(true);
-                }}
-              >
-                <Text style={MoreFilterStyle.textButton}>Returned</Text>
-              </TouchableOpacity>
             </View>
           </View>
 
