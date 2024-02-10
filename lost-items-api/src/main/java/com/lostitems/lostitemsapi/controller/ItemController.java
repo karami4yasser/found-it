@@ -7,6 +7,7 @@ import com.lostitems.lostitemsapi.dto.item.ItemOverviewCollection;
 import com.lostitems.lostitemsapi.enumeration.ItemType;
 import com.lostitems.lostitemsapi.service.ItemService;
 import com.lostitems.lostitemsapi.utils.OffsetBasedPageRequest;
+import com.lostitems.lostitemsapi.validation.constraints.SortByProperties;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
@@ -21,9 +22,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Validated
 @RestController
@@ -61,10 +64,24 @@ public class ItemController {
             @RequestParam(value = "limit", defaultValue = "10", required = false)  @Min(1)
             int limit,
             @RequestParam(value = "offset", defaultValue = "0", required = false)@Min(0)
-            int offset
+            int offset,
+            @RequestParam(value = "sortOrder", defaultValue = "DESC", required = false)
+            /*allowableValues = { "ASC", "DESC" }*/
+            Sort.Direction direction,
+            @RequestParam(value = "sortBy", defaultValue = "postDate", required = false)
+            /*we can sort by combination of stuffs if we want*/
+            @SortByProperties(allowableProperties = { "postDate"}) String... sortBy
 
     )
     {
+        List<Sort.Order> sortByArray = Arrays
+                .stream(sortBy)
+                .map(property -> new Sort.Order(direction, property))
+                .collect(Collectors.toList());
+
+        /*we always sort by the most precise posts , on which the range is the lowest*/
+        sortByArray.add(new Sort.Order(Sort.Direction.ASC, "range"));
+
         ItemOverviewCollection items = itemService.getItems(
                 category,
                 itemType,
@@ -77,7 +94,7 @@ public class ItemController {
                 returned,
                 jwt,
                 userId,
-                new OffsetBasedPageRequest(offset, limit, Sort.by(Sort.Direction.DESC, "postDate"))
+                new OffsetBasedPageRequest(offset, limit, Sort.by(sortByArray))
         );
         return new ResponseEntity<>(items, HttpStatus.OK);
     }

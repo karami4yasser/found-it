@@ -4,13 +4,14 @@ import { LogBox, View } from "react-native";
 import React from "react";
 import { height, width } from "../../utils/stylesUtils";
 import { COLORS } from "../../styles/theme";
-import { MoreFilter } from "../../components/MoreFilter/MoreFilter";
+import { MoreFilters as MoreFiltersComponent } from "../../components/MoreFilters/MoreFilters";
 
 export default function MoreFilters() {
   console.log("MoreFilters render");
 
   useEffect(() => {
     LogBox.ignoreLogs(["AxiosError: Network Error"]);
+    LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
   }, []);
 
   return (
@@ -22,10 +23,10 @@ export default function MoreFilters() {
           bottom: 0,
           width: width,
           height: height,
-          backgroundColor: COLORS.lightWhite,
+          backgroundColor: COLORS.white,
         }}
       >
-        <MoreFilter />
+        <MoreFiltersComponent />
       </View>
     </SafeAreaView>
   );
