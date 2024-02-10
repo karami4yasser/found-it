@@ -232,9 +232,9 @@ export function MoreFilters() {
               UserLocation
                 ? UserLocation
                 : {
-                  latitude: 1,
-                  longitude: 1,
-                }
+                    latitude: 1,
+                    longitude: 1,
+                  }
             }
             setPosition={setSelectedLocation}
             tar={itemTAR ? itemTAR : 0}
@@ -384,9 +384,9 @@ export function MoreFilters() {
 
                   selectedItemType == null
                     ? {
-                      backgroundColor: COLORS.alphaTertary,
-                      borderColor: COLORS.tertiary,
-                    }
+                        backgroundColor: COLORS.alphaTertary,
+                        borderColor: COLORS.tertiary,
+                      }
                     : null,
                 ]}
                 onPress={() => {
@@ -408,9 +408,9 @@ export function MoreFilters() {
 
                   selectedItemType == ItemType.LOST
                     ? {
-                      backgroundColor: COLORS.grayLight,
-                      borderColor: COLORS.tertiary,
-                    }
+                        backgroundColor: COLORS.grayLight,
+                        borderColor: COLORS.tertiary,
+                      }
                     : null,
                 ]}
                 onPress={() => {
@@ -425,9 +425,9 @@ export function MoreFilters() {
 
                   selectedItemType == ItemType.FOUND
                     ? {
-                      backgroundColor: COLORS.grayLight,
-                      borderColor: COLORS.tertiary,
-                    }
+                        backgroundColor: COLORS.grayLight,
+                        borderColor: COLORS.tertiary,
+                      }
                     : null,
                 ]}
                 onPress={() => {
@@ -459,9 +459,9 @@ export function MoreFilters() {
 
                   selectedItemStatus == null
                     ? {
-                      backgroundColor: COLORS.grayLight,
-                      borderColor: COLORS.tertiary,
-                    }
+                        backgroundColor: COLORS.grayLight,
+                        borderColor: COLORS.tertiary,
+                      }
                     : null,
                 ]}
                 onPress={() => {
@@ -483,9 +483,9 @@ export function MoreFilters() {
 
                   selectedItemStatus == false
                     ? {
-                      backgroundColor: COLORS.grayLight,
-                      borderColor: COLORS.tertiary,
-                    }
+                        backgroundColor: COLORS.grayLight,
+                        borderColor: COLORS.tertiary,
+                      }
                     : null,
                 ]}
                 onPress={() => {
@@ -500,9 +500,9 @@ export function MoreFilters() {
 
                   selectedItemStatus == true
                     ? {
-                      backgroundColor: COLORS.grayLight,
-                      borderColor: COLORS.tertiary,
-                    }
+                        backgroundColor: COLORS.grayLight,
+                        borderColor: COLORS.tertiary,
+                      }
                     : null,
                 ]}
                 onPress={() => {
@@ -535,7 +535,7 @@ export function MoreFilters() {
                 <Text style={MoreFilterStyle.postItemKVValue}>
                   {selectedLocation
                     ? selectedLocation.latitude.toPrecision(5)
-                    : "Not Specified"}{" "}
+                    : "      Not Specified"}{" "}
                   {selectedLocation
                     ? selectedLocation.longitude.toPrecision(5)
                     : null}
